@@ -1,0 +1,322 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+jobs:
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'staging'
+    environment:
+      name: staging
+      url: https://blog-api-staging.example.com
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Deploy to ECS Staging
+      run: |
+        # Update ECS service with new image
+        aws ecs update-service \
+          --cluster blog-api-staging \
+          --service blog-api-service \
+          --force-new-deployment \
+          --task-definition blog-api-staging:latest
+
+    - name: Wait for deployment
+      run: |
+        aws ecs wait services-stable \
+          --cluster blog-api-staging \
+          --services blog-api-service
+
+    - name: Run smoke tests
+      run: |
+        # Wait for service to be ready
+        sleep 60
+        
+        # Test health endpoint
+        curl -f https://blog-api-staging.example.com/actuator/health
+        
+        # Test main API endpoints
+        curl -f https://blog-api-staging.example.com/api/v1/categories
+
+    - name: Notify Slack on success
+      if: success()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: success
+        text: "🚀 Blog API successfully deployed to staging"
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    - name: Notify Slack on failure
+      if: failure()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: failure
+        text: "❌ Blog API deployment to staging failed"
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.environment == 'production'
+    environment:
+      name: production
+      url: https://blog-api.example.com
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Create database backup
+      run: |
+        # Create RDS snapshot before deployment
+        aws rds create-db-snapshot \
+          --db-instance-identifier blog-api-prod-db \
+          --db-snapshot-identifier blog-api-backup-$(date +%Y%m%d%H%M%S)
+
+    - name: Deploy to ECS Production
+      run: |
+        # Update ECS service with new image
+        aws ecs update-service \
+          --cluster blog-api-production \
+          --service blog-api-service \
+          --force-new-deployment \
+          --task-definition blog-api-production:latest
+
+    - name: Wait for deployment
+      run: |
+        aws ecs wait services-stable \
+          --cluster blog-api-production \
+          --services blog-api-service
+
+    - name: Run production smoke tests
+      run: |
+        # Wait for service to be ready
+        sleep 60
+        
+        # Test health endpoint
+        curl -f https://blog-api.example.com/actuator/health
+        
+        # Test main API endpoints
+        curl -f https://blog-api.example.com/api/v1/categories
+        
+        # Test authentication endpoint
+        curl -X POST https://blog-api.example.com/api/v1/auth/login \
+          -H "Content-Type: application/json" \
+          -d '{"username":"healthcheck","password":"test"}' || true
+
+    - name: Update CloudFront cache
+      run: |
+        # Invalidate CloudFront cache for API endpoints
+        aws cloudfront create-invalidation \
+          --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+          --paths "/api/*" "/swagger-ui/*"
+
+    - name: Notify team on success
+      if: success()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: success
+        text: "🎉 Blog API v${{ github.ref_name }} successfully deployed to production!"
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    - name: Rollback on failure
+      if: failure()
+      run: |
+        # Get previous task definition
+        PREVIOUS_TASK_DEF=$(aws ecs describe-services \
+          --cluster blog-api-production \
+          --services blog-api-service \
+          --query 'services[0].deployments[1].taskDefinition' \
+          --output text)
+        
+        # Rollback to previous version
+        aws ecs update-service \
+          --cluster blog-api-production \
+          --service blog-api-service \
+          --task-definition $PREVIOUS_TASK_DEF
+
+    - name: Notify team on failure
+      if: failure()
+      uses: 8398a7/action-slack@v3
+      with:
+        status: failure
+        text: "🚨 Blog API deployment to production FAILED! Rollback initiated."
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  deploy-local-k8s:
+    name: Deploy to Local Kubernetes
+    runs-on: ubuntu-latest
+    if: github.event.inputs.environment == 'staging'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'latest'
+
+    - name: Create Kubernetes manifests
+      run: |
+        mkdir -p k8s
+        
+        # Create namespace
+        cat > k8s/namespace.yaml << EOF
+        apiVersion: v1
+        kind: Namespace
+        metadata:
+          name: blog-api
+        EOF
+        
+        # Create PostgreSQL deployment
+        cat > k8s/postgres.yaml << EOF
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: postgres
+          namespace: blog-api
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              app: postgres
+          template:
+            metadata:
+              labels:
+                app: postgres
+            spec:
+              containers:
+              - name: postgres
+                image: postgres:15-alpine
+                env:
+                - name: POSTGRES_DB
+                  value: "blogdb"
+                - name: POSTGRES_USER
+                  value: "bloguser"
+                - name: POSTGRES_PASSWORD
+                  value: "blogpass"
+                ports:
+                - containerPort: 5432
+        ---
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: postgres-service
+          namespace: blog-api
+        spec:
+          selector:
+            app: postgres
+          ports:
+          - port: 5432
+            targetPort: 5432
+        EOF
+        
+        # Create Blog API deployment
+        cat > k8s/blog-api.yaml << EOF
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: blog-api
+          namespace: blog-api
+        spec:
+          replicas: 2
+          selector:
+            matchLabels:
+              app: blog-api
+          template:
+            metadata:
+              labels:
+                app: blog-api
+            spec:
+              containers:
+              - name: blog-api
+                image: ghcr.io/${{ github.repository }}:latest
+                env:
+                - name: SPRING_PROFILES_ACTIVE
+                  value: "docker"
+                - name: SPRING_DATASOURCE_URL
+                  value: "jdbc:postgresql://postgres-service:5432/blogdb"
+                - name: SPRING_DATASOURCE_USERNAME
+                  value: "bloguser"
+                - name: SPRING_DATASOURCE_PASSWORD
+                  value: "blogpass"
+                ports:
+                - containerPort: 8080
+                livenessProbe:
+                  httpGet:
+                    path: /actuator/health
+                    port: 8080
+                  initialDelaySeconds: 60
+                  periodSeconds: 30
+                readinessProbe:
+                  httpGet:
+                    path: /actuator/health
+                    port: 8080
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+        ---
+        apiVersion: v1
+        kind: Service
+        metadata:
+          name: blog-api-service
+          namespace: blog-api
+        spec:
+          selector:
+            app: blog-api
+          ports:
+          - port: 80
+            targetPort: 8080
+          type: LoadBalancer
+        EOF
+
+    - name: Deploy to Kubernetes
+      run: |
+        # Apply Kubernetes manifests
+        kubectl apply -f k8s/namespace.yaml
+        kubectl apply -f k8s/postgres.yaml
+        kubectl apply -f k8s/blog-api.yaml
+        
+        # Wait for deployments
+        kubectl wait --for=condition=available --timeout=300s deployment/postgres -n blog-api
+        kubectl wait --for=condition=available --timeout=300s deployment/blog-api -n blog-api
+
+    - name: Get service URL
+      run: |
+        echo "Blog API is available at:"
+        kubectl get service blog-api-service -n blog-api

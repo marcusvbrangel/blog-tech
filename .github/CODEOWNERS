@@ -1,0 +1,23 @@
+# Global owners
+* @marcusvbrangel
+
+# CI/CD workflows
+/.github/ @marcusvbrangel
+
+# Docker configuration
+/Dockerfile @marcusvbrangel
+/docker-compose.yml @marcusvbrangel
+/.dockerignore @marcusvbrangel
+
+# Application configuration
+/src/main/resources/ @marcusvbrangel
+
+# Maven configuration
+/pom.xml @marcusvbrangel
+
+# Documentation
+/README.md @marcusvbrangel
+/DEVELOPMENT_LOG.md @marcusvbrangel
+
+# Database scripts
+/docker/init-scripts/ @marcusvbrangel
