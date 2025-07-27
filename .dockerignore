@@ -1,0 +1,45 @@
+# Build artifacts
+target/
+!target/blog-api-0.0.1-SNAPSHOT.jar
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Docker files (não precisam estar no contexto)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Documentation
+*.md
+DEVELOPMENT_LOG.md
+TESTING.md
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+
+# Maven wrapper (opcional)
+.mvn/
+mvnw
+mvnw.cmd
+
+# Environment files
+.env
+.env.local

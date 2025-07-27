@@ -105,14 +105,57 @@ jwt:
 
 ## 🔧 Como Executar
 
+### Opção 1: Docker (Recomendado)
+
+1. **Clone o projeto**
+2. **Execute com Docker Compose:**
+   ```bash
+   docker-compose up -d
+   ```
+3. **Acesse a aplicação:** http://localhost:8080/swagger-ui.html
+
+### Opção 2: Execução Local
+
 1. **Clone o projeto**
 2. **Configure o PostgreSQL** com as credenciais do `application.yml`
 3. **Execute:**
    ```bash
    mvn spring-boot:run
    ```
-
 4. **Acesse a documentação:** http://localhost:8080/swagger-ui.html
+
+## 🐳 Docker
+
+### Comandos Úteis
+
+```bash
+# Subir toda a aplicação (PostgreSQL + API)
+docker-compose up -d
+
+# Ver logs da aplicação
+docker-compose logs -f blog-api
+
+# Ver logs do banco
+docker-compose logs -f postgres
+
+# Parar todos os serviços
+docker-compose down
+
+# Rebuild da aplicação
+docker-compose up --build blog-api
+
+# Limpar volumes (dados do banco)
+docker-compose down -v
+
+# Acessar container do PostgreSQL
+docker-compose exec postgres psql -U bloguser -d blogdb
+```
+
+### Estrutura Docker
+- **Dockerfile**: Multi-stage build para otimização
+- **docker-compose.yml**: Orquestração PostgreSQL + API
+- **application-docker.yml**: Configurações específicas para Docker
+- **Health checks**: Monitoramento automático dos serviços
 
 ## 🧪 Testes
 
