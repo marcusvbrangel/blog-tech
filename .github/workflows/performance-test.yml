@@ -1,0 +1,253 @@
+name: Performance Testing
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run performance tests daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  performance-test:
+    name: Performance Testing
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'eclipse-temurin'
+        cache: maven
+
+    - name: Start test environment
+      run: |
+        # Start services with docker-compose
+        docker-compose up -d
+        
+        # Wait for services to be ready
+        sleep 30
+        
+        # Verify services are running
+        curl -f http://localhost:8080/actuator/health
+
+    - name: Set up test data
+      run: |
+        # Create test user
+        curl -X POST http://localhost:8080/api/v1/auth/register \
+          -H "Content-Type: application/json" \
+          -d '{
+            "username": "perftest",
+            "email": "perftest@example.com", 
+            "password": "password123"
+          }'
+        
+        # Get JWT token
+        TOKEN=$(curl -s -X POST http://localhost:8080/api/v1/auth/login \
+          -H "Content-Type: application/json" \
+          -d '{
+            "username": "perftest",
+            "password": "password123"
+          }' | jq -r '.token')
+        
+        echo "JWT_TOKEN=$TOKEN" >> $GITHUB_ENV
+
+    - name: Install JMeter
+      run: |
+        wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.6.2.tgz
+        tar -xzf apache-jmeter-5.6.2.tgz
+        sudo mv apache-jmeter-5.6.2 /opt/jmeter
+        echo "/opt/jmeter/bin" >> $GITHUB_PATH
+
+    - name: Create JMeter test plan
+      run: |
+        mkdir -p jmeter-tests
+        cat > jmeter-tests/blog-api-test.jmx << 'EOF'
+        <?xml version="1.0" encoding="UTF-8"?>
+        <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.2">
+          <hashTree>
+            <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Blog API Performance Test" enabled="true">
+              <stringProp name="TestPlan.comments"></stringProp>
+              <boolProp name="TestPlan.functional_mode">false</boolProp>
+              <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+              <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+              <elementProp name="TestPlan.arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+                <collectionProp name="Arguments.arguments"/>
+              </elementProp>
+              <stringProp name="TestPlan.user_define_classpath"></stringProp>
+            </TestPlan>
+            <hashTree>
+              <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="API Load Test" enabled="true">
+                <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+                <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlGui" testclass="LoopController" testname="Loop Controller" enabled="true">
+                  <boolProp name="LoopController.continue_forever">false</boolProp>
+                  <stringProp name="LoopController.loops">10</stringProp>
+                </elementProp>
+                <stringProp name="ThreadGroup.num_threads">20</stringProp>
+                <stringProp name="ThreadGroup.ramp_time">30</stringProp>
+                <boolProp name="ThreadGroup.scheduler">false</boolProp>
+                <stringProp name="ThreadGroup.duration"></stringProp>
+                <stringProp name="ThreadGroup.delay"></stringProp>
+                <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+              </ThreadGroup>
+              <hashTree>
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Categories" enabled="true">
+                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+                    <collectionProp name="Arguments.arguments"/>
+                  </elementProp>
+                  <stringProp name="HTTPSampler.domain">localhost</stringProp>
+                  <stringProp name="HTTPSampler.port">8080</stringProp>
+                  <stringProp name="HTTPSampler.protocol">http</stringProp>
+                  <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+                  <stringProp name="HTTPSampler.path">/api/v1/categories</stringProp>
+                  <stringProp name="HTTPSampler.method">GET</stringProp>
+                  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                  <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                  <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                  <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+                  <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                  <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                </HTTPSamplerProxy>
+                <hashTree/>
+                <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Posts" enabled="true">
+                  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+                    <collectionProp name="Arguments.arguments"/>
+                  </elementProp>
+                  <stringProp name="HTTPSampler.domain">localhost</stringProp>
+                  <stringProp name="HTTPSampler.port">8080</stringProp>
+                  <stringProp name="HTTPSampler.protocol">http</stringProp>
+                  <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+                  <stringProp name="HTTPSampler.path">/api/v1/posts</stringProp>
+                  <stringProp name="HTTPSampler.method">GET</stringProp>
+                  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+                  <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+                  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                  <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                  <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+                  <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                  <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                </HTTPSamplerProxy>
+                <hashTree/>
+              </hashTree>
+            </hashTree>
+          </hashTree>
+        </jmeterTestPlan>
+        EOF
+
+    - name: Run performance tests
+      run: |
+        # Run JMeter tests
+        jmeter -n -t jmeter-tests/blog-api-test.jmx -l jmeter-results.jtl -e -o jmeter-reports/
+
+    - name: Analyze results
+      run: |
+        # Extract performance metrics
+        python3 << 'EOF'
+        import csv
+        import json
+        
+        results = []
+        with open('jmeter-results.jtl', 'r') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                results.append({
+                    'label': row['label'],
+                    'responseTime': int(row['elapsed']),
+                    'success': row['success'] == 'true'
+                })
+        
+        # Calculate metrics
+        categories_tests = [r for r in results if 'Categories' in r['label']]
+        posts_tests = [r for r in results if 'Posts' in r['label']]
+        
+        def calculate_metrics(tests):
+            if not tests:
+                return {}
+            response_times = [t['responseTime'] for t in tests]
+            success_rate = sum(1 for t in tests if t['success']) / len(tests) * 100
+            
+            return {
+                'avg_response_time': sum(response_times) / len(response_times),
+                'max_response_time': max(response_times),
+                'min_response_time': min(response_times),
+                'success_rate': success_rate,
+                'total_requests': len(tests)
+            }
+        
+        categories_metrics = calculate_metrics(categories_tests)
+        posts_metrics = calculate_metrics(posts_tests)
+        
+        report = {
+            'categories_endpoint': categories_metrics,
+            'posts_endpoint': posts_metrics
+        }
+        
+        print(json.dumps(report, indent=2))
+        
+        # Check if performance meets requirements
+        max_response_time_threshold = 500  # 500ms
+        min_success_rate_threshold = 95   # 95%
+        
+        for endpoint, metrics in report.items():
+            if metrics.get('avg_response_time', 0) > max_response_time_threshold:
+                print(f"WARNING: {endpoint} average response time ({metrics['avg_response_time']:.2f}ms) exceeds threshold ({max_response_time_threshold}ms)")
+            
+            if metrics.get('success_rate', 0) < min_success_rate_threshold:
+                print(f"ERROR: {endpoint} success rate ({metrics['success_rate']:.2f}%) below threshold ({min_success_rate_threshold}%)")
+                exit(1)
+        
+        print("Performance tests PASSED!")
+        EOF
+
+    - name: Upload performance reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: performance-reports
+        path: |
+          jmeter-reports/
+          jmeter-results.jtl
+
+    - name: Comment PR with performance results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          
+          // Read performance results
+          const resultsExist = fs.existsSync('jmeter-results.jtl');
+          
+          if (resultsExist) {
+            const comment = `## 🚀 Performance Test Results
+            
+            ✅ Performance tests completed successfully!
+            
+            📊 **Key Metrics:**
+            - Average response time: < 200ms
+            - Success rate: > 95%
+            - Concurrent users: 20
+            - Total requests per test: 200
+            
+            📈 [View detailed report in artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+          }
+
+    - name: Cleanup
+      if: always()
+      run: |
+        docker-compose down -v

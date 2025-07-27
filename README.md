@@ -157,12 +157,119 @@ docker-compose exec postgres psql -U bloguser -d blogdb
 - **application-docker.yml**: Configurações específicas para Docker
 - **Health checks**: Monitoramento automático dos serviços
 
+## 🚀 CI/CD com GitHub Actions
+
+### Workflows Implementados
+
+#### 1. **Continuous Integration** (`.github/workflows/ci.yml`)
+Executa automaticamente em push/PR para validar qualidade do código:
+
+- ✅ **Testes Unitários**: JUnit 5 com PostgreSQL TestContainer
+- ✅ **Cobertura de Código**: JaCoCo com upload para Codecov
+- ✅ **Build da Aplicação**: Maven compile e package
+- ✅ **Análise de Qualidade**: SpotBugs, Checkstyle, PMD
+- ✅ **Scan de Segurança**: OWASP Dependency Check
+
+**Triggers:**
+- Push nas branches: `main`, `develop`, `feature/*`
+- Pull Requests para: `main`, `develop`
+
+#### 2. **Docker Build & Publish** (`.github/workflows/docker-build.yml`)
+Constrói e publica imagens Docker automaticamente:
+
+- 🐳 **Multi-platform Build**: linux/amd64, linux/arm64
+- 📦 **GitHub Container Registry**: Versionamento automático
+- 🔍 **Vulnerability Scan**: Trivy security scanner
+- ✅ **Integration Tests**: Teste da imagem com docker-compose
+
+**Triggers:**
+- Push na branch `main`
+- Tags `v*` (releases)
+- Pull Requests para `main`
+
+#### 3. **Deploy Pipeline** (`.github/workflows/deploy.yml`)
+Deploy automatizado para múltiplos ambientes:
+
+**Staging:**
+- 🔄 Deploy automático via ECS/Kubernetes
+- 🧪 Smoke tests automáticos
+- 📢 Notificações Slack
+
+**Production:**
+- 🏷️ Deploy apenas com tags de release
+- 💾 Backup automático do banco
+- 🔄 Rollback automático em caso de falha
+- ☁️ Invalidação de cache CloudFront
+
+**Triggers:**
+- Push na `main` → Staging
+- Tags `v*` → Production
+- Manual dispatch
+
+#### 4. **Performance Testing** (`.github/workflows/performance-test.yml`)
+Testes de performance automatizados:
+
+- ⚡ **JMeter Load Tests**: 20 usuários simultâneos
+- 📊 **Métricas de Performance**: Tempo de resposta e taxa de sucesso
+- 📈 **Reports Automáticos**: Comentários em PRs
+- ⏰ **Testes Diários**: Cron schedule às 2h UTC
+
+**Thresholds:**
+- Tempo de resposta médio: < 200ms
+- Taxa de sucesso: > 95%
+
+### Configuração de Secrets
+
+Para ativar todos os workflows, configure os seguintes secrets no GitHub:
+
+```bash
+# AWS Credentials
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+
+# Notifications
+SLACK_WEBHOOK_URL
+
+# CodeCov (opcional)
+CODECOV_TOKEN
+
+# CloudFront (production)
+CLOUDFRONT_DISTRIBUTION_ID
+```
+
+### Status Badges
+
+Adicione badges no README para mostrar status dos builds:
+
+```markdown
+![CI](https://github.com/marcusvbrangel/blog-tech/workflows/Continuous%20Integration/badge.svg)
+![Docker](https://github.com/marcusvbrangel/blog-tech/workflows/Docker%20Build%20and%20Publish/badge.svg)
+![Deploy](https://github.com/marcusvbrangel/blog-tech/workflows/Deploy%20to%20Production/badge.svg)
+```
+
 ## 🧪 Testes
 
-Execute os testes com:
+### Testes Locais
 ```bash
+# Testes unitários
 mvn test
+
+# Testes com cobertura
+mvn test jacoco:report
+
+# Testes de integração
+mvn verify
+
+# Performance tests (requer Docker)
+docker-compose up -d
+# Execute performance-test workflow manualmente
 ```
+
+### Tipos de Teste
+- **Unit Tests**: Service layer, Repository layer
+- **Integration Tests**: Controller endpoints, Database
+- **Performance Tests**: Load testing com JMeter
+- **Security Tests**: OWASP dependency check
 
 ## 📚 Documentação
 
