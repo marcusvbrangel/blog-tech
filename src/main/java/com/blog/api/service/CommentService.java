@@ -9,6 +9,9 @@ import com.blog.api.repository.CommentRepository;
 import com.blog.api.repository.PostRepository;
 import com.blog.api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,11 +31,13 @@ public class CommentService {
     @Autowired
     private UserRepository userRepository;
 
+    @Cacheable(value = "comments", key = "'post:' + #postId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
     public Page<CommentDTO> getCommentsByPost(Long postId, Pageable pageable) {
         return commentRepository.findByPostIdAndParentIsNull(postId, pageable)
                 .map(CommentDTO::fromEntity);
     }
 
+    @Cacheable(value = "comments", key = "'simple:' + #postId")
     public List<CommentDTO> getCommentsByPostSimple(Long postId) {
         return commentRepository.findByPostIdAndParentIsNullOrderByCreatedAtDesc(postId)
                 .stream()
@@ -40,12 +45,14 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
+    @Cacheable(value = "comments", key = "'single:' + #id")
     public CommentDTO getCommentById(Long id) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", id));
         return CommentDTO.fromEntity(comment);
     }
 
+    @CacheEvict(value = "comments", allEntries = true)
     public CommentDTO createComment(CommentDTO commentDTO, String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
@@ -69,6 +76,10 @@ public class CommentService {
         return CommentDTO.fromEntity(savedComment);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "comments", key = "'single:' + #id"),
+            @CacheEvict(value = "comments", allEntries = true)
+    })
     public CommentDTO updateComment(Long id, CommentDTO commentDTO, String username) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", id));
@@ -86,6 +97,10 @@ public class CommentService {
         return CommentDTO.fromEntity(updatedComment);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "comments", key = "'single:' + #id"),
+            @CacheEvict(value = "comments", allEntries = true)
+    })
     public void deleteComment(Long id, String username) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", id));

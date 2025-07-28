@@ -10,6 +10,9 @@ import com.blog.api.repository.CategoryRepository;
 import com.blog.api.repository.PostRepository;
 import com.blog.api.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,16 +29,19 @@ public class PostService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Cacheable(value = "posts", key = "'all:' + #pageable.pageNumber + ':' + #pageable.pageSize")
     public Page<PostDTO> getAllPublishedPosts(Pageable pageable) {
         return postRepository.findByPublishedTrue(pageable)
                 .map(PostDTO::fromEntity);
     }
 
+    @Cacheable(value = "posts", key = "'category:' + #categoryId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
     public Page<PostDTO> getPostsByCategory(Long categoryId, Pageable pageable) {
         return postRepository.findByCategoryId(categoryId, pageable)
                 .map(PostDTO::fromEntity);
     }
 
+    @Cacheable(value = "posts", key = "'user:' + #userId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
     public Page<PostDTO> getPostsByUser(Long userId, Pageable pageable) {
         return postRepository.findByUserId(userId, pageable)
                 .map(PostDTO::fromEntity);
@@ -46,12 +52,14 @@ public class PostService {
                 .map(PostDTO::fromEntity);
     }
 
+    @Cacheable(value = "posts", key = "'single:' + #id")
     public PostDTO getPostById(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
         return PostDTO.fromEntity(post);
     }
 
+    @CacheEvict(value = "posts", allEntries = true)
     public PostDTO createPost(CreatePostDTO createPostDTO, String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
@@ -73,6 +81,10 @@ public class PostService {
         return PostDTO.fromEntity(savedPost);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "posts", key = "'single:' + #id"),
+            @CacheEvict(value = "posts", allEntries = true)
+    })
     public PostDTO updatePost(Long id, CreatePostDTO createPostDTO, String username) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));
@@ -99,6 +111,10 @@ public class PostService {
         return PostDTO.fromEntity(updatedPost);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "posts", key = "'single:' + #id"),
+            @CacheEvict(value = "posts", allEntries = true)
+    })
     public void deletePost(Long id, String username) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "id", id));

@@ -20,6 +20,23 @@ services:
       timeout: 5s
       retries: 5
 
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: blog-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - blog-network
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   # Aplicação Spring Boot
   blog-api:
     build:
@@ -31,12 +48,16 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/blogdb
       SPRING_DATASOURCE_USERNAME: bloguser
       SPRING_DATASOURCE_PASSWORD: blogpass
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
       JWT_SECRET: mySecretKey123456789012345678901234567890
       JWT_EXPIRATION: 86400000
     ports:
       - "8080:8080"
     depends_on:
       postgres:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     networks:
       - blog-network
@@ -50,6 +71,8 @@ services:
 
 volumes:
   postgres_data:
+    driver: local
+  redis_data:
     driver: local
 
 networks:

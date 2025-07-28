@@ -1,0 +1,13 @@
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/controller/AuthControllerTest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/service/CommentServiceTest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/controller/CategoryControllerTest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/service/AuthServiceTest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/service/CacheServiceTest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/service/PostServiceTest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/config/SecurityConfigTest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/service/CategoryServiceTest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/repository/UserRepositoryTest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/repository/PostRepositoryTest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/controller/PostControllerTest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/util/JwtUtilTest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/service/UserServiceTest.java
