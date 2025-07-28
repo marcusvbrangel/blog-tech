@@ -33,6 +33,42 @@ spring:
     redis:
       time-to-live: 600000
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,httptrace,loggers,env
+  endpoint:
+    health:
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    web:
+      server:
+        request:
+          autotime:
+            enabled: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      percentiles:
+        http.server.requests: 0.5, 0.9, 0.95, 0.99
+    tags:
+      application: blog-api
+      environment: development
+
+tracing:
+  zipkin:
+    endpoint: http://zipkin:9411/api/v2/spans
+  sampling:
+    probability: 1.0
+
 server:
   port: 8080
 

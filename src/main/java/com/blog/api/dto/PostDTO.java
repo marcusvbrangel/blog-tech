@@ -3,8 +3,10 @@ package com.blog.api.dto;
 import com.blog.api.entity.Post;
 
 import java.time.LocalDateTime;
+import java.io.Serializable;
 
-public class PostDTO {
+public class PostDTO implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Long id;
     private String title;
     private String content;
@@ -32,17 +34,31 @@ public class PostDTO {
     }
 
     public static PostDTO fromEntity(Post post) {
-        return new PostDTO(
-            post.getId(),
-            post.getTitle(),
-            post.getContent(),
-            post.isPublished(),
-            post.getCreatedAt(),
-            post.getUpdatedAt(),
-            post.getUser().getUsername(),
-            post.getCategory() != null ? post.getCategory().getName() : null,
-            post.getComments().size()
-        );
+        try {
+            int commentCount = 0;
+            try {
+                commentCount = post.getComments() != null ? post.getComments().size() : 0;
+            } catch (Exception e) {
+                // Handle lazy loading exception by setting comment count to 0
+                commentCount = 0;
+            }
+            
+            return new PostDTO(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.isPublished(),
+                post.getCreatedAt(),
+                post.getUpdatedAt(),
+                post.getUser().getUsername(),
+                post.getCategory() != null ? post.getCategory().getName() : null,
+                commentCount
+            );
+        } catch (Exception e) {
+            System.err.println("ERROR in PostDTO.fromEntity: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     public Long getId() { return id; }

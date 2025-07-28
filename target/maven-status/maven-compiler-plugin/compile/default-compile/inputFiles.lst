@@ -20,6 +20,7 @@
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/CommentDTO.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/UserDTO.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/LoginRequest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/config/MonitoringConfig.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/CreateUserDTO.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/JwtResponse.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/repository/PostRepository.java

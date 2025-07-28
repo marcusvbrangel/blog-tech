@@ -37,6 +37,59 @@ services:
       timeout: 5s
       retries: 5
 
+  # Prometheus Monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: blog-prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=168h'
+      - '--web.enable-lifecycle'
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/prometheus/rules:/etc/prometheus/rules
+      - prometheus_data:/prometheus
+    networks:
+      - blog-network
+    restart: unless-stopped
+
+  # Grafana Dashboard
+  grafana:
+    image: grafana/grafana:latest
+    container_name: blog-grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+      - grafana_data:/var/lib/grafana
+    networks:
+      - blog-network
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+
+  # Zipkin Distributed Tracing
+  zipkin:
+    image: openzipkin/zipkin:latest
+    container_name: blog-zipkin
+    environment:
+      - STORAGE_TYPE=mem
+    ports:
+      - "9411:9411"
+    networks:
+      - blog-network
+    restart: unless-stopped
+
   # Aplicação Spring Boot
   blog-api:
     build:
@@ -50,6 +103,9 @@ services:
       SPRING_DATASOURCE_PASSWORD: blogpass
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      ZIPKIN_ENDPOINT: http://zipkin:9411/api/v2/spans
+      TRACING_SAMPLING_PROBABILITY: 1.0
+      ENVIRONMENT: docker
       JWT_SECRET: mySecretKey123456789012345678901234567890
       JWT_EXPIRATION: 86400000
     ports:
@@ -59,6 +115,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      zipkin:
+        condition: service_started
     networks:
       - blog-network
     restart: unless-stopped
@@ -73,6 +131,10 @@ volumes:
   postgres_data:
     driver: local
   redis_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
     driver: local
 
 networks:

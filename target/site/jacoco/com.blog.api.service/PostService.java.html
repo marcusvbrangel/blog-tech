@@ -9,6 +9,9 @@ import com.blog.api.exception.ResourceNotFoundException;
 import com.blog.api.repository.CategoryRepository;
 import com.blog.api.repository.PostRepository;
 import com.blog.api.repository.UserRepository;
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Timer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -18,7 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-<span class="fc" id="L21">public class PostService {</span>
+<span class="fc" id="L24">public class PostService {</span>
 
     @Autowired
     private PostRepository postRepository;
@@ -29,56 +32,65 @@ import org.springframework.stereotype.Service;
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private Counter postCreationCounter;
+
+    @Autowired
+    private Timer databaseQueryTimer;
+
     @Cacheable(value = &quot;posts&quot;, key = &quot;'all:' + #pageable.pageNumber + ':' + #pageable.pageSize&quot;)
+    @Timed(value = &quot;blog_api_posts_get_all&quot;, description = &quot;Time taken to get all published posts&quot;)
     public Page&lt;PostDTO&gt; getAllPublishedPosts(Pageable pageable) {
-<span class="fc" id="L34">        return postRepository.findByPublishedTrue(pageable)</span>
-<span class="fc" id="L35">                .map(PostDTO::fromEntity);</span>
+<span class="nc" id="L44">        return postRepository.findByPublishedTrue(pageable)</span>
+<span class="nc" id="L45">                .map(PostDTO::fromEntity);</span>
     }
 
     @Cacheable(value = &quot;posts&quot;, key = &quot;'category:' + #categoryId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize&quot;)
     public Page&lt;PostDTO&gt; getPostsByCategory(Long categoryId, Pageable pageable) {
-<span class="fc" id="L40">        return postRepository.findByCategoryId(categoryId, pageable)</span>
-<span class="fc" id="L41">                .map(PostDTO::fromEntity);</span>
+<span class="nc" id="L50">        return postRepository.findByCategoryId(categoryId, pageable)</span>
+<span class="nc" id="L51">                .map(PostDTO::fromEntity);</span>
     }
 
     @Cacheable(value = &quot;posts&quot;, key = &quot;'user:' + #userId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize&quot;)
     public Page&lt;PostDTO&gt; getPostsByUser(Long userId, Pageable pageable) {
-<span class="fc" id="L46">        return postRepository.findByUserId(userId, pageable)</span>
-<span class="fc" id="L47">                .map(PostDTO::fromEntity);</span>
+<span class="nc" id="L56">        return postRepository.findByUserId(userId, pageable)</span>
+<span class="nc" id="L57">                .map(PostDTO::fromEntity);</span>
     }
 
     public Page&lt;PostDTO&gt; searchPosts(String keyword, Pageable pageable) {
-<span class="fc" id="L51">        return postRepository.findPublishedPostsByKeyword(keyword, pageable)</span>
-<span class="fc" id="L52">                .map(PostDTO::fromEntity);</span>
+<span class="nc" id="L61">        return postRepository.findPublishedPostsByKeyword(keyword, pageable)</span>
+<span class="nc" id="L62">                .map(PostDTO::fromEntity);</span>
     }
 
     @Cacheable(value = &quot;posts&quot;, key = &quot;'single:' + #id&quot;)
     public PostDTO getPostById(Long id) {
-<span class="fc" id="L57">        Post post = postRepository.findById(id)</span>
-<span class="fc" id="L58">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Post&quot;, &quot;id&quot;, id));</span>
-<span class="fc" id="L59">        return PostDTO.fromEntity(post);</span>
+<span class="nc" id="L67">        Post post = postRepository.findById(id)</span>
+<span class="nc" id="L68">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Post&quot;, &quot;id&quot;, id));</span>
+<span class="nc" id="L69">        return PostDTO.fromEntity(post);</span>
     }
 
     @CacheEvict(value = &quot;posts&quot;, allEntries = true)
+    @Timed(value = &quot;blog_api_posts_create&quot;, description = &quot;Time taken to create a post&quot;)
     public PostDTO createPost(CreatePostDTO createPostDTO, String username) {
-<span class="fc" id="L64">        User user = userRepository.findByUsername(username)</span>
-<span class="fc" id="L65">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;User&quot;, &quot;username&quot;, username));</span>
+<span class="nc" id="L75">        postCreationCounter.increment();</span>
+<span class="nc" id="L76">        User user = userRepository.findByUsername(username)</span>
+<span class="nc" id="L77">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;User&quot;, &quot;username&quot;, username));</span>
 
-<span class="fc" id="L67">        Category category = null;</span>
-<span class="fc bfc" id="L68" title="All 2 branches covered.">        if (createPostDTO.getCategoryId() != null) {</span>
-<span class="fc" id="L69">            category = categoryRepository.findById(createPostDTO.getCategoryId())</span>
-<span class="fc" id="L70">                    .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Category&quot;, &quot;id&quot;, createPostDTO.getCategoryId()));</span>
+<span class="nc" id="L79">        Category category = null;</span>
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        if (createPostDTO.getCategoryId() != null) {</span>
+<span class="nc" id="L81">            category = categoryRepository.findById(createPostDTO.getCategoryId())</span>
+<span class="nc" id="L82">                    .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Category&quot;, &quot;id&quot;, createPostDTO.getCategoryId()));</span>
         }
 
-<span class="fc" id="L73">        Post post = new Post();</span>
-<span class="fc" id="L74">        post.setTitle(createPostDTO.getTitle());</span>
-<span class="fc" id="L75">        post.setContent(createPostDTO.getContent());</span>
-<span class="fc" id="L76">        post.setPublished(createPostDTO.isPublished());</span>
-<span class="fc" id="L77">        post.setUser(user);</span>
-<span class="fc" id="L78">        post.setCategory(category);</span>
+<span class="nc" id="L85">        Post post = new Post();</span>
+<span class="nc" id="L86">        post.setTitle(createPostDTO.getTitle());</span>
+<span class="nc" id="L87">        post.setContent(createPostDTO.getContent());</span>
+<span class="nc" id="L88">        post.setPublished(createPostDTO.isPublished());</span>
+<span class="nc" id="L89">        post.setUser(user);</span>
+<span class="nc" id="L90">        post.setCategory(category);</span>
 
-<span class="fc" id="L80">        Post savedPost = postRepository.save(post);</span>
-<span class="fc" id="L81">        return PostDTO.fromEntity(savedPost);</span>
+<span class="nc" id="L92">        Post savedPost = postRepository.save(post);</span>
+<span class="nc" id="L93">        return PostDTO.fromEntity(savedPost);</span>
     }
 
     @Caching(evict = {
@@ -86,29 +98,29 @@ import org.springframework.stereotype.Service;
             @CacheEvict(value = &quot;posts&quot;, allEntries = true)
     })
     public PostDTO updatePost(Long id, CreatePostDTO createPostDTO, String username) {
-<span class="fc" id="L89">        Post post = postRepository.findById(id)</span>
-<span class="pc" id="L90">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Post&quot;, &quot;id&quot;, id));</span>
+<span class="nc" id="L101">        Post post = postRepository.findById(id)</span>
+<span class="nc" id="L102">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Post&quot;, &quot;id&quot;, id));</span>
 
-<span class="fc" id="L92">        User user = userRepository.findByUsername(username)</span>
-<span class="pc" id="L93">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;User&quot;, &quot;username&quot;, username));</span>
+<span class="nc" id="L104">        User user = userRepository.findByUsername(username)</span>
+<span class="nc" id="L105">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;User&quot;, &quot;username&quot;, username));</span>
 
-<span class="fc bfc" id="L95" title="All 2 branches covered.">        if (!post.getUser().getId().equals(user.getId())) {</span>
-<span class="fc" id="L96">            throw new RuntimeException(&quot;You can only update your own posts&quot;);</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">        if (!post.getUser().getId().equals(user.getId())) {</span>
+<span class="nc" id="L108">            throw new RuntimeException(&quot;You can only update your own posts&quot;);</span>
         }
 
-<span class="fc" id="L99">        Category category = null;</span>
-<span class="pc bpc" id="L100" title="1 of 2 branches missed.">        if (createPostDTO.getCategoryId() != null) {</span>
-<span class="fc" id="L101">            category = categoryRepository.findById(createPostDTO.getCategoryId())</span>
-<span class="pc" id="L102">                    .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Category&quot;, &quot;id&quot;, createPostDTO.getCategoryId()));</span>
+<span class="nc" id="L111">        Category category = null;</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">        if (createPostDTO.getCategoryId() != null) {</span>
+<span class="nc" id="L113">            category = categoryRepository.findById(createPostDTO.getCategoryId())</span>
+<span class="nc" id="L114">                    .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Category&quot;, &quot;id&quot;, createPostDTO.getCategoryId()));</span>
         }
 
-<span class="fc" id="L105">        post.setTitle(createPostDTO.getTitle());</span>
-<span class="fc" id="L106">        post.setContent(createPostDTO.getContent());</span>
-<span class="fc" id="L107">        post.setPublished(createPostDTO.isPublished());</span>
-<span class="fc" id="L108">        post.setCategory(category);</span>
+<span class="nc" id="L117">        post.setTitle(createPostDTO.getTitle());</span>
+<span class="nc" id="L118">        post.setContent(createPostDTO.getContent());</span>
+<span class="nc" id="L119">        post.setPublished(createPostDTO.isPublished());</span>
+<span class="nc" id="L120">        post.setCategory(category);</span>
 
-<span class="fc" id="L110">        Post updatedPost = postRepository.save(post);</span>
-<span class="fc" id="L111">        return PostDTO.fromEntity(updatedPost);</span>
+<span class="nc" id="L122">        Post updatedPost = postRepository.save(post);</span>
+<span class="nc" id="L123">        return PostDTO.fromEntity(updatedPost);</span>
     }
 
     @Caching(evict = {
@@ -116,17 +128,17 @@ import org.springframework.stereotype.Service;
             @CacheEvict(value = &quot;posts&quot;, allEntries = true)
     })
     public void deletePost(Long id, String username) {
-<span class="fc" id="L119">        Post post = postRepository.findById(id)</span>
-<span class="pc" id="L120">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Post&quot;, &quot;id&quot;, id));</span>
+<span class="nc" id="L131">        Post post = postRepository.findById(id)</span>
+<span class="nc" id="L132">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Post&quot;, &quot;id&quot;, id));</span>
 
-<span class="fc" id="L122">        User user = userRepository.findByUsername(username)</span>
-<span class="pc" id="L123">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;User&quot;, &quot;username&quot;, username));</span>
+<span class="nc" id="L134">        User user = userRepository.findByUsername(username)</span>
+<span class="nc" id="L135">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;User&quot;, &quot;username&quot;, username));</span>
 
-<span class="fc bfc" id="L125" title="All 4 branches covered.">        if (!post.getUser().getId().equals(user.getId()) &amp;&amp; !user.getRole().equals(User.Role.ADMIN)) {</span>
-<span class="fc" id="L126">            throw new RuntimeException(&quot;You can only delete your own posts&quot;);</span>
+<span class="nc bnc" id="L137" title="All 4 branches missed.">        if (!post.getUser().getId().equals(user.getId()) &amp;&amp; !user.getRole().equals(User.Role.ADMIN)) {</span>
+<span class="nc" id="L138">            throw new RuntimeException(&quot;You can only delete your own posts&quot;);</span>
         }
 
-<span class="fc" id="L129">        postRepository.delete(post);</span>
-<span class="fc" id="L130">    }</span>
+<span class="nc" id="L141">        postRepository.delete(post);</span>
+<span class="nc" id="L142">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

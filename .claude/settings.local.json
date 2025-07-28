@@ -3,7 +3,22 @@
     "allow": [
       "Bash(mvn clean:*)",
       "Bash(./mvnw clean compile)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(source:*)",
+      "Bash(mvn:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker-compose logs:*)",
+      "Bash(docker-compose down:*)",
+      "Bash(docker-compose build:*)",
+      "Bash(curl:*)",
+      "Bash(docker-compose:*)",
+      "Bash(docker restart blog-api)",
+      "Bash(docker logs blog-api --tail 30)",
+      "Bash(docker logs blog-api --tail 10)",
+      "Bash(docker logs blog-api --since 2m)",
+      "Bash(docker logs blog-api --since 1m)",
+      "Bash(docker exec:*)",
+      "Bash(docker logs blog-api --tail 20)"
     ],
     "deny": []
   }

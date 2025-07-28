@@ -5,6 +5,8 @@ import com.blog.api.entity.User;
 import com.blog.api.exception.BadRequestException;
 import com.blog.api.repository.UserRepository;
 import com.blog.api.util.JwtUtil;
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.Counter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,9 +30,14 @@ public class AuthService {
     private CustomUserDetailsService userDetailsService;
 
     @Autowired
+    private Counter userRegistrationCounter;
+
+    @Autowired
     private JwtUtil jwtUtil;
 
+    @Timed(value = "blog_api_user_registration", description = "Time taken to register a user")
     public UserDTO register(CreateUserDTO createUserDTO) {
+        userRegistrationCounter.increment();
         if (userRepository.existsByUsername(createUserDTO.getUsername())) {
             throw new BadRequestException("Username already exists");
         }
@@ -49,6 +56,7 @@ public class AuthService {
         return UserDTO.fromEntity(savedUser);
     }
 
+    @Timed(value = "blog_api_user_login", description = "Time taken to login a user")
     public JwtResponse login(LoginRequest loginRequest) {
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(

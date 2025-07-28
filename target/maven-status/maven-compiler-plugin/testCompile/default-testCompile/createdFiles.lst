@@ -8,6 +8,7 @@ com/blog/api/service/AuthServiceTest.class
 com/blog/api/service/CommentServiceTest.class
 com/blog/api/repository/UserRepositoryTest.class
 com/blog/api/repository/PostRepositoryTest.class
+com/blog/api/monitoring/MonitoringTest.class
 com/blog/api/controller/PostControllerTest.class
 com/blog/api/controller/CategoryControllerTest.class
 com/blog/api/service/CacheServiceTest.class

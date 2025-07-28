@@ -8,6 +8,8 @@ import com.blog.api.exception.ResourceNotFoundException;
 import com.blog.api.repository.CommentRepository;
 import com.blog.api.repository.PostRepository;
 import com.blog.api.repository.UserRepository;
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.Counter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -31,6 +33,9 @@ public class CommentService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private Counter commentCreationCounter;
+
     @Cacheable(value = "comments", key = "'post:' + #postId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize")
     public Page<CommentDTO> getCommentsByPost(Long postId, Pageable pageable) {
         return commentRepository.findByPostIdAndParentIsNull(postId, pageable)
@@ -53,7 +58,9 @@ public class CommentService {
     }
 
     @CacheEvict(value = "comments", allEntries = true)
+    @Timed(value = "blog_api_comments_create", description = "Time taken to create a comment")
     public CommentDTO createComment(CommentDTO commentDTO, String username) {
+        commentCreationCounter.increment();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
