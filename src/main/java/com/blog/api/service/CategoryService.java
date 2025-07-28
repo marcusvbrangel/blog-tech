@@ -6,6 +6,9 @@ import com.blog.api.exception.BadRequestException;
 import com.blog.api.exception.ResourceNotFoundException;
 import com.blog.api.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,17 +19,20 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Cacheable(value = "categories", key = "'all:' + #pageable.pageNumber + ':' + #pageable.pageSize")
     public Page<CategoryDTO> getAllCategories(Pageable pageable) {
         return categoryRepository.findAll(pageable)
                 .map(CategoryDTO::fromEntity);
     }
 
+    @Cacheable(value = "categories", key = "'single:' + #id")
     public CategoryDTO getCategoryById(Long id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
         return CategoryDTO.fromEntity(category);
     }
 
+    @CacheEvict(value = "categories", allEntries = true)
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
         if (categoryRepository.existsByName(categoryDTO.getName())) {
             throw new BadRequestException("Category name already exists");
@@ -40,6 +46,10 @@ public class CategoryService {
         return CategoryDTO.fromEntity(savedCategory);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "categories", key = "'single:' + #id"),
+            @CacheEvict(value = "categories", allEntries = true)
+    })
     public CategoryDTO updateCategory(Long id, CategoryDTO categoryDTO) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
@@ -56,6 +66,10 @@ public class CategoryService {
         return CategoryDTO.fromEntity(updatedCategory);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "categories", key = "'single:' + #id"),
+            @CacheEvict(value = "categories", allEntries = true)
+    })
     public void deleteCategory(Long id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">blog-api</a> &gt; <a href="index.source.html" class="el_package">com.blog.api.service</a> &gt; <span class="el_source">AuthService.java</span></div><h1>AuthService.java</h1><pre class="source lang-java linenums">package com.blog.api.service;
+
+import com.blog.api.dto.*;
+import com.blog.api.entity.User;
+import com.blog.api.exception.BadRequestException;
+import com.blog.api.repository.UserRepository;
+import com.blog.api.util.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+@Service
+<span class="fc" id="L16">public class AuthService {</span>
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    public UserDTO register(CreateUserDTO createUserDTO) {
+<span class="fc bfc" id="L34" title="All 2 branches covered.">        if (userRepository.existsByUsername(createUserDTO.getUsername())) {</span>
+<span class="fc" id="L35">            throw new BadRequestException(&quot;Username already exists&quot;);</span>
+        }
+
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (userRepository.existsByEmail(createUserDTO.getEmail())) {</span>
+<span class="fc" id="L39">            throw new BadRequestException(&quot;Email already exists&quot;);</span>
+        }
+
+<span class="fc" id="L42">        User user = new User();</span>
+<span class="fc" id="L43">        user.setUsername(createUserDTO.getUsername());</span>
+<span class="fc" id="L44">        user.setEmail(createUserDTO.getEmail());</span>
+<span class="fc" id="L45">        user.setPassword(passwordEncoder.encode(createUserDTO.getPassword()));</span>
+<span class="fc" id="L46">        user.setRole(createUserDTO.getRole());</span>
+
+<span class="fc" id="L48">        User savedUser = userRepository.save(user);</span>
+<span class="fc" id="L49">        return UserDTO.fromEntity(savedUser);</span>
+    }
+
+    public JwtResponse login(LoginRequest loginRequest) {
+<span class="fc" id="L53">        authenticationManager.authenticate(</span>
+            new UsernamePasswordAuthenticationToken(
+<span class="fc" id="L55">                loginRequest.getUsername(),</span>
+<span class="fc" id="L56">                loginRequest.getPassword()</span>
+            )
+        );
+
+<span class="fc" id="L60">        UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());</span>
+<span class="fc" id="L61">        String token = jwtUtil.generateToken(userDetails);</span>
+
+<span class="fc" id="L63">        User user = userRepository.findByUsername(loginRequest.getUsername())</span>
+<span class="fc" id="L64">                .orElseThrow(() -&gt; new BadRequestException(&quot;User not found&quot;));</span>
+
+<span class="fc" id="L66">        return new JwtResponse(token, UserDTO.fromEntity(user));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommentService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">blog-api</a> &gt; <a href="index.source.html" class="el_package">com.blog.api.service</a> &gt; <span class="el_source">CommentService.java</span></div><h1>CommentService.java</h1><pre class="source lang-java linenums">package com.blog.api.service;
+
+import com.blog.api.dto.CommentDTO;
+import com.blog.api.entity.Comment;
+import com.blog.api.entity.Post;
+import com.blog.api.entity.User;
+import com.blog.api.exception.ResourceNotFoundException;
+import com.blog.api.repository.CommentRepository;
+import com.blog.api.repository.PostRepository;
+import com.blog.api.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+<span class="fc" id="L23">public class CommentService {</span>
+
+    @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Cacheable(value = &quot;comments&quot;, key = &quot;'post:' + #postId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize&quot;)
+    public Page&lt;CommentDTO&gt; getCommentsByPost(Long postId, Pageable pageable) {
+<span class="fc" id="L36">        return commentRepository.findByPostIdAndParentIsNull(postId, pageable)</span>
+<span class="fc" id="L37">                .map(CommentDTO::fromEntity);</span>
+    }
+
+    @Cacheable(value = &quot;comments&quot;, key = &quot;'simple:' + #postId&quot;)
+    public List&lt;CommentDTO&gt; getCommentsByPostSimple(Long postId) {
+<span class="fc" id="L42">        return commentRepository.findByPostIdAndParentIsNullOrderByCreatedAtDesc(postId)</span>
+<span class="fc" id="L43">                .stream()</span>
+<span class="fc" id="L44">                .map(CommentDTO::fromEntity)</span>
+<span class="fc" id="L45">                .collect(Collectors.toList());</span>
+    }
+
+    @Cacheable(value = &quot;comments&quot;, key = &quot;'single:' + #id&quot;)
+    public CommentDTO getCommentById(Long id) {
+<span class="fc" id="L50">        Comment comment = commentRepository.findById(id)</span>
+<span class="fc" id="L51">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Comment&quot;, &quot;id&quot;, id));</span>
+<span class="fc" id="L52">        return CommentDTO.fromEntity(comment);</span>
+    }
+
+    @CacheEvict(value = &quot;comments&quot;, allEntries = true)
+    public CommentDTO createComment(CommentDTO commentDTO, String username) {
+<span class="fc" id="L57">        User user = userRepository.findByUsername(username)</span>
+<span class="fc" id="L58">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;User&quot;, &quot;username&quot;, username));</span>
+
+<span class="fc" id="L60">        Post post = postRepository.findById(commentDTO.getPostId())</span>
+<span class="fc" id="L61">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Post&quot;, &quot;id&quot;, commentDTO.getPostId()));</span>
+
+<span class="fc" id="L63">        Comment parent = null;</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        if (commentDTO.getParentId() != null) {</span>
+<span class="fc" id="L65">            parent = commentRepository.findById(commentDTO.getParentId())</span>
+<span class="fc" id="L66">                    .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Comment&quot;, &quot;id&quot;, commentDTO.getParentId()));</span>
+        }
+
+<span class="fc" id="L69">        Comment comment = new Comment();</span>
+<span class="fc" id="L70">        comment.setContent(commentDTO.getContent());</span>
+<span class="fc" id="L71">        comment.setPost(post);</span>
+<span class="fc" id="L72">        comment.setUser(user);</span>
+<span class="fc" id="L73">        comment.setParent(parent);</span>
+
+<span class="fc" id="L75">        Comment savedComment = commentRepository.save(comment);</span>
+<span class="fc" id="L76">        return CommentDTO.fromEntity(savedComment);</span>
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = &quot;comments&quot;, key = &quot;'single:' + #id&quot;),
+            @CacheEvict(value = &quot;comments&quot;, allEntries = true)
+    })
+    public CommentDTO updateComment(Long id, CommentDTO commentDTO, String username) {
+<span class="fc" id="L84">        Comment comment = commentRepository.findById(id)</span>
+<span class="pc" id="L85">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Comment&quot;, &quot;id&quot;, id));</span>
+
+<span class="fc" id="L87">        User user = userRepository.findByUsername(username)</span>
+<span class="pc" id="L88">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;User&quot;, &quot;username&quot;, username));</span>
+
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (!comment.getUser().getId().equals(user.getId())) {</span>
+<span class="fc" id="L91">            throw new RuntimeException(&quot;You can only update your own comments&quot;);</span>
+        }
+
+<span class="fc" id="L94">        comment.setContent(commentDTO.getContent());</span>
+
+<span class="fc" id="L96">        Comment updatedComment = commentRepository.save(comment);</span>
+<span class="fc" id="L97">        return CommentDTO.fromEntity(updatedComment);</span>
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = &quot;comments&quot;, key = &quot;'single:' + #id&quot;),
+            @CacheEvict(value = &quot;comments&quot;, allEntries = true)
+    })
+    public void deleteComment(Long id, String username) {
+<span class="fc" id="L105">        Comment comment = commentRepository.findById(id)</span>
+<span class="pc" id="L106">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Comment&quot;, &quot;id&quot;, id));</span>
+
+<span class="fc" id="L108">        User user = userRepository.findByUsername(username)</span>
+<span class="pc" id="L109">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;User&quot;, &quot;username&quot;, username));</span>
+
+<span class="fc bfc" id="L111" title="All 4 branches covered.">        if (!comment.getUser().getId().equals(user.getId()) &amp;&amp; !user.getRole().equals(User.Role.ADMIN)) {</span>
+<span class="fc" id="L112">            throw new RuntimeException(&quot;You can only delete your own comments&quot;);</span>
+        }
+
+<span class="fc" id="L115">        commentRepository.delete(comment);</span>
+<span class="fc" id="L116">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
