@@ -38,19 +38,19 @@ public class AuthService {
     @Timed(value = "blog_api_user_registration", description = "Time taken to register a user")
     public UserDTO register(CreateUserDTO createUserDTO) {
         userRegistrationCounter.increment();
-        if (userRepository.existsByUsername(createUserDTO.getUsername())) {
+        if (userRepository.existsByUsername(createUserDTO.username())) {
             throw new BadRequestException("Username already exists");
         }
 
-        if (userRepository.existsByEmail(createUserDTO.getEmail())) {
+        if (userRepository.existsByEmail(createUserDTO.email())) {
             throw new BadRequestException("Email already exists");
         }
 
         User user = new User();
-        user.setUsername(createUserDTO.getUsername());
-        user.setEmail(createUserDTO.getEmail());
-        user.setPassword(passwordEncoder.encode(createUserDTO.getPassword()));
-        user.setRole(createUserDTO.getRole());
+        user.setUsername(createUserDTO.username());
+        user.setEmail(createUserDTO.email());
+        user.setPassword(passwordEncoder.encode(createUserDTO.password()));
+        user.setRole(createUserDTO.role());
 
         User savedUser = userRepository.save(user);
         return UserDTO.fromEntity(savedUser);
@@ -60,15 +60,15 @@ public class AuthService {
     public JwtResponse login(LoginRequest loginRequest) {
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
-                loginRequest.getUsername(),
-                loginRequest.getPassword()
+                loginRequest.username(),
+                loginRequest.password()
             )
         );
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.username());
         String token = jwtUtil.generateToken(userDetails);
 
-        User user = userRepository.findByUsername(loginRequest.getUsername())
+        User user = userRepository.findByUsername(loginRequest.username())
                 .orElseThrow(() -> new BadRequestException("User not found"));
 
         return new JwtResponse(token, UserDTO.fromEntity(user));

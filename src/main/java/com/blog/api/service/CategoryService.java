@@ -34,13 +34,13 @@ public class CategoryService {
 
     @CacheEvict(value = "categories", allEntries = true)
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
-        if (categoryRepository.existsByName(categoryDTO.getName())) {
+        if (categoryRepository.existsByName(categoryDTO.name())) {
             throw new BadRequestException("Category name already exists");
         }
 
         Category category = new Category();
-        category.setName(categoryDTO.getName());
-        category.setDescription(categoryDTO.getDescription());
+        category.setName(categoryDTO.name());
+        category.setDescription(categoryDTO.description());
 
         Category savedCategory = categoryRepository.save(category);
         return CategoryDTO.fromEntity(savedCategory);
@@ -54,13 +54,13 @@ public class CategoryService {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
 
-        if (!category.getName().equals(categoryDTO.getName()) && 
-            categoryRepository.existsByName(categoryDTO.getName())) {
+        if (!category.getName().equals(categoryDTO.name()) && 
+            categoryRepository.existsByName(categoryDTO.name())) {
             throw new BadRequestException("Category name already exists");
         }
 
-        category.setName(categoryDTO.getName());
-        category.setDescription(categoryDTO.getDescription());
+        category.setName(categoryDTO.name());
+        category.setDescription(categoryDTO.description());
 
         Category updatedCategory = categoryRepository.save(category);
         return CategoryDTO.fromEntity(updatedCategory);

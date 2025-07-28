@@ -64,17 +64,17 @@ public class CommentService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
-        Post post = postRepository.findById(commentDTO.getPostId())
-                .orElseThrow(() -> new ResourceNotFoundException("Post", "id", commentDTO.getPostId()));
+        Post post = postRepository.findById(commentDTO.postId())
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "id", commentDTO.postId()));
 
         Comment parent = null;
-        if (commentDTO.getParentId() != null) {
-            parent = commentRepository.findById(commentDTO.getParentId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentDTO.getParentId()));
+        if (commentDTO.parentId() != null) {
+            parent = commentRepository.findById(commentDTO.parentId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentDTO.parentId()));
         }
 
         Comment comment = new Comment();
-        comment.setContent(commentDTO.getContent());
+        comment.setContent(commentDTO.content());
         comment.setPost(post);
         comment.setUser(user);
         comment.setParent(parent);
@@ -98,7 +98,7 @@ public class CommentService {
             throw new RuntimeException("You can only update your own comments");
         }
 
-        comment.setContent(commentDTO.getContent());
+        comment.setContent(commentDTO.content());
 
         Comment updatedComment = commentRepository.save(comment);
         return CommentDTO.fromEntity(updatedComment);
