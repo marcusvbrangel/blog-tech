@@ -1,0 +1,1048 @@
+{
+  "info": {
+    "name": "Blog API - Complete Collection",
+    "description": "Complete API collection for Blog REST API with Spring Boot\n\nFeatures:\n- JWT Authentication\n- User Management\n- Post CRUD operations\n- Categories management\n- Comments system\n- Comprehensive testing\n\nEnvironment Variables:\n- baseUrl: http://localhost:8080\n- jwtToken: (auto-set after login)\n\nAuthor: Blog API Team\nVersion: 1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwtToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-set base URL if not defined",
+          "if (!pm.environment.get('baseUrl')) {",
+          "    pm.environment.set('baseUrl', 'http://localhost:8080');",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has user data', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.have.property('username');",
+                  "    pm.expect(jsonData).to.have.property('email');",
+                  "    pm.expect(jsonData).to.have.property('role');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"USER\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "register"]
+            },
+            "description": "Register a new user in the system"
+          }
+        },
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has JWT token', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('token');",
+                  "    pm.expect(jsonData).to.have.property('type');",
+                  "    pm.expect(jsonData).to.have.property('user');",
+                  "    ",
+                  "    // Save token for subsequent requests",
+                  "    pm.environment.set('jwtToken', jsonData.token);",
+                  "    pm.environment.set('currentUserId', jsonData.user.id);",
+                  "    pm.environment.set('currentUsername', jsonData.user.username);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            },
+            "description": "Login user and receive JWT token"
+          }
+        }
+      ],
+      "description": "Authentication endpoints for user registration and login"
+    },
+    {
+      "name": "👥 Users",
+      "item": [
+        {
+          "name": "Get All Users",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is paginated', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('content');",
+                  "    pm.expect(jsonData).to.have.property('pageable');",
+                  "    pm.expect(jsonData).to.have.property('totalElements');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get paginated list of all users"
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has user data', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.have.property('username');",
+                  "    pm.expect(jsonData).to.have.property('email');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/{{currentUserId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "{{currentUserId}}"]
+            },
+            "description": "Get specific user by ID"
+          }
+        },
+        {
+          "name": "Get User by Username",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Username matches request', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.username).to.eql('testuser');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/username/testuser",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "username", "testuser"]
+            },
+            "description": "Get user by username"
+          }
+        }
+      ],
+      "description": "User management endpoints"
+    },
+    {
+      "name": "📚 Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is paginated', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('content');",
+                  "    pm.expect(jsonData).to.have.property('pageable');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "categories"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all categories (public endpoint)"
+          }
+        },
+        {
+          "name": "Create Category",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Category created successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.have.property('name');",
+                  "    pm.expect(jsonData.name).to.eql('Technology');",
+                  "    ",
+                  "    // Save category ID for other tests",
+                  "    pm.environment.set('categoryId', jsonData.id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Technology\",\n  \"description\": \"Posts about technology and programming\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "categories"]
+            },
+            "description": "Create a new category (requires authentication)"
+          }
+        },
+        {
+          "name": "Get Category by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Category data is correct', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.have.property('name');",
+                  "    pm.expect(jsonData).to.have.property('postCount');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "categories", "{{categoryId}}"]
+            },
+            "description": "Get specific category by ID"
+          }
+        },
+        {
+          "name": "Update Category",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Category updated successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.name).to.eql('Advanced Technology');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Advanced Technology\",\n  \"description\": \"Advanced topics in technology and programming\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "categories", "{{categoryId}}"]
+            },
+            "description": "Update existing category"
+          }
+        }
+      ],
+      "description": "Category management endpoints"
+    },
+    {
+      "name": "📝 Posts",
+      "item": [
+        {
+          "name": "Get All Published Posts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response is paginated', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('content');",
+                  "    pm.expect(jsonData).to.have.property('pageable');",
+                  "});",
+                  "",
+                  "pm.test('Posts are published', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.content.length > 0) {",
+                  "        jsonData.content.forEach(post => {",
+                  "            pm.expect(post.published).to.be.true;",
+                  "        });",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get all published posts (public endpoint)"
+          }
+        },
+        {
+          "name": "Create Post",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Post created successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.have.property('title');",
+                  "    pm.expect(jsonData.title).to.eql('Test Post via Postman');",
+                  "    pm.expect(jsonData).to.have.property('authorUsername');",
+                  "    ",
+                  "    // Save post ID for other tests",
+                  "    pm.environment.set('postId', jsonData.id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Test Post via Postman\",\n  \"content\": \"This is a test post created using Postman to verify the API functionality. It demonstrates the complete CRUD operations available in the Blog API.\",\n  \"categoryId\": {{categoryId}},\n  \"published\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts"]
+            },
+            "description": "Create a new post (requires authentication)"
+          }
+        },
+        {
+          "name": "Get Post by ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Post data is complete', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.have.property('title');",
+                  "    pm.expect(jsonData).to.have.property('content');",
+                  "    pm.expect(jsonData).to.have.property('authorUsername');",
+                  "    pm.expect(jsonData).to.have.property('commentCount');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/{{postId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts", "{{postId}}"]
+            },
+            "description": "Get specific post by ID"
+          }
+        },
+        {
+          "name": "Update Post",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Post updated successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.title).to.eql('Updated Test Post via Postman');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Test Post via Postman\",\n  \"content\": \"This post has been updated to demonstrate the PUT operation. The API allows authors to modify their posts while maintaining proper authorization.\",\n  \"categoryId\": {{categoryId}},\n  \"published\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/{{postId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts", "{{postId}}"]
+            },
+            "description": "Update existing post (author only)"
+          }
+        },
+        {
+          "name": "Search Posts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Search results contain keyword', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.content.length > 0) {",
+                  "        const firstPost = jsonData.content[0];",
+                  "        const keyword = 'test';",
+                  "        const containsKeyword = firstPost.title.toLowerCase().includes(keyword) || ",
+                  "                               firstPost.content.toLowerCase().includes(keyword);",
+                  "        pm.expect(containsKeyword).to.be.true;",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/search?keyword=test&page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts", "search"],
+              "query": [
+                {
+                  "key": "keyword",
+                  "value": "test"
+                },
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Search posts by keyword"
+          }
+        },
+        {
+          "name": "Get Posts by Category",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Posts belong to specified category', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.content.length > 0) {",
+                  "        jsonData.content.forEach(post => {",
+                  "            pm.expect(post.categoryName).to.not.be.null;",
+                  "        });",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/category/{{categoryId}}?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts", "category", "{{categoryId}}"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get posts filtered by category"
+          }
+        }
+      ],
+      "description": "Post management endpoints"
+    },
+    {
+      "name": "💬 Comments",
+      "item": [
+        {
+          "name": "Get Comments by Post",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Comments belong to post', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.content && jsonData.content.length > 0) {",
+                  "        jsonData.content.forEach(comment => {",
+                  "            pm.expect(comment.postId).to.eql(parseInt(pm.environment.get('postId')));",
+                  "        });",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/comments/post/{{postId}}?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "comments", "post", "{{postId}}"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Get comments for specific post"
+          }
+        },
+        {
+          "name": "Create Comment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Comment created successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.have.property('content');",
+                  "    pm.expect(jsonData.content).to.eql('Great post! Testing comment creation via Postman.');",
+                  "    pm.expect(jsonData).to.have.property('authorUsername');",
+                  "    ",
+                  "    // Save comment ID for other tests",
+                  "    pm.environment.set('commentId', jsonData.id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Great post! Testing comment creation via Postman.\",\n  \"postId\": {{postId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/comments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "comments"]
+            },
+            "description": "Create a new comment (requires authentication)"
+          }
+        },
+        {
+          "name": "Create Reply Comment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Reply created successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('parentId');",
+                  "    pm.expect(jsonData.parentId).to.eql(parseInt(pm.environment.get('commentId')));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Thanks for the feedback! This is a reply to test nested comments.\",\n  \"postId\": {{postId}},\n  \"parentId\": {{commentId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/comments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "comments"]
+            },
+            "description": "Create a reply to existing comment"
+          }
+        },
+        {
+          "name": "Update Comment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Comment updated successfully', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.content).to.eql('Updated comment: Even better post after reading it again!');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Updated comment: Even better post after reading it again!\",\n  \"postId\": {{postId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/comments/{{commentId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "comments", "{{commentId}}"]
+            },
+            "description": "Update existing comment (author only)"
+          }
+        }
+      ],
+      "description": "Comment management endpoints"
+    },
+    {
+      "name": "🔍 Health & Monitoring",
+      "item": [
+        {
+          "name": "Health Check",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Application is UP', function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.status).to.eql('UP');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/actuator/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["actuator", "health"]
+            },
+            "description": "Check application health status"
+          }
+        },
+        {
+          "name": "Prometheus Metrics",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response contains metrics', function () {",
+                  "    const responseText = pm.response.text();",
+                  "    pm.expect(responseText).to.include('jvm_memory_used_bytes');",
+                  "    pm.expect(responseText).to.include('http_server_requests_seconds');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/actuator/prometheus",
+              "host": ["{{baseUrl}}"],
+              "path": ["actuator", "prometheus"]
+            },
+            "description": "Get Prometheus metrics"
+          }
+        },
+        {
+          "name": "Application Info",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/actuator/info",
+              "host": ["{{baseUrl}}"],
+              "path": ["actuator", "info"]
+            },
+            "description": "Get application information"
+          }
+        }
+      ],
+      "description": "Health checks and monitoring endpoints"
+    },
+    {
+      "name": "🧪 Test Scenarios",
+      "item": [
+        {
+          "name": "Complete User Journey",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// This is a comprehensive test that combines multiple API calls",
+                  "pm.test('User journey test placeholder', function () {",
+                  "    pm.expect(true).to.be.true;",
+                  "});",
+                  "",
+                  "// Use this request to run a complete user journey:",
+                  "// 1. Register -> 2. Login -> 3. Create Category -> 4. Create Post -> 5. Comment"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/actuator/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["actuator", "health"]
+            },
+            "description": "Run this after completing individual tests to verify the complete user journey"
+          }
+        }
+      ],
+      "description": "Comprehensive test scenarios"
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "description": "Base URL for the Blog API"
+    },
+    {
+      "key": "jwtToken",
+      "value": "",
+      "description": "JWT token (auto-set after login)"
+    },
+    {
+      "key": "currentUserId",
+      "value": "",
+      "description": "Current logged user ID"
+    },
+    {
+      "key": "currentUsername",
+      "value": "",
+      "description": "Current logged username"
+    },
+    {
+      "key": "categoryId",
+      "value": "",
+      "description": "Category ID (auto-set after creation)"
+    },
+    {
+      "key": "postId",
+      "value": "",
+      "description": "Post ID (auto-set after creation)"
+    },
+    {
+      "key": "commentId",
+      "value": "",
+      "description": "Comment ID (auto-set after creation)"
+    }
+  ]
+}

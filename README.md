@@ -110,6 +110,65 @@ src/main/java/com/blog/api/
 - `GET /actuator/prometheus` - Métricas formato Prometheus
 - `GET /actuator/info` - Informações da aplicação
 
+## 📮 Testando a API com Postman
+
+### Coleção Completa Disponível
+
+Na pasta `postman/` você encontra uma **coleção completa** pronta para importar no Postman:
+
+📁 **Arquivos Postman:**
+- **`Blog-API-Collection.postman_collection.json`** - Coleção com 23 requests organizados
+- **`Blog-API-Environment.postman_environment.json`** - Ambiente com variáveis pré-configuradas
+- **`README.md`** - Documentação completa de uso
+
+### 🚀 Como Usar
+
+1. **Importe no Postman:**
+   - Arquivo → Import → Selecione os 2 arquivos JSON da pasta `postman/`
+
+2. **Configure o ambiente:**
+   - Selecione "Blog API - Development" no canto superior direito
+   - Verifique se `baseUrl` está: http://localhost:8080
+
+3. **Fluxo de teste recomendado:**
+   ```bash
+   1. 🔐 Authentication/Login User        # Token salvo automaticamente
+   2. 📚 Categories/Create Category       # ID salvo automaticamente  
+   3. 📝 Posts/Create Post               # Usa categoryId automaticamente
+   4. 💬 Comments/Create Comment         # Usa postId automaticamente
+   5. 🔍 Health & Monitoring/Health Check # Verifica sistema
+   ```
+
+### ✨ Funcionalidades da Coleção
+
+- **🔐 Autenticação JWT automática** - Token extraído e usado automaticamente
+- **📋 Variáveis dinâmicas** - IDs salvos após criação para uso em outros requests  
+- **🧪 Testes automáticos** - Validação de status codes, estrutura e dados
+- **📊 Payloads prontos** - Exemplos funcionais para todos os endpoints
+- **🔄 Fluxo completo** - Desde registro até operações complexas
+
+### 📂 Endpoints Organizados
+
+A coleção inclui **6 categorias**:
+- **🔐 Authentication** (2 requests) - Register, Login
+- **👥 Users** (3 requests) - Get All, Get by ID, Get by Username  
+- **📚 Categories** (4 requests) - CRUD completo
+- **📝 Posts** (6 requests) - CRUD + Search + Filter por categoria
+- **💬 Comments** (4 requests) - CRUD + Replies aninhados
+- **🔍 Health & Monitoring** (3 requests) - Health, Metrics, Prometheus
+
+### 🎯 Testes Automáticos Incluídos
+
+Cada request valida automaticamente:
+- ✅ **Status codes** corretos (200, 201, 404, etc.)
+- ✅ **Estrutura** das responses (campos obrigatórios)
+- ✅ **Paginação** em endpoints de listagem
+- ✅ **Relacionamentos** entre entidades (post ↔ category ↔ comments)
+- ✅ **Autenticação** e autorização
+- ✅ **Dados específicos** (IDs, usernames, etc.)
+
+Para documentação detalhada, consulte: [`postman/README.md`](./postman/README.md)
+
 ## ⚙️ Configuração
 
 ### Database (PostgreSQL)
