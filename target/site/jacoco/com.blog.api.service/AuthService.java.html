@@ -5,6 +5,8 @@ import com.blog.api.entity.User;
 import com.blog.api.exception.BadRequestException;
 import com.blog.api.repository.UserRepository;
 import com.blog.api.util.JwtUtil;
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.Counter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-<span class="fc" id="L16">public class AuthService {</span>
+<span class="fc" id="L18">public class AuthService {</span>
 
     @Autowired
     private UserRepository userRepository;
@@ -28,42 +30,48 @@ import org.springframework.stereotype.Service;
     private CustomUserDetailsService userDetailsService;
 
     @Autowired
+    private Counter userRegistrationCounter;
+
+    @Autowired
     private JwtUtil jwtUtil;
 
+    @Timed(value = &quot;blog_api_user_registration&quot;, description = &quot;Time taken to register a user&quot;)
     public UserDTO register(CreateUserDTO createUserDTO) {
-<span class="fc bfc" id="L34" title="All 2 branches covered.">        if (userRepository.existsByUsername(createUserDTO.getUsername())) {</span>
-<span class="fc" id="L35">            throw new BadRequestException(&quot;Username already exists&quot;);</span>
+<span class="nc" id="L40">        userRegistrationCounter.increment();</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">        if (userRepository.existsByUsername(createUserDTO.getUsername())) {</span>
+<span class="nc" id="L42">            throw new BadRequestException(&quot;Username already exists&quot;);</span>
         }
 
-<span class="fc bfc" id="L38" title="All 2 branches covered.">        if (userRepository.existsByEmail(createUserDTO.getEmail())) {</span>
-<span class="fc" id="L39">            throw new BadRequestException(&quot;Email already exists&quot;);</span>
+<span class="nc bnc" id="L45" title="All 2 branches missed.">        if (userRepository.existsByEmail(createUserDTO.getEmail())) {</span>
+<span class="nc" id="L46">            throw new BadRequestException(&quot;Email already exists&quot;);</span>
         }
 
-<span class="fc" id="L42">        User user = new User();</span>
-<span class="fc" id="L43">        user.setUsername(createUserDTO.getUsername());</span>
-<span class="fc" id="L44">        user.setEmail(createUserDTO.getEmail());</span>
-<span class="fc" id="L45">        user.setPassword(passwordEncoder.encode(createUserDTO.getPassword()));</span>
-<span class="fc" id="L46">        user.setRole(createUserDTO.getRole());</span>
+<span class="nc" id="L49">        User user = new User();</span>
+<span class="nc" id="L50">        user.setUsername(createUserDTO.getUsername());</span>
+<span class="nc" id="L51">        user.setEmail(createUserDTO.getEmail());</span>
+<span class="nc" id="L52">        user.setPassword(passwordEncoder.encode(createUserDTO.getPassword()));</span>
+<span class="nc" id="L53">        user.setRole(createUserDTO.getRole());</span>
 
-<span class="fc" id="L48">        User savedUser = userRepository.save(user);</span>
-<span class="fc" id="L49">        return UserDTO.fromEntity(savedUser);</span>
+<span class="nc" id="L55">        User savedUser = userRepository.save(user);</span>
+<span class="nc" id="L56">        return UserDTO.fromEntity(savedUser);</span>
     }
 
+    @Timed(value = &quot;blog_api_user_login&quot;, description = &quot;Time taken to login a user&quot;)
     public JwtResponse login(LoginRequest loginRequest) {
-<span class="fc" id="L53">        authenticationManager.authenticate(</span>
+<span class="nc" id="L61">        authenticationManager.authenticate(</span>
             new UsernamePasswordAuthenticationToken(
-<span class="fc" id="L55">                loginRequest.getUsername(),</span>
-<span class="fc" id="L56">                loginRequest.getPassword()</span>
+<span class="nc" id="L63">                loginRequest.getUsername(),</span>
+<span class="nc" id="L64">                loginRequest.getPassword()</span>
             )
         );
 
-<span class="fc" id="L60">        UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());</span>
-<span class="fc" id="L61">        String token = jwtUtil.generateToken(userDetails);</span>
+<span class="nc" id="L68">        UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.getUsername());</span>
+<span class="nc" id="L69">        String token = jwtUtil.generateToken(userDetails);</span>
 
-<span class="fc" id="L63">        User user = userRepository.findByUsername(loginRequest.getUsername())</span>
-<span class="fc" id="L64">                .orElseThrow(() -&gt; new BadRequestException(&quot;User not found&quot;));</span>
+<span class="nc" id="L71">        User user = userRepository.findByUsername(loginRequest.getUsername())</span>
+<span class="nc" id="L72">                .orElseThrow(() -&gt; new BadRequestException(&quot;User not found&quot;));</span>
 
-<span class="fc" id="L66">        return new JwtResponse(token, UserDTO.fromEntity(user));</span>
+<span class="nc" id="L74">        return new JwtResponse(token, UserDTO.fromEntity(user));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

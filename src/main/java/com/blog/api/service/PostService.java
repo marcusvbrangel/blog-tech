@@ -9,6 +9,9 @@ import com.blog.api.exception.ResourceNotFoundException;
 import com.blog.api.repository.CategoryRepository;
 import com.blog.api.repository.PostRepository;
 import com.blog.api.repository.UserRepository;
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Timer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,7 +32,14 @@ public class PostService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private Counter postCreationCounter;
+
+    @Autowired
+    private Timer databaseQueryTimer;
+
     @Cacheable(value = "posts", key = "'all:' + #pageable.pageNumber + ':' + #pageable.pageSize")
+    @Timed(value = "blog_api_posts_get_all", description = "Time taken to get all published posts")
     public Page<PostDTO> getAllPublishedPosts(Pageable pageable) {
         return postRepository.findByPublishedTrue(pageable)
                 .map(PostDTO::fromEntity);
@@ -60,7 +70,9 @@ public class PostService {
     }
 
     @CacheEvict(value = "posts", allEntries = true)
+    @Timed(value = "blog_api_posts_create", description = "Time taken to create a post")
     public PostDTO createPost(CreatePostDTO createPostDTO, String username) {
+        postCreationCounter.increment();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 

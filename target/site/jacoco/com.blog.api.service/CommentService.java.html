@@ -8,6 +8,8 @@ import com.blog.api.exception.ResourceNotFoundException;
 import com.blog.api.repository.CommentRepository;
 import com.blog.api.repository.PostRepository;
 import com.blog.api.repository.UserRepository;
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.Counter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-<span class="fc" id="L23">public class CommentService {</span>
+<span class="fc" id="L25">public class CommentService {</span>
 
     @Autowired
     private CommentRepository commentRepository;
@@ -31,49 +33,54 @@ import java.util.stream.Collectors;
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private Counter commentCreationCounter;
+
     @Cacheable(value = &quot;comments&quot;, key = &quot;'post:' + #postId + ':' + #pageable.pageNumber + ':' + #pageable.pageSize&quot;)
     public Page&lt;CommentDTO&gt; getCommentsByPost(Long postId, Pageable pageable) {
-<span class="fc" id="L36">        return commentRepository.findByPostIdAndParentIsNull(postId, pageable)</span>
-<span class="fc" id="L37">                .map(CommentDTO::fromEntity);</span>
+<span class="nc" id="L41">        return commentRepository.findByPostIdAndParentIsNull(postId, pageable)</span>
+<span class="nc" id="L42">                .map(CommentDTO::fromEntity);</span>
     }
 
     @Cacheable(value = &quot;comments&quot;, key = &quot;'simple:' + #postId&quot;)
     public List&lt;CommentDTO&gt; getCommentsByPostSimple(Long postId) {
-<span class="fc" id="L42">        return commentRepository.findByPostIdAndParentIsNullOrderByCreatedAtDesc(postId)</span>
-<span class="fc" id="L43">                .stream()</span>
-<span class="fc" id="L44">                .map(CommentDTO::fromEntity)</span>
-<span class="fc" id="L45">                .collect(Collectors.toList());</span>
+<span class="nc" id="L47">        return commentRepository.findByPostIdAndParentIsNullOrderByCreatedAtDesc(postId)</span>
+<span class="nc" id="L48">                .stream()</span>
+<span class="nc" id="L49">                .map(CommentDTO::fromEntity)</span>
+<span class="nc" id="L50">                .collect(Collectors.toList());</span>
     }
 
     @Cacheable(value = &quot;comments&quot;, key = &quot;'single:' + #id&quot;)
     public CommentDTO getCommentById(Long id) {
-<span class="fc" id="L50">        Comment comment = commentRepository.findById(id)</span>
-<span class="fc" id="L51">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Comment&quot;, &quot;id&quot;, id));</span>
-<span class="fc" id="L52">        return CommentDTO.fromEntity(comment);</span>
+<span class="nc" id="L55">        Comment comment = commentRepository.findById(id)</span>
+<span class="nc" id="L56">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Comment&quot;, &quot;id&quot;, id));</span>
+<span class="nc" id="L57">        return CommentDTO.fromEntity(comment);</span>
     }
 
     @CacheEvict(value = &quot;comments&quot;, allEntries = true)
+    @Timed(value = &quot;blog_api_comments_create&quot;, description = &quot;Time taken to create a comment&quot;)
     public CommentDTO createComment(CommentDTO commentDTO, String username) {
-<span class="fc" id="L57">        User user = userRepository.findByUsername(username)</span>
-<span class="fc" id="L58">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;User&quot;, &quot;username&quot;, username));</span>
+<span class="nc" id="L63">        commentCreationCounter.increment();</span>
+<span class="nc" id="L64">        User user = userRepository.findByUsername(username)</span>
+<span class="nc" id="L65">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;User&quot;, &quot;username&quot;, username));</span>
 
-<span class="fc" id="L60">        Post post = postRepository.findById(commentDTO.getPostId())</span>
-<span class="fc" id="L61">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Post&quot;, &quot;id&quot;, commentDTO.getPostId()));</span>
+<span class="nc" id="L67">        Post post = postRepository.findById(commentDTO.getPostId())</span>
+<span class="nc" id="L68">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Post&quot;, &quot;id&quot;, commentDTO.getPostId()));</span>
 
-<span class="fc" id="L63">        Comment parent = null;</span>
-<span class="fc bfc" id="L64" title="All 2 branches covered.">        if (commentDTO.getParentId() != null) {</span>
-<span class="fc" id="L65">            parent = commentRepository.findById(commentDTO.getParentId())</span>
-<span class="fc" id="L66">                    .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Comment&quot;, &quot;id&quot;, commentDTO.getParentId()));</span>
+<span class="nc" id="L70">        Comment parent = null;</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">        if (commentDTO.getParentId() != null) {</span>
+<span class="nc" id="L72">            parent = commentRepository.findById(commentDTO.getParentId())</span>
+<span class="nc" id="L73">                    .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Comment&quot;, &quot;id&quot;, commentDTO.getParentId()));</span>
         }
 
-<span class="fc" id="L69">        Comment comment = new Comment();</span>
-<span class="fc" id="L70">        comment.setContent(commentDTO.getContent());</span>
-<span class="fc" id="L71">        comment.setPost(post);</span>
-<span class="fc" id="L72">        comment.setUser(user);</span>
-<span class="fc" id="L73">        comment.setParent(parent);</span>
+<span class="nc" id="L76">        Comment comment = new Comment();</span>
+<span class="nc" id="L77">        comment.setContent(commentDTO.getContent());</span>
+<span class="nc" id="L78">        comment.setPost(post);</span>
+<span class="nc" id="L79">        comment.setUser(user);</span>
+<span class="nc" id="L80">        comment.setParent(parent);</span>
 
-<span class="fc" id="L75">        Comment savedComment = commentRepository.save(comment);</span>
-<span class="fc" id="L76">        return CommentDTO.fromEntity(savedComment);</span>
+<span class="nc" id="L82">        Comment savedComment = commentRepository.save(comment);</span>
+<span class="nc" id="L83">        return CommentDTO.fromEntity(savedComment);</span>
     }
 
     @Caching(evict = {
@@ -81,20 +88,20 @@ import java.util.stream.Collectors;
             @CacheEvict(value = &quot;comments&quot;, allEntries = true)
     })
     public CommentDTO updateComment(Long id, CommentDTO commentDTO, String username) {
-<span class="fc" id="L84">        Comment comment = commentRepository.findById(id)</span>
-<span class="pc" id="L85">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Comment&quot;, &quot;id&quot;, id));</span>
+<span class="nc" id="L91">        Comment comment = commentRepository.findById(id)</span>
+<span class="nc" id="L92">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Comment&quot;, &quot;id&quot;, id));</span>
 
-<span class="fc" id="L87">        User user = userRepository.findByUsername(username)</span>
-<span class="pc" id="L88">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;User&quot;, &quot;username&quot;, username));</span>
+<span class="nc" id="L94">        User user = userRepository.findByUsername(username)</span>
+<span class="nc" id="L95">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;User&quot;, &quot;username&quot;, username));</span>
 
-<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (!comment.getUser().getId().equals(user.getId())) {</span>
-<span class="fc" id="L91">            throw new RuntimeException(&quot;You can only update your own comments&quot;);</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (!comment.getUser().getId().equals(user.getId())) {</span>
+<span class="nc" id="L98">            throw new RuntimeException(&quot;You can only update your own comments&quot;);</span>
         }
 
-<span class="fc" id="L94">        comment.setContent(commentDTO.getContent());</span>
+<span class="nc" id="L101">        comment.setContent(commentDTO.getContent());</span>
 
-<span class="fc" id="L96">        Comment updatedComment = commentRepository.save(comment);</span>
-<span class="fc" id="L97">        return CommentDTO.fromEntity(updatedComment);</span>
+<span class="nc" id="L103">        Comment updatedComment = commentRepository.save(comment);</span>
+<span class="nc" id="L104">        return CommentDTO.fromEntity(updatedComment);</span>
     }
 
     @Caching(evict = {
@@ -102,17 +109,17 @@ import java.util.stream.Collectors;
             @CacheEvict(value = &quot;comments&quot;, allEntries = true)
     })
     public void deleteComment(Long id, String username) {
-<span class="fc" id="L105">        Comment comment = commentRepository.findById(id)</span>
-<span class="pc" id="L106">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Comment&quot;, &quot;id&quot;, id));</span>
+<span class="nc" id="L112">        Comment comment = commentRepository.findById(id)</span>
+<span class="nc" id="L113">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Comment&quot;, &quot;id&quot;, id));</span>
 
-<span class="fc" id="L108">        User user = userRepository.findByUsername(username)</span>
-<span class="pc" id="L109">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;User&quot;, &quot;username&quot;, username));</span>
+<span class="nc" id="L115">        User user = userRepository.findByUsername(username)</span>
+<span class="nc" id="L116">                .orElseThrow(() -&gt; new ResourceNotFoundException(&quot;User&quot;, &quot;username&quot;, username));</span>
 
-<span class="fc bfc" id="L111" title="All 4 branches covered.">        if (!comment.getUser().getId().equals(user.getId()) &amp;&amp; !user.getRole().equals(User.Role.ADMIN)) {</span>
-<span class="fc" id="L112">            throw new RuntimeException(&quot;You can only delete your own comments&quot;);</span>
+<span class="nc bnc" id="L118" title="All 4 branches missed.">        if (!comment.getUser().getId().equals(user.getId()) &amp;&amp; !user.getRole().equals(User.Role.ADMIN)) {</span>
+<span class="nc" id="L119">            throw new RuntimeException(&quot;You can only delete your own comments&quot;);</span>
         }
 
-<span class="fc" id="L115">        commentRepository.delete(comment);</span>
-<span class="fc" id="L116">    }</span>
+<span class="nc" id="L122">        commentRepository.delete(comment);</span>
+<span class="nc" id="L123">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

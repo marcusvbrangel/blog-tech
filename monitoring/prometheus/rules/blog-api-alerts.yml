@@ -1,0 +1,56 @@
+groups:
+  - name: blog-api-alerts
+    rules:
+      - alert: BlogApiDown
+        expr: up{job="blog-api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Blog API is down"
+          description: "Blog API has been down for more than 1 minute"
+
+      - alert: HighResponseTime
+        expr: http_server_requests_seconds{quantile="0.95"} > 0.5
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High response time on Blog API"
+          description: "95th percentile response time is {{ $value }}s"
+
+      - alert: HighErrorRate
+        expr: rate(http_server_requests_total{status=~"5.."}[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate on Blog API"
+          description: "Error rate is {{ $value | humanizePercentage }}"
+
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Redis is down"
+          description: "Redis cache server is not responding"
+
+      - alert: DatabaseConnectionsHigh
+        expr: hikaricp_connections_active / hikaricp_connections_max > 0.8
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High database connection usage"
+          description: "Database connection pool usage is {{ $value | humanizePercentage }}"
+
+      - alert: JvmMemoryHigh
+        expr: jvm_memory_used_bytes / jvm_memory_max_bytes > 0.8
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High JVM memory usage"
+          description: "JVM memory usage is {{ $value | humanizePercentage }}"

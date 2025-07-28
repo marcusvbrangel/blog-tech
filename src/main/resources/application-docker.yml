@@ -38,9 +38,10 @@ server:
 
 logging:
   level:
-    com.blog.api: INFO
-    org.springframework.security: WARN
-    org.springframework.web: WARN
+    com.blog.api: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+    root: INFO
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
@@ -59,7 +60,34 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics
+        include: health,info,metrics,prometheus,httptrace,loggers,env
   endpoint:
     health:
-      show-details: when-authorized
+      show-details: always
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    web:
+      server:
+        request:
+          autotime:
+            enabled: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      percentiles:
+        http.server.requests: 0.5, 0.9, 0.95, 0.99
+    tags:
+      application: blog-api
+      environment: ${ENVIRONMENT:docker}
+
+tracing:
+  zipkin:
+    endpoint: ${ZIPKIN_ENDPOINT:http://zipkin:9411/api/v2/spans}
+  sampling:
+    probability: ${TRACING_SAMPLING_PROBABILITY:0.0}
