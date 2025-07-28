@@ -77,15 +77,15 @@ public class PostService {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
 
         Category category = null;
-        if (createPostDTO.getCategoryId() != null) {
-            category = categoryRepository.findById(createPostDTO.getCategoryId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Category", "id", createPostDTO.getCategoryId()));
+        if (createPostDTO.categoryId() != null) {
+            category = categoryRepository.findById(createPostDTO.categoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Category", "id", createPostDTO.categoryId()));
         }
 
         Post post = new Post();
-        post.setTitle(createPostDTO.getTitle());
-        post.setContent(createPostDTO.getContent());
-        post.setPublished(createPostDTO.isPublished());
+        post.setTitle(createPostDTO.title());
+        post.setContent(createPostDTO.content());
+        post.setPublished(createPostDTO.published());
         post.setUser(user);
         post.setCategory(category);
 
@@ -109,14 +109,14 @@ public class PostService {
         }
 
         Category category = null;
-        if (createPostDTO.getCategoryId() != null) {
-            category = categoryRepository.findById(createPostDTO.getCategoryId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Category", "id", createPostDTO.getCategoryId()));
+        if (createPostDTO.categoryId() != null) {
+            category = categoryRepository.findById(createPostDTO.categoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Category", "id", createPostDTO.categoryId()));
         }
 
-        post.setTitle(createPostDTO.getTitle());
-        post.setContent(createPostDTO.getContent());
-        post.setPublished(createPostDTO.isPublished());
+        post.setTitle(createPostDTO.title());
+        post.setContent(createPostDTO.content());
+        post.setPublished(createPostDTO.published());
         post.setCategory(category);
 
         Post updatedPost = postRepository.save(post);
