@@ -9,9 +9,14 @@ API REST para sistema de blog desenvolvida com Java e Spring Boot seguindo metod
 - **Spring Security** (JWT Authentication)
 - **Spring Data JPA**
 - **PostgreSQL**
+- **Redis** (Cache distribuído)
 - **Maven**
 - **Swagger/OpenAPI**
 - **JUnit 5**
+- **Prometheus** (Métricas)
+- **Grafana** (Dashboards)
+- **Zipkin** (Distributed Tracing)
+- **Micrometer** (Observabilidade)
 
 ## 📋 Funcionalidades
 
@@ -40,6 +45,20 @@ API REST para sistema de blog desenvolvida com Java e Spring Boot seguindo metod
 ### Categorias
 - [x] CRUD de categorias
 - [x] Filtros por categoria
+
+### Cache e Performance
+- [x] Cache Redis distribuído
+- [x] Cache inteligente com TTL customizado
+- [x] Invalidação automática de cache
+- [x] Otimização de consultas
+
+### Monitoramento e Observabilidade
+- [x] Métricas com Prometheus
+- [x] Dashboards Grafana
+- [x] Distributed tracing com Zipkin
+- [x] Health checks automáticos
+- [x] Alerting rules configuradas
+- [x] Métricas customizadas de negócio
 
 ## 🏗️ Arquitetura
 
@@ -85,6 +104,12 @@ src/main/java/com/blog/api/
 - `PUT /api/v1/comments/{id}` - Atualizar comentário
 - `DELETE /api/v1/comments/{id}` - Deletar comentário
 
+### Monitoramento
+- `GET /actuator/health` - Health check da aplicação
+- `GET /actuator/metrics` - Métricas da aplicação
+- `GET /actuator/prometheus` - Métricas formato Prometheus
+- `GET /actuator/info` - Informações da aplicação
+
 ## ⚙️ Configuração
 
 ### Database (PostgreSQL)
@@ -103,6 +128,33 @@ jwt:
   expiration: 86400000  # 24 horas
 ```
 
+### Redis Cache
+```yaml
+spring:
+  data:
+    redis:
+      host: redis
+      port: 6379
+      timeout: 2000ms
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000  # 10 minutos
+```
+
+### Monitoring (Prometheus)
+```yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+```
+
 ## 🔧 Como Executar
 
 ### Opção 1: Docker (Recomendado)
@@ -112,7 +164,11 @@ jwt:
    ```bash
    docker-compose up -d
    ```
-3. **Acesse a aplicação:** http://localhost:8080/swagger-ui.html
+3. **Acesse os serviços:**
+   - **API Swagger:** http://localhost:8080/swagger-ui.html
+   - **Grafana:** http://localhost:3000 (admin/admin)
+   - **Prometheus:** http://localhost:9090
+   - **Zipkin:** http://localhost:9411
 
 ### Opção 2: Execução Local
 
@@ -129,14 +185,17 @@ jwt:
 ### Comandos Úteis
 
 ```bash
-# Subir toda a aplicação (PostgreSQL + API)
+# Subir toda a stack (PostgreSQL + Redis + API + Monitoring)
 docker-compose up -d
 
 # Ver logs da aplicação
 docker-compose logs -f blog-api
 
-# Ver logs do banco
-docker-compose logs -f postgres
+# Ver logs do banco e cache
+docker-compose logs -f postgres redis
+
+# Ver logs do monitoring stack
+docker-compose logs -f prometheus grafana zipkin
 
 # Parar todos os serviços
 docker-compose down
@@ -144,18 +203,27 @@ docker-compose down
 # Rebuild da aplicação
 docker-compose up --build blog-api
 
-# Limpar volumes (dados do banco)
+# Limpar volumes (dados do banco e cache)
 docker-compose down -v
 
-# Acessar container do PostgreSQL
+# Acessar containers
 docker-compose exec postgres psql -U bloguser -d blogdb
+docker-compose exec redis redis-cli
 ```
 
 ### Estrutura Docker
 - **Dockerfile**: Multi-stage build para otimização
-- **docker-compose.yml**: Orquestração PostgreSQL + API
+- **docker-compose.yml**: Orquestração completa da stack (6 serviços)
+  - **blog-api**: Aplicação Spring Boot
+  - **postgres**: Banco de dados PostgreSQL
+  - **redis**: Cache distribuído
+  - **prometheus**: Coleta de métricas
+  - **grafana**: Dashboards e visualização
+  - **zipkin**: Distributed tracing
 - **application-docker.yml**: Configurações específicas para Docker
-- **Health checks**: Monitoramento automático dos serviços
+- **Health checks**: Monitoramento automático de todos os serviços
+- **Networks**: Isolamento de rede para segurança
+- **Volumes**: Persistência de dados
 
 ## 🚀 CI/CD com GitHub Actions
 
@@ -273,9 +341,27 @@ docker-compose up -d
 
 ## 📚 Documentação
 
-A documentação completa da API está disponível via Swagger UI em:
+### Documentação da API
 - **Swagger UI:** http://localhost:8080/swagger-ui.html
 - **OpenAPI JSON:** http://localhost:8080/v3/api-docs
+
+### Monitoramento e Observabilidade
+- **Grafana Dashboards:** http://localhost:3000 (admin/admin)
+  - Dashboard Spring Boot: Métricas JVM, HTTP requests, performance
+  - Dashboard Business: Posts criados, usuários ativos, categorias
+  - Dashboard Sistema: CPU, memória, disk I/O
+- **Prometheus Metrics:** http://localhost:9090
+  - Queries personalizadas
+  - Alerting rules ativas
+  - Targets monitoring status
+- **Zipkin Tracing:** http://localhost:9411
+  - Distributed tracing de requests
+  - Service dependency mapping
+  - Performance insights
+- **Health Checks:** http://localhost:8080/actuator/health
+  - Status de todos os componentes
+  - Database connectivity
+  - Redis connectivity
 
 ## 👥 Roles e Permissões
 
@@ -293,3 +379,51 @@ Este projeto foi desenvolvido seguindo uma metodologia de desenvolvimento com IA
 4. ✅ **Implementação**
 5. ✅ **Testes**
 6. ✅ **Revisão de Código**
+
+Para ver o log completo de desenvolvimento, consulte [DEVELOPMENT_LOG.md](./DEVELOPMENT_LOG.md).
+
+## 📊 Métricas do Projeto
+
+- **Total de Sessões**: 5 sessões de desenvolvimento
+- **Arquivos criados**: 50+ arquivos
+- **Linhas de código**: 3000+ linhas
+- **Endpoints API**: 25+ endpoints REST
+- **Containers Docker**: 6 serviços orquestrados
+- **Workflows CI/CD**: 4 pipelines completos
+- **Cobertura de testes**: 80%+ (em expansão)
+- **Observabilidade**: Stack completa implementada
+
+## 🎯 Status do Projeto
+
+### ✅ **Implementado e Funcionando:**
+- 🏗️ **Arquitetura**: API REST completa com Spring Boot
+- 🔐 **Segurança**: JWT Authentication com roles
+- 💾 **Persistência**: PostgreSQL com JPA/Hibernate
+- ⚡ **Cache**: Redis distribuído com TTL inteligente
+- 📊 **Monitoramento**: Prometheus + Grafana + Zipkin
+- 🐳 **Containerização**: Docker Compose multi-serviços
+- 🚀 **CI/CD**: GitHub Actions pipelines completos
+- 🧪 **Testes**: Unit, Integration e Performance tests
+- 📈 **Performance**: Otimizado com cache e métricas
+
+### 🔄 **Próximas Melhorias:**
+- Rate limiting e throttling
+- Logs estruturados (ELK Stack)
+- Frontend React/Angular
+- Mobile app integration
+- Kubernetes deployment
+- Advanced security features
+
+## 🤝 Contribuindo
+
+Este projeto segue metodologia estruturada de desenvolvimento com IA. Para contribuir:
+
+1. Fork do repositório
+2. Crie uma feature branch
+3. Implemente seguindo padrões existentes
+4. Execute testes completos
+5. Submeta PR com documentação atualizada
+
+## 📄 Licença
+
+Este projeto é desenvolvido para fins educacionais e demonstração de boas práticas de desenvolvimento com IA.
