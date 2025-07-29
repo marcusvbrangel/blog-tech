@@ -3,6 +3,7 @@ package com.blog.api.dto;
 import com.blog.api.entity.Category;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import java.io.Serializable;
 
 public record CategoryDTO(
     Long id,
@@ -15,13 +16,27 @@ public record CategoryDTO(
     String description,
 
     int postCount
-) {
+) implements Serializable {
     public static CategoryDTO fromEntity(Category category) {
-        return new CategoryDTO(
-            category.getId(),
-            category.getName(),
-            category.getDescription(),
-            category.getPosts().size()
-        );
+        try {
+            int postCount = 0;
+            try {
+                postCount = category.getPosts() != null ? category.getPosts().size() : 0;
+            } catch (Exception e) {
+                // Handle lazy loading exception by setting post count to 0
+                postCount = 0;
+            }
+            
+            return new CategoryDTO(
+                category.getId(),
+                category.getName(),
+                category.getDescription(),
+                postCount
+            );
+        } catch (Exception e) {
+            System.err.println("ERROR in CategoryDTO.fromEntity: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

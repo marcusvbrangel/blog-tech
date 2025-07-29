@@ -2,6 +2,7 @@ package com.blog.api.dto;
 
 import com.blog.api.entity.User;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public record UserDTO(
@@ -10,7 +11,7 @@ public record UserDTO(
     String email,
     User.Role role,
     LocalDateTime createdAt
-) {
+) implements Serializable {
     public static UserDTO fromEntity(User user) {
         return new UserDTO(
             user.getId(),

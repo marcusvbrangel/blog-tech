@@ -38,9 +38,10 @@ server:
 
 logging:
   level:
-    com.blog.api: INFO
-    org.springframework.security: WARN
-    org.springframework.web: WARN
+    com.blog.api: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+    root: INFO
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
@@ -89,4 +90,4 @@ tracing:
   zipkin:
     endpoint: ${ZIPKIN_ENDPOINT:http://zipkin:9411/api/v2/spans}
   sampling:
-    probability: ${TRACING_SAMPLING_PROBABILITY:1.0}
+    probability: ${TRACING_SAMPLING_PROBABILITY:0.0}

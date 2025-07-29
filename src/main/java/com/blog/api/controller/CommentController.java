@@ -3,7 +3,6 @@ package com.blog.api.controller;
 import com.blog.api.dto.CommentDTO;
 import com.blog.api.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -49,7 +48,6 @@ public class CommentController {
 
     @PostMapping
     @Operation(summary = "Create new comment")
-    @SecurityRequirement(name = "bearer-token")
     public ResponseEntity<CommentDTO> createComment(@Valid @RequestBody CommentDTO commentDTO, 
                                                     Authentication authentication) {
         CommentDTO comment = commentService.createComment(commentDTO, authentication.getName());
@@ -58,7 +56,6 @@ public class CommentController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update comment")
-    @SecurityRequirement(name = "bearer-token")
     public ResponseEntity<CommentDTO> updateComment(@PathVariable Long id, 
                                                     @Valid @RequestBody CommentDTO commentDTO,
                                                     Authentication authentication) {
@@ -68,7 +65,6 @@ public class CommentController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete comment")
-    @SecurityRequirement(name = "bearer-token")
     public ResponseEntity<Void> deleteComment(@PathVariable Long id, Authentication authentication) {
         commentService.deleteComment(id, authentication.getName());
         return ResponseEntity.noContent().build();

@@ -4,6 +4,7 @@ import com.blog.api.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -50,17 +51,41 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authz -> authz
+                // Public endpoints - no authentication required
                 .requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers("/api/v1/posts").permitAll()
-                .requestMatchers("/api/v1/posts/{id}").permitAll()
-                .requestMatchers("/api/v1/categories").permitAll()
-                .requestMatchers("/api/v1/categories/{id}").permitAll()
-                .requestMatchers("/api/v1/comments/post/{postId}").permitAll()
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 .requestMatchers("/swagger-ui.html").permitAll()
                 .requestMatchers("/api-docs/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
+                
+                // Posts - public read access, AUTHOR/ADMIN for write operations
+                .requestMatchers(HttpMethod.GET, "/api/v1/posts").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/posts").hasAnyRole("AUTHOR", "ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/posts/**").hasAnyRole("AUTHOR", "ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/posts/**").hasAnyRole("AUTHOR", "ADMIN")
+                
+                // Categories - public read access, ADMIN only for write operations
+                .requestMatchers(HttpMethod.GET, "/api/v1/categories").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/categories/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/categories").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/v1/categories/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/categories/**").hasRole("ADMIN")
+                
+                // Comments - public read access, authenticated users for write operations
+                .requestMatchers(HttpMethod.GET, "/api/v1/comments/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/comments").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/v1/comments/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/comments/**").authenticated()
+                
+                // Users - authenticated users can view profiles, ADMIN for management
+                .requestMatchers(HttpMethod.GET, "/api/v1/users/{id}").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/v1/users/username/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/v1/users").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasRole("ADMIN")
+                
+                // Any other request requires authentication
                 .anyRequest().authenticated()
             );
 

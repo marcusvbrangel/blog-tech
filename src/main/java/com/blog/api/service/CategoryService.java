@@ -12,17 +12,35 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryService {
 
     @Autowired
-    private CategoryRepository categoryRepository;
+    public CategoryRepository categoryRepository;
 
-    @Cacheable(value = "categories", key = "'all:' + #pageable.pageNumber + ':' + #pageable.pageSize")
     public Page<CategoryDTO> getAllCategories(Pageable pageable) {
-        return categoryRepository.findAll(pageable)
-                .map(CategoryDTO::fromEntity);
+        // Get cached list data
+        List<CategoryDTO> categoryDTOs = getAllCategoriesList(pageable);
+        
+        // Count total elements for pagination
+        long totalElements = categoryRepository.count();
+        
+        // Return a new PageImpl with the cached DTOs
+        return new org.springframework.data.domain.PageImpl<>(
+            categoryDTOs, 
+            pageable, 
+            totalElements
+        );
+    }
+    
+    @Cacheable(value = "categories", key = "'all:' + #pageable.pageNumber + ':' + #pageable.pageSize")
+    public List<CategoryDTO> getAllCategoriesList(Pageable pageable) {
+        return categoryRepository.findAll(pageable).getContent().stream()
+                .map(CategoryDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
     @Cacheable(value = "categories", key = "'single:' + #id")
