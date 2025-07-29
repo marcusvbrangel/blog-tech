@@ -18,7 +18,14 @@
       "Bash(docker logs blog-api --since 2m)",
       "Bash(docker logs blog-api --since 1m)",
       "Bash(docker exec:*)",
-      "Bash(docker logs blog-api --tail 20)"
+      "Bash(docker logs blog-api --tail 20)",
+      "Bash(mv:*)",
+      "Bash(pkill:*)",
+      "Bash(lsof:*)",
+      "Bash(ss:*)",
+      "Bash(kill:*)",
+      "Bash(echo)",
+      "Bash(time curl:*)"
     ],
     "deny": []
   }

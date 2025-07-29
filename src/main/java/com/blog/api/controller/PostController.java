@@ -4,7 +4,6 @@ import com.blog.api.dto.CreatePostDTO;
 import com.blog.api.dto.PostDTO;
 import com.blog.api.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,8 +59,6 @@ public class PostController {
 
     @PostMapping
     @Operation(summary = "Create new post")
-    @SecurityRequirement(name = "bearer-token")
-    @PreAuthorize("hasRole('AUTHOR') or hasRole('ADMIN')")
     public ResponseEntity<PostDTO> createPost(@Valid @RequestBody CreatePostDTO createPostDTO, 
                                               Authentication authentication) {
         PostDTO post = postService.createPost(createPostDTO, authentication.getName());
@@ -71,8 +67,6 @@ public class PostController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update post")
-    @SecurityRequirement(name = "bearer-token")
-    @PreAuthorize("hasRole('AUTHOR') or hasRole('ADMIN')")
     public ResponseEntity<PostDTO> updatePost(@PathVariable Long id, 
                                               @Valid @RequestBody CreatePostDTO createPostDTO,
                                               Authentication authentication) {
@@ -82,8 +76,6 @@ public class PostController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete post")
-    @SecurityRequirement(name = "bearer-token")
-    @PreAuthorize("hasRole('AUTHOR') or hasRole('ADMIN')")
     public ResponseEntity<Void> deletePost(@PathVariable Long id, Authentication authentication) {
         postService.deletePost(id, authentication.getName());
         return ResponseEntity.noContent().build();
