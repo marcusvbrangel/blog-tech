@@ -1,5 +1,5 @@
 # Multi-stage build para otimizar o tamanho da imagem final
-FROM eclipse-temurin:17-jdk-alpine as build
+FROM eclipse-temurin:21-jdk-alpine as build
 
 # Instalar Maven
 RUN apk add --no-cache maven
@@ -15,7 +15,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Segunda etapa - runtime
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:21-jre-alpine
 
 # Instalar curl para health check
 RUN apk add --no-cache curl
