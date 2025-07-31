@@ -10,7 +10,10 @@ public record UserDTO(
     String username,
     String email,
     User.Role role,
-    LocalDateTime createdAt
+    LocalDateTime createdAt,
+    Boolean emailVerified,
+    LocalDateTime emailVerifiedAt,
+    LocalDateTime lastLogin
 ) implements Serializable {
     public static UserDTO fromEntity(User user) {
         return new UserDTO(
@@ -18,7 +21,10 @@ public record UserDTO(
             user.getUsername(),
             user.getEmail(),
             user.getRole(),
-            user.getCreatedAt()
+            user.getCreatedAt(),
+            user.getEmailVerified(),
+            user.getEmailVerifiedAt(),
+            user.getLastLogin()
         );
     }
 }

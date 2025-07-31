@@ -1,0 +1,7 @@
+com/blog/api/repository/VerificationTokenRepositoryTest.class
+com/blog/api/controller/AuthControllerEmailVerificationTest.class
+com/blog/api/service/VerificationTokenServiceTest.class
+com/blog/api/integration/DebugSpecificFailuresTest.class
+com/blog/api/service/AuthServiceEmailVerificationTest.class
+com/blog/api/integration/EmailVerificationIntegrationTest.class
+com/blog/api/service/EmailServiceTest.class

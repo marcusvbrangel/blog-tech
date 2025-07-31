@@ -32,6 +32,20 @@ spring:
     type: redis
     redis:
       time-to-live: 600000
+  mail:
+    host: localhost
+    port: 1025
+    username: 
+    password: 
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+          ssl:
+            enable: false
+    test-connection: false
 
 management:
   endpoints:
@@ -86,3 +100,23 @@ springdoc:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
+
+# Blog API Security Configuration
+blog:
+  security:
+    email-verification:
+      enabled: true
+      token-expiration: 24h
+      max-attempts-per-hour: 3
+    password-reset:
+      enabled: true
+      token-expiration: 15m
+      max-attempts-per-hour: 5
+  email:
+    enabled: true
+    from: "noreply@blogapi.com"
+    base-url: "http://localhost:8080"
+    templates:
+      verification: "email/verification"
+      password-reset: "email/password-reset"
+      welcome: "email/welcome"
