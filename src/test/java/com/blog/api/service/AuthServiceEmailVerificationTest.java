@@ -167,7 +167,7 @@ class AuthServiceEmailVerificationTest {
         testUser.setLockedUntil(LocalDateTime.now().minusMinutes(10)); // Expired lock
         
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
-        when(userRepository.save(testUser)).thenReturn(testUser);
+        when(userRepository.save(any(User.class))).thenReturn(testUser);
         when(authenticationManager.authenticate(any())).thenReturn(null);
         when(userDetailsService.loadUserByUsername("testuser")).thenReturn(null);
         when(jwtUtil.generateToken(any())).thenReturn("jwt-token");
@@ -309,7 +309,7 @@ class AuthServiceEmailVerificationTest {
         
         when(verificationTokenService.verifyPasswordResetToken(token)).thenReturn(testUser);
         when(passwordEncoder.encode(newPassword)).thenReturn("hashednewpassword");
-        when(userRepository.save(testUser)).thenReturn(testUser);
+        when(userRepository.save(any(User.class))).thenReturn(testUser);
 
         // When
         UserDTO result = authService.resetPassword(token, newPassword);

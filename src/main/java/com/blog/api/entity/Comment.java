@@ -46,8 +46,8 @@ public class Comment {
     // JPA required constructor
     public Comment() {}
 
-    // Legacy constructor - mantido para compatibilidade
-    public Comment(String content, Post post, User user, Comment parent) {
+    // Legacy constructor - now private to force builder usage
+    private Comment(String content, Post post, User user, Comment parent) {
         this.content = content;
         this.post = post;
         this.user = user;

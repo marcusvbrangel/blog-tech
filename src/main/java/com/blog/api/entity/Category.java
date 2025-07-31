@@ -29,10 +29,10 @@ public class Category {
     // JPA required constructor
     public Category() {}
 
-    // Legacy constructor - mantido para compatibilidade
-    public Category(String name, String description) {
+    // Legacy constructor - now private to force builder usage
+    private Category(String name, String description) {
         this.name = name;
-        this.description = description;
+        this.description = description; 
     }
 
     // Private constructor for Builder

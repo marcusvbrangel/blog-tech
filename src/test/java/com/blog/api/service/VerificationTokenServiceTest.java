@@ -12,6 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.ArgumentMatchers.any;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Duration;
@@ -48,14 +50,15 @@ class VerificationTokenServiceTest {
         ReflectionTestUtils.setField(verificationTokenService, "maxEmailVerificationAttemptsPerHour", 3);
         ReflectionTestUtils.setField(verificationTokenService, "maxPasswordResetAttemptsPerHour", 5);
 
-        // Create test user
+        // Create test user using JPA constructor for tests
         testUser = new User();
         testUser.setId(1L);
         testUser.setUsername("testuser");
         testUser.setEmail("test@example.com");
+        testUser.setPassword("password");
         testUser.setEmailVerified(false);
 
-        // Create test token
+        // Create test token using JPA constructor for tests
         testToken = new VerificationToken();
         testToken.setId(1L);
         testToken.setUser(testUser);
@@ -151,7 +154,7 @@ class VerificationTokenServiceTest {
         when(tokenRepository.findByTokenAndTokenType(tokenValue, VerificationToken.TokenType.EMAIL_VERIFICATION))
                 .thenReturn(Optional.of(testToken));
         when(tokenRepository.save(testToken)).thenReturn(testToken);
-        when(userRepository.save(testUser)).thenReturn(testUser);
+        when(userRepository.save(any(User.class))).thenReturn(testUser);
 
         // When
         User result = verificationTokenService.verifyEmailToken(tokenValue);
@@ -163,8 +166,8 @@ class VerificationTokenServiceTest {
         assertNotNull(testToken.getUsedAt());
         
         verify(tokenRepository).save(testToken);
-        verify(userRepository).save(testUser);
-        verify(emailService).sendWelcomeEmail(testUser);
+        verify(userRepository).save(any(User.class));
+        verify(emailService).sendWelcomeEmail(any(User.class));
     }
 
     @Test

@@ -52,8 +52,8 @@ public class VerificationToken {
     // JPA required constructor
     public VerificationToken() {}
 
-    // Legacy constructor - mantido para compatibilidade
-    public VerificationToken(User user, String token, TokenType tokenType, LocalDateTime expiresAt) {
+    // Legacy constructor - now private to force builder usage
+    private VerificationToken(User user, String token, TokenType tokenType, LocalDateTime expiresAt) {
         this.user = user;
         this.token = token;
         this.tokenType = tokenType;

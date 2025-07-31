@@ -82,12 +82,10 @@ public class PostService {
                     .orElseThrow(() -> new ResourceNotFoundException("Category", "id", createPostDTO.categoryId()));
         }
 
-        Post post = new Post();
-        post.setTitle(createPostDTO.title());
-        post.setContent(createPostDTO.content());
-        post.setPublished(createPostDTO.published());
-        post.setUser(user);
-        post.setCategory(category);
+        Post post = Post.of(createPostDTO.title(), createPostDTO.content(), user)
+                .published(createPostDTO.published())
+                .category(category)
+                .build();
 
         Post savedPost = postRepository.save(post);
         return PostDTO.fromEntity(savedPost);
@@ -114,13 +112,18 @@ public class PostService {
                     .orElseThrow(() -> new ResourceNotFoundException("Category", "id", createPostDTO.categoryId()));
         }
 
-        post.setTitle(createPostDTO.title());
-        post.setContent(createPostDTO.content());
-        post.setPublished(createPostDTO.published());
-        post.setCategory(category);
+        Post updatedPost = Post.from(post)
+                .title(createPostDTO.title())
+                .content(createPostDTO.content())
+                .published(createPostDTO.published())
+                .category(category)
+                .build();
+        updatedPost.setId(post.getId());
+        updatedPost.setCreatedAt(post.getCreatedAt());
+        post = updatedPost;
 
-        Post updatedPost = postRepository.save(post);
-        return PostDTO.fromEntity(updatedPost);
+        Post savedPost = postRepository.save(post);
+        return PostDTO.fromEntity(savedPost);
     }
 
     @Caching(evict = {
