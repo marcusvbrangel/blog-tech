@@ -129,13 +129,13 @@ class VerificationTokenServiceTest {
     }
 
     @Test
-    void generateAndSendPasswordReset_UserNotFound_ThrowsException() {
+    void generateAndSendPasswordReset_UserNotFound_SilentReturn() {
         // Given
         String email = "nonexistent@example.com";
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
 
-        // When & Then
-        assertThrows(ResourceNotFoundException.class, () -> 
+        // When & Then - Should return silently for security reasons (no email enumeration)
+        assertDoesNotThrow(() -> 
             verificationTokenService.generateAndSendPasswordReset(email));
 
         verify(tokenRepository, never()).save(any());
