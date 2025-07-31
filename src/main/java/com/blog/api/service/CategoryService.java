@@ -56,9 +56,8 @@ public class CategoryService {
             throw new BadRequestException("Category name already exists");
         }
 
-        Category category = new Category();
-        category.setName(categoryDTO.name());
-        category.setDescription(categoryDTO.description());
+        Category category = Category.of(categoryDTO.name(), categoryDTO.description())
+                .build();
 
         Category savedCategory = categoryRepository.save(category);
         return CategoryDTO.fromEntity(savedCategory);
@@ -77,11 +76,15 @@ public class CategoryService {
             throw new BadRequestException("Category name already exists");
         }
 
-        category.setName(categoryDTO.name());
-        category.setDescription(categoryDTO.description());
+        Category updatedCategory = Category.from(category)
+                .name(categoryDTO.name())
+                .description(categoryDTO.description())
+                .build();
+        updatedCategory.setId(category.getId());
+        category = updatedCategory;
 
-        Category updatedCategory = categoryRepository.save(category);
-        return CategoryDTO.fromEntity(updatedCategory);
+        Category savedCategory = categoryRepository.save(category);
+        return CategoryDTO.fromEntity(savedCategory);
     }
 
     @Caching(evict = {

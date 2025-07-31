@@ -30,7 +30,8 @@
       "Bash(docker:*)",
       "Bash(find:*)",
       "Bash(grep:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(./mvnw test:*)"
     ],
     "deny": []
   }

@@ -68,8 +68,9 @@ public class VerificationTokenService {
         String tokenValue = generateSecureToken();
         LocalDateTime expirationTime = LocalDateTime.now().plus(emailVerificationExpiration);
 
-        VerificationToken token = new VerificationToken(user, tokenValue, 
-            VerificationToken.TokenType.EMAIL_VERIFICATION, expirationTime);
+        VerificationToken token = VerificationToken.forEmailVerification(user, tokenValue)
+                .expiresAt(expirationTime)
+                .build();
 
         tokenRepository.save(token);
 
@@ -104,8 +105,9 @@ public class VerificationTokenService {
         String tokenValue = generateSecureToken();
         LocalDateTime expirationTime = LocalDateTime.now().plus(passwordResetExpiration);
 
-        VerificationToken token = new VerificationToken(user, tokenValue, 
-            VerificationToken.TokenType.PASSWORD_RESET, expirationTime);
+        VerificationToken token = VerificationToken.forPasswordReset(user, tokenValue)
+                .expiresAt(expirationTime)
+                .build();
 
         tokenRepository.save(token);
 
@@ -128,10 +130,14 @@ public class VerificationTokenService {
         verificationToken.markAsUsed();
         tokenRepository.save(verificationToken);
         
-        // Mark user email as verified
-        user.setEmailVerified(true);
-        user.setEmailVerifiedAt(LocalDateTime.now());
-        userRepository.save(user);
+        // Mark user email as verified using builder
+        User updatedUser = User.from(user)
+                .emailVerified(true)
+                .emailVerifiedAt(LocalDateTime.now())
+                .build();
+        updatedUser.setId(user.getId());
+        userRepository.save(updatedUser);
+        user = updatedUser;
 
         // Send welcome email asynchronously
         sendWelcomeEmailAsync(user);

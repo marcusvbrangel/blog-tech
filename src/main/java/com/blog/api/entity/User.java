@@ -75,8 +75,8 @@ public class User {
     // JPA required constructor
     public User() {}
 
-    // Legacy constructor - mantido para compatibilidade
-    public User(String username, String email, String password, Role role) {
+    // Legacy constructor - now private to force builder usage
+    private User(String username, String email, String password, Role role) {
         this.username = username;
         this.email = email;
         this.password = password;

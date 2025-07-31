@@ -56,18 +56,13 @@ public class AuthService {
             throw new BadRequestException("Email already exists");
         }
 
-        User user = new User();
-        user.setUsername(createUserDTO.username());
-        user.setEmail(createUserDTO.email());
-        user.setPassword(passwordEncoder.encode(createUserDTO.password()));
-        user.setRole(createUserDTO.role());
-        user.setPasswordChangedAt(LocalDateTime.now());
-        
-        // Set email verification status based on configuration
-        if (!emailVerificationEnabled) {
-            user.setEmailVerified(true);
-            user.setEmailVerifiedAt(LocalDateTime.now());
-        }
+        // Create user using builder pattern with validation
+        User user = User.of(createUserDTO.username(), createUserDTO.email(), passwordEncoder.encode(createUserDTO.password()))
+                .role(createUserDTO.role())
+                .passwordChangedAt(LocalDateTime.now())
+                .emailVerified(!emailVerificationEnabled) // Auto-verify if verification disabled
+                .emailVerifiedAt(!emailVerificationEnabled ? LocalDateTime.now() : null)
+                .build();
 
         User savedUser = userRepository.save(user);
 
@@ -102,10 +97,14 @@ public class AuthService {
                 throw new BadRequestException("Account is temporarily locked. Try again later.");
             } else {
                 // Unlock account if lock period has passed
-                user.setAccountLocked(false);
-                user.setLockedUntil(null);
-                user.setFailedLoginAttempts(0);
-                userRepository.save(user);
+                User unlockedUser = User.from(user)
+                        .accountLocked(false)
+                        .lockedUntil(null)
+                        .failedLoginAttempts(0)
+                        .build();
+                unlockedUser.setId(user.getId());
+                userRepository.save(unlockedUser);
+                user = unlockedUser;
             }
         }
 
@@ -119,9 +118,13 @@ public class AuthService {
 
             // Reset failed login attempts on successful login
             if (user.getFailedLoginAttempts() > 0) {
-                user.setFailedLoginAttempts(0);
-                user.setLastLogin(LocalDateTime.now());
-                userRepository.save(user);
+                User updatedUser = User.from(user)
+                        .failedLoginAttempts(0)
+                        .lastLogin(LocalDateTime.now())
+                        .build();
+                updatedUser.setId(user.getId());
+                userRepository.save(updatedUser);
+                user = updatedUser;
             }
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.username());
@@ -189,19 +192,22 @@ public class AuthService {
     public UserDTO resetPassword(String token, String newPassword) {
         User user = verificationTokenService.verifyPasswordResetToken(token);
         
-        // Update password
-        user.setPassword(passwordEncoder.encode(newPassword));
-        user.setPasswordChangedAt(LocalDateTime.now());
-        user.setFailedLoginAttempts(0);
-        user.setAccountLocked(false);
-        user.setLockedUntil(null);
+        // Update password using builder pattern
+        User updatedUser = User.from(user)
+                .password(passwordEncoder.encode(newPassword))
+                .passwordChangedAt(LocalDateTime.now())
+                .failedLoginAttempts(0)
+                .accountLocked(false)
+                .lockedUntil(null)
+                .build();
+        updatedUser.setId(user.getId());
         
-        userRepository.save(user);
+        userRepository.save(updatedUser);
         
         // Mark token as used
         verificationTokenService.markPasswordResetTokenAsUsed(token);
         
-        return UserDTO.fromEntity(user);
+        return UserDTO.fromEntity(updatedUser);
     }
 
     /**
@@ -209,14 +215,18 @@ public class AuthService {
      */
     private void incrementFailedLoginAttempts(User user) {
         int attempts = user.getFailedLoginAttempts() + 1;
-        user.setFailedLoginAttempts(attempts);
+        
+        User.Builder builder = User.from(user)
+                .failedLoginAttempts(attempts);
 
         // Lock account after 5 failed attempts for 15 minutes
         if (attempts >= 5) {
-            user.setAccountLocked(true);
-            user.setLockedUntil(LocalDateTime.now().plusMinutes(15));
+            builder.accountLocked(true)
+                   .lockedUntil(LocalDateTime.now().plusMinutes(15));
         }
-
-        userRepository.save(user);
+        
+        User updatedUser = builder.build();
+        updatedUser.setId(user.getId());
+        userRepository.save(updatedUser);
     }
 }

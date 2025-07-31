@@ -52,8 +52,8 @@ public class Post {
     // JPA required constructor
     public Post() {}
 
-    // Legacy constructor - mantido para compatibilidade
-    public Post(String title, String content, User user, Category category) {
+    // Legacy constructor - now private to force builder usage
+    private Post(String title, String content, User user, Category category) {
         this.title = title;
         this.content = content;
         this.user = user;

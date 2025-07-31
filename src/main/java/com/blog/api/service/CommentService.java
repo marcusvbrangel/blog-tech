@@ -73,11 +73,14 @@ public class CommentService {
                     .orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentDTO.parentId()));
         }
 
-        Comment comment = new Comment();
-        comment.setContent(commentDTO.content());
-        comment.setPost(post);
-        comment.setUser(user);
-        comment.setParent(parent);
+        Comment comment;
+        if (parent != null) {
+            // Create a reply
+            comment = Comment.reply(commentDTO.content(), parent, user).build();
+        } else {
+            // Create a top-level comment
+            comment = Comment.comment(commentDTO.content(), post, user).build();
+        }
 
         Comment savedComment = commentRepository.save(comment);
         return CommentDTO.fromEntity(savedComment);
@@ -98,10 +101,15 @@ public class CommentService {
             throw new RuntimeException("You can only update your own comments");
         }
 
-        comment.setContent(commentDTO.content());
+        Comment updatedComment = Comment.from(comment)
+                .content(commentDTO.content())
+                .build();
+        updatedComment.setId(comment.getId());
+        updatedComment.setCreatedAt(comment.getCreatedAt());
+        comment = updatedComment;
 
-        Comment updatedComment = commentRepository.save(comment);
-        return CommentDTO.fromEntity(updatedComment);
+        Comment savedComment = commentRepository.save(comment);
+        return CommentDTO.fromEntity(savedComment);
     }
 
     @Caching(evict = {
