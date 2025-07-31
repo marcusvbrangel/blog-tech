@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "posts")
@@ -48,13 +49,24 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
 
+    // JPA required constructor
     public Post() {}
 
+    // Legacy constructor - mantido para compatibilidade
     public Post(String title, String content, User user, Category category) {
         this.title = title;
         this.content = content;
         this.user = user;
         this.category = category;
+    }
+
+    // Private constructor for Builder
+    private Post(Builder builder) {
+        this.title = builder.title;
+        this.content = builder.content;
+        this.published = builder.published;
+        this.user = builder.user;
+        this.category = builder.category;
     }
 
     public Long getId() { return id; }
@@ -83,4 +95,127 @@ public class Post {
 
     public List<Comment> getComments() { return comments; }
     public void setComments(List<Comment> comments) { this.comments = comments; }
+
+    // Builder Pattern Implementation
+    public static class Builder {
+        private String title;
+        private String content;
+        private boolean published = false;
+        private User user;
+        private Category category;
+
+        public Builder title(String title) {
+            Objects.requireNonNull(title, "Title cannot be null");
+            if (title.trim().isEmpty()) {
+                throw new IllegalArgumentException("Title cannot be empty");
+            }
+            if (title.length() < 5 || title.length() > 200) {
+                throw new IllegalArgumentException("Title must be between 5 and 200 characters");
+            }
+            this.title = title.trim();
+            return this;
+        }
+
+        public Builder content(String content) {
+            Objects.requireNonNull(content, "Content cannot be null");
+            if (content.trim().isEmpty()) {
+                throw new IllegalArgumentException("Content cannot be empty");
+            }
+            if (content.length() < 10) {
+                throw new IllegalArgumentException("Content must be at least 10 characters");
+            }
+            this.content = content.trim();
+            return this;
+        }
+
+        public Builder published(boolean published) {
+            this.published = published;
+            return this;
+        }
+
+        public Builder user(User user) {
+            Objects.requireNonNull(user, "User cannot be null");
+            this.user = user;
+            return this;
+        }
+
+        public Builder author(User author) {
+            return user(author);
+        }
+
+        public Builder category(Category category) {
+            this.category = category;
+            return this;
+        }
+
+        public Post build() {
+            // Final validation of required fields
+            Objects.requireNonNull(title, "Title is required");
+            Objects.requireNonNull(content, "Content is required");
+            Objects.requireNonNull(user, "User is required");
+
+            return new Post(this);
+        }
+    }
+
+    // Factory Methods
+    public static Builder newInstance() {
+        return new Builder();
+    }
+
+    public static Builder from(Post other) {
+        Objects.requireNonNull(other, "Post cannot be null");
+        return new Builder()
+                .title(other.getTitle())
+                .content(other.getContent())
+                .published(other.isPublished())
+                .user(other.getUser())
+                .category(other.getCategory());
+    }
+
+    public static Builder of(String title, String content) {
+        return new Builder()
+                .title(title)
+                .content(content);
+    }
+
+    public static Builder of(String title, String content, User user) {
+        return new Builder()
+                .title(title)
+                .content(content)
+                .user(user);
+    }
+
+    public static Builder of(String title, String content, User user, Category category) {
+        return new Builder()
+                .title(title)
+                .content(content)
+                .user(user)
+                .category(category);
+    }
+
+    public static Builder withDefaults() {
+        return new Builder()
+                .published(false);
+    }
+
+    public static Builder asDraft() {
+        return withDefaults()
+                .published(false);
+    }
+
+    public static Builder asPublished() {
+        return withDefaults()
+                .published(true);
+    }
+
+    public static Builder draft(String title, String content, User user) {
+        return of(title, content, user)
+                .published(false);
+    }
+
+    public static Builder published(String title, String content, User user) {
+        return of(title, content, user)
+                .published(true);
+    }
 }

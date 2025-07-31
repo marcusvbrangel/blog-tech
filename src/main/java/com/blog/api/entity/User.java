@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "users")
@@ -71,13 +72,30 @@ public class User {
         USER, AUTHOR, ADMIN
     }
 
+    // JPA required constructor
     public User() {}
 
+    // Legacy constructor - mantido para compatibilidade
     public User(String username, String email, String password, Role role) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
+    }
+
+    // Private constructor for Builder
+    private User(Builder builder) {
+        this.username = builder.username;
+        this.email = builder.email;
+        this.password = builder.password;
+        this.role = builder.role;
+        this.emailVerified = builder.emailVerified;
+        this.accountLocked = builder.accountLocked;
+        this.failedLoginAttempts = builder.failedLoginAttempts;
+        this.emailVerifiedAt = builder.emailVerifiedAt;
+        this.lockedUntil = builder.lockedUntil;
+        this.passwordChangedAt = builder.passwordChangedAt;
+        this.lastLogin = builder.lastLogin;
     }
 
     public Long getId() { return id; }
@@ -127,4 +145,166 @@ public class User {
 
     public boolean isEmailVerified() { return Boolean.TRUE.equals(emailVerified); }
     public boolean isAccountLocked() { return Boolean.TRUE.equals(accountLocked); }
+
+    // Builder Pattern Implementation
+    public static class Builder {
+        private String username;
+        private String email;
+        private String password;
+        private Role role = Role.USER;
+        private Boolean emailVerified = false;
+        private Boolean accountLocked = false;
+        private Integer failedLoginAttempts = 0;
+        private LocalDateTime emailVerifiedAt;
+        private LocalDateTime lockedUntil;
+        private LocalDateTime passwordChangedAt;
+        private LocalDateTime lastLogin;
+
+        public Builder username(String username) {
+            Objects.requireNonNull(username, "Username cannot be null");
+            if (username.trim().isEmpty()) {
+                throw new IllegalArgumentException("Username cannot be empty");
+            }
+            if (username.length() < 3 || username.length() > 50) {
+                throw new IllegalArgumentException("Username must be between 3 and 50 characters");
+            }
+            this.username = username.trim();
+            return this;
+        }
+
+        public Builder email(String email) {
+            Objects.requireNonNull(email, "Email cannot be null");
+            if (email.trim().isEmpty()) {
+                throw new IllegalArgumentException("Email cannot be empty");
+            }
+            if (!email.contains("@") || !email.contains(".")) {
+                throw new IllegalArgumentException("Invalid email format");
+            }
+            this.email = email.trim().toLowerCase();
+            return this;
+        }
+
+        public Builder password(String password) {
+            Objects.requireNonNull(password, "Password cannot be null");
+            if (password.length() < 6) {
+                throw new IllegalArgumentException("Password must be at least 6 characters");
+            }
+            this.password = password;
+            return this;
+        }
+
+        public Builder role(Role role) {
+            Objects.requireNonNull(role, "Role cannot be null");
+            this.role = role;
+            return this;
+        }
+
+        public Builder emailVerified(Boolean emailVerified) {
+            this.emailVerified = emailVerified != null ? emailVerified : false;
+            return this;
+        }
+
+        public Builder accountLocked(Boolean accountLocked) {
+            this.accountLocked = accountLocked != null ? accountLocked : false;
+            return this;
+        }
+
+        public Builder failedLoginAttempts(Integer attempts) {
+            this.failedLoginAttempts = attempts != null ? attempts : 0;
+            return this;
+        }
+
+        public Builder emailVerifiedAt(LocalDateTime emailVerifiedAt) {
+            this.emailVerifiedAt = emailVerifiedAt;
+            return this;
+        }
+
+        public Builder lockedUntil(LocalDateTime lockedUntil) {
+            this.lockedUntil = lockedUntil;
+            return this;
+        }
+
+        public Builder passwordChangedAt(LocalDateTime passwordChangedAt) {
+            this.passwordChangedAt = passwordChangedAt;
+            return this;
+        }
+
+        public Builder lastLogin(LocalDateTime lastLogin) {
+            this.lastLogin = lastLogin;
+            return this;
+        }
+
+        public User build() {
+            // Final validation of required fields
+            Objects.requireNonNull(username, "Username is required");
+            Objects.requireNonNull(email, "Email is required");
+            Objects.requireNonNull(password, "Password is required");
+            Objects.requireNonNull(role, "Role is required");
+
+            // Business rule validations
+            if (emailVerified && emailVerifiedAt == null) {
+                this.emailVerifiedAt = LocalDateTime.now();
+            }
+
+            return new User(this);
+        }
+    }
+
+    // Factory Methods
+    public static Builder newInstance() {
+        return new Builder();
+    }
+
+    public static Builder from(User other) {
+        Objects.requireNonNull(other, "User cannot be null");
+        return new Builder()
+                .username(other.getUsername())
+                .email(other.getEmail())
+                .password(other.getPassword())
+                .role(other.getRole())
+                .emailVerified(other.getEmailVerified())
+                .accountLocked(other.getAccountLocked())
+                .failedLoginAttempts(other.getFailedLoginAttempts())
+                .emailVerifiedAt(other.getEmailVerifiedAt())
+                .lockedUntil(other.getLockedUntil())
+                .passwordChangedAt(other.getPasswordChangedAt())
+                .lastLogin(other.getLastLogin());
+    }
+
+    public static Builder of(String username, String email) {
+        return new Builder()
+                .username(username)
+                .email(email);
+    }
+
+    public static Builder of(String username, String email, String password) {
+        return new Builder()
+                .username(username)
+                .email(email)
+                .password(password);
+    }
+
+    public static Builder withDefaults() {
+        return new Builder()
+                .role(Role.USER)
+                .emailVerified(false)
+                .accountLocked(false)
+                .failedLoginAttempts(0);
+    }
+
+    public static Builder asAdmin() {
+        return withDefaults()
+                .role(Role.ADMIN);
+    }
+
+    public static Builder asAuthor() {
+        return withDefaults()
+                .role(Role.AUTHOR);
+    }
+
+    public static Builder verified() {
+        return withDefaults()
+                .emailVerified(true)
+                .emailVerifiedAt(LocalDateTime.now());
+    }
 }
