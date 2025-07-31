@@ -90,6 +90,17 @@ services:
       - blog-network
     restart: unless-stopped
 
+  # MailHog SMTP Server (for development/testing)
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: blog-mailhog
+    ports:
+      - "1025:1025"  # SMTP port
+      - "8025:8025"  # Web UI port
+    networks:
+      - blog-network
+    restart: unless-stopped
+
   # Aplicação Spring Boot
   blog-api:
     build:
@@ -108,6 +119,13 @@ services:
       ENVIRONMENT: docker
       JWT_SECRET: mySecretKey123456789012345678901234567890
       JWT_EXPIRATION: 86400000
+      SPRING_MAIL_HOST: mailhog
+      SPRING_MAIL_PORT: 1025
+      SPRING_MAIL_USERNAME: ''
+      SPRING_MAIL_PASSWORD: ''
+      BLOG_EMAIL_ENABLED: true
+      BLOG_EMAIL_FROM: 'noreply@blogapi.com'
+      BLOG_EMAIL_BASE_URL: 'http://localhost:8080'
     ports:
       - "8080:8080"
     depends_on:
