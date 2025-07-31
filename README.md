@@ -24,6 +24,8 @@ API REST para sistema de blog desenvolvida com Java e Spring Boot seguindo metod
 - [x] Registro de usuários
 - [x] Login com JWT
 - [x] Controle de roles (USER, AUTHOR, ADMIN)
+- [x] **Email Verification** - Verificação obrigatória de email para novos usuários
+- [x] **Password Recovery** - Sistema seguro de recuperação de senha por email
 
 ### Gestão de Usuários
 - [x] CRUD de usuários
@@ -52,6 +54,13 @@ API REST para sistema de blog desenvolvida com Java e Spring Boot seguindo metod
 - [x] Invalidação automática de cache
 - [x] Otimização de consultas
 
+### Sistema de Email
+- [x] **Email Verification** - Templates HTML profissionais
+- [x] **Password Recovery** - Tokens seguros com expiração
+- [x] **Rate Limiting** - Proteção contra spam de emails
+- [x] **MailHog Integration** - Ambiente de desenvolvimento
+- [x] **SMTP Support** - Configuração flexível de provedores
+
 ### Monitoramento e Observabilidade
 - [x] Métricas com Prometheus
 - [x] Dashboards Grafana
@@ -79,6 +88,11 @@ src/main/java/com/blog/api/
 ### Autenticação
 - `POST /api/v1/auth/register` - Registrar usuário
 - `POST /api/v1/auth/login` - Login
+- `GET /api/v1/auth/verify-email?token=` - Verificar email
+- `POST /api/v1/auth/resend-verification` - Reenviar verificação
+- `POST /api/v1/auth/forgot-password` - Solicitar reset de senha
+- `POST /api/v1/auth/reset-password` - Redefinir senha
+- `GET /api/v1/auth/reset-password?token=` - Validar token de reset
 
 ### Usuários
 - `GET /api/v1/users` - Listar usuários (ADMIN)
@@ -225,6 +239,7 @@ management:
    ```
 3. **Acesse os serviços:**
    - **API Swagger:** http://localhost:8080/swagger-ui.html
+   - **MailHog (Email):** http://localhost:8025
    - **Grafana:** http://localhost:3000 (admin/admin)
    - **Prometheus:** http://localhost:9090
    - **Zipkin:** http://localhost:9411
@@ -272,10 +287,11 @@ docker-compose exec redis redis-cli
 
 ### Estrutura Docker
 - **Dockerfile**: Multi-stage build para otimização
-- **docker-compose.yml**: Orquestração completa da stack (6 serviços)
+- **docker-compose.yml**: Orquestração completa da stack (7 serviços)
   - **blog-api**: Aplicação Spring Boot
   - **postgres**: Banco de dados PostgreSQL
   - **redis**: Cache distribuído
+  - **mailhog**: Servidor SMTP de desenvolvimento
   - **prometheus**: Coleta de métricas
   - **grafana**: Dashboards e visualização
   - **zipkin**: Distributed tracing
@@ -462,10 +478,11 @@ Para ver o log completo de desenvolvimento, consulte [DEVELOPMENT_LOG.md](./DEVE
 ### ✅ **Implementado e Funcionando:**
 - 🏗️ **Arquitetura**: API REST enterprise com Spring Boot 3.2 + Java 17
 - 🔐 **Segurança**: JWT Authentication com roles (USER, AUTHOR, ADMIN)
+- 📧 **Email System**: Verificação de email + recuperação de senha com templates HTML profissionais
 - 💾 **Persistência**: PostgreSQL 15 com JPA/Hibernate otimizado
 - ⚡ **Cache**: Redis 7 distribuído com TTL customizado por entidade
 - 📊 **Monitoramento**: Stack completa Prometheus + Grafana + Zipkin
-- 🐳 **Containerização**: Docker Compose com 6 serviços orquestrados
+- 🐳 **Containerização**: Docker Compose com 7 serviços orquestrados (+ MailHog)
 - 🚀 **CI/CD**: 4 GitHub Actions pipelines completos (CI, Docker, Deploy, Performance)
 - 🧪 **Testes**: Unit, Integration, Performance e Security tests
 - 📈 **Performance**: Cache Redis + métricas em tempo real + alerting
@@ -476,6 +493,8 @@ Para ver o log completo de desenvolvimento, consulte [DEVELOPMENT_LOG.md](./DEVE
 ### 🔄 **Roadmap de Evolução:**
 
 #### **Phase 1: Core Enhancement (Q3 2025)**
+- ✅ **Email Verification** - IMPLEMENTADO (Jan 2025)
+- ✅ **Password Recovery** - IMPLEMENTADO (Jan 2025)
 - Rate limiting com Redis
 - Logs estruturados com ELK Stack
 - Advanced caching strategies

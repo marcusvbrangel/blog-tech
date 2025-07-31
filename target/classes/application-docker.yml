@@ -32,6 +32,19 @@ spring:
     type: redis
     redis:
       time-to-live: 600000
+  mail:
+    host: ${SPRING_MAIL_HOST:mailhog}
+    port: ${SPRING_MAIL_PORT:1025}
+    username: ${SPRING_MAIL_USERNAME:}
+    password: ${SPRING_MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+          ssl:
+            enable: false
 
 server:
   port: 8080
@@ -91,3 +104,17 @@ tracing:
     endpoint: ${ZIPKIN_ENDPOINT:http://zipkin:9411/api/v2/spans}
   sampling:
     probability: ${TRACING_SAMPLING_PROBABILITY:0.0}
+
+blog:
+  email:
+    enabled: ${BLOG_EMAIL_ENABLED:true}
+    from: ${BLOG_EMAIL_FROM:noreply@blogapi.com}
+    base-url: ${BLOG_EMAIL_BASE_URL:http://localhost:8080}
+  security:
+    email-verification:
+      enabled: true
+      token-expiration: 24h
+      max-attempts-per-hour: 3
+    password-reset:
+      token-expiration: 15m
+      max-attempts-per-hour: 5

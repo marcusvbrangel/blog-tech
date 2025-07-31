@@ -25,7 +25,12 @@
       "Bash(ss:*)",
       "Bash(kill:*)",
       "Bash(echo)",
-      "Bash(time curl:*)"
+      "Bash(time curl:*)",
+      "Bash(java:*)",
+      "Bash(docker:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)"
     ],
     "deny": []
   }
