@@ -8,19 +8,28 @@
 - **PostServiceTest** - CRUD posts, busca, filtros
 - **CategoryServiceTest** - CRUD categorias
 - **CommentServiceTest** - CRUD comentários, aninhamento
+- **EmailServiceTest** - Envio de emails, templates HTML, health check (13 testes)
+- **VerificationTokenServiceTest** - Tokens, validação, rate limiting (15 testes)
 
 ### **✅ Testes de Integração (Controllers)**
-- **AuthControllerTest** - Endpoints de autenticação
+- **AuthControllerTest** - Endpoints de autenticação + Email Verification (11 testes adicionais)
 - **PostControllerTest** - Endpoints de posts + segurança
 - **CategoryControllerTest** - Endpoints de categorias + roles
 
 ### **✅ Testes de Repository (@DataJpaTest)**
 - **PostRepositoryTest** - Queries customizadas, busca
 - **UserRepositoryTest** - Queries de usuário
+- **VerificationTokenRepositoryTest** - Queries de tokens, cleanup automático
 
 ### **✅ Testes de Segurança**
 - **JwtUtilTest** - Geração, validação, expiração de tokens
 - **SecurityConfigTest** - Endpoints públicos vs protegidos
+- **Email Verification Security** - Rate limiting, token security, privacy protection
+
+### **✅ Testes de Email System**
+- **EmailServiceTest** - Templates HTML, SMTP, health checks
+- **VerificationTokenServiceTest** - Segurança de tokens, expiração, uso único
+- **Rate Limiting Tests** - Proteção contra spam de emails
 
 ---
 
@@ -54,6 +63,13 @@ mvn test -Dtest="*RepositoryTest"
 
 # Teste específico
 mvn test -Dtest="AuthServiceTest"
+
+# Testes de Email Verification
+mvn test -Dtest="EmailServiceTest"
+mvn test -Dtest="VerificationTokenServiceTest"
+
+# Todos os testes de Email System
+mvn test -Dtest="*Email*,*Verification*"
 ```
 
 ---
@@ -163,12 +179,23 @@ class JwtUtilTest {
 - Validação de roles (USER, AUTHOR, ADMIN)
 - Tokens JWT válidos/inválidos/expirados
 - CSRF protection
+- **Email Verification Security:**
+  - Tokens únicos e seguros (UUID v4)
+  - Rate limiting por email (3/hora verificação, 5/hora reset)
+  - Proteção contra email enumeration
+  - Tokens de uso único com expiração
+  - Privacy protection em logs
 
 ### **🗄️ Casos de Persistência**
 - Queries customizadas
 - Relacionamentos entre entidades
 - Paginação
 - Ordenação
+- **Email System Persistence:**
+  - Tabela verification_tokens com índices otimizados
+  - Foreign keys com cascade DELETE
+  - Queries de cleanup automático de tokens expirados
+  - Atualizações em users (email_verified, email_verified_at)
 
 ---
 
@@ -181,6 +208,8 @@ class JwtUtilTest {
 - **Spring Security Test** - Testes de segurança
 - **TestContainers** - Testes com banco real (opcional)
 - **AssertJ** - Assertions fluentes
+- **Spring Mail Test** - Testes de email
+- **MockMvc** - Testes HTTP com security context
 
 ### **📈 Coverage Tools**
 - **JaCoCo** - Code coverage
@@ -237,4 +266,90 @@ mvn test -T 4
 mvn site
 ```
 
-**🎉 Com essa configuração, você tem uma suite de testes robusta e profissional para seu portfolio!**
+---
+
+## 📧 Novos Testes de Email Verification (Janeiro 2025)
+
+### **EmailServiceTest - 13 Testes**
+```java
+@ExtendWith(MockitoExtension.class)
+class EmailServiceTest {
+    @Test void sendEmailVerification_Success()
+    @Test void sendEmailVerification_EmailDisabled_SkipsEmail()
+    @Test void sendEmailVerification_MailSenderThrowsException_ThrowsRuntimeException()
+    @Test void sendPasswordReset_Success()
+    @Test void sendPasswordReset_EmailDisabled_SkipsEmail()
+    @Test void sendPasswordReset_MailSenderThrowsException_ThrowsRuntimeException()
+    @Test void sendWelcomeEmail_Success()
+    @Test void sendWelcomeEmail_EmailDisabled_SkipsEmail()
+    @Test void sendWelcomeEmail_MailSenderThrowsException_DoesNotThrowException()
+    @Test void isEmailServiceHealthy_Success_ReturnsTrue()
+    @Test void isEmailServiceHealthy_EmailDisabled_ReturnsFalse()
+    @Test void isEmailServiceHealthy_MailSenderThrowsException_ReturnsFalse()
+    // + testes de validação de conteúdo
+}
+```
+
+### **VerificationTokenServiceTest - 15 Testes**
+```java
+@ExtendWith(MockitoExtension.class)
+class VerificationTokenServiceTest {
+    @Test void generateEmailVerificationToken_Success()
+    @Test void generateEmailVerificationToken_UserAlreadyVerified_ThrowsException()  
+    @Test void verifyEmailToken_ValidToken_VerifiesUser()
+    @Test void verifyEmailToken_InvalidToken_ThrowsException()
+    @Test void verifyEmailToken_ExpiredToken_ThrowsException()
+    @Test void verifyEmailToken_AlreadyUsedToken_ThrowsException()
+    @Test void generatePasswordResetToken_Success()
+    @Test void generatePasswordResetToken_NonExistentUser_SilentReturn()
+    @Test void resetPassword_ValidToken_UpdatesPassword()
+    @Test void resetPassword_InvalidToken_ThrowsException()
+    @Test void resetPassword_ExpiredToken_ThrowsException()
+    @Test void resetPassword_AlreadyUsedToken_ThrowsException()
+    @Test void validatePasswordResetToken_ValidToken_Success()
+    @Test void validatePasswordResetToken_InvalidToken_ThrowsException()
+    @Test void isWithinRateLimit_Success()
+}
+```
+
+### **AuthControllerTest - Email Verification (11 Testes Adicionais)**
+```java
+@WebMvcTest(AuthController.class)
+class AuthControllerTest {
+    @Test void verifyEmail_ValidToken_ReturnsSuccess()
+    @Test void verifyEmail_InvalidToken_ReturnsBadRequest()
+    @Test void verifyEmail_ExpiredToken_ReturnsBadRequest()
+    @Test void verifyEmail_AlreadyUsedToken_ReturnsBadRequest()
+    @Test void resendEmailVerification_ValidEmail_ReturnsSuccess()
+    @Test void resendEmailVerification_AlreadyVerifiedEmail_ReturnsBadRequest()
+    @Test void resendEmailVerification_NonExistentEmail_ReturnsBadRequest()
+    @Test void forgotPassword_ValidEmail_ReturnsSuccess()
+    @Test void forgotPassword_NonExistentEmail_ReturnsSuccessForSecurity()
+    @Test void resetPassword_ValidToken_ReturnsSuccess()
+    @Test void resetPassword_InvalidToken_ReturnsBadRequest()
+}
+```
+
+### **Configuração de Testes Melhorada**
+```yaml
+# src/test/resources/application-test.yml
+spring:
+  cache:
+    type: none # Disable caching in tests
+  data:
+    redis:
+      repositories:
+        enabled: false # Disable Redis repositories in tests
+  mail:
+    host: localhost
+    port: 3025
+```
+
+### **Melhorias na Infraestrutura de Testes**
+- ✅ **Redis Desabilitado**: Evita falhas de conexão durante testes
+- ✅ **Security Context Isolado**: `@MockBean SecurityConfig` para testes de controller
+- ✅ **Email Mocking**: JavaMailSender mockado para testes unitários
+- ✅ **Rate Limiting Tests**: Validação de proteção contra spam
+- ✅ **Error Handling**: Testes de cenários de erro e exceções
+
+**🎉 Com essa configuração expandida, você tem uma suite de testes ainda mais robusta incluindo o sistema completo de Email Verification!**
