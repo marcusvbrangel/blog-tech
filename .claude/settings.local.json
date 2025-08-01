@@ -36,7 +36,10 @@
       "Bash(git add:*)",
       "Bash(git reset:*)",
       "Bash(git push:*)",
-      "Bash(gh pr create:*)"
+      "Bash(gh pr create:*)",
+      "Bash(git commit:*)",
+      "Bash(/snap/bin/gh:*)",
+      "Bash(snap list:*)"
     ],
     "deny": []
   }
