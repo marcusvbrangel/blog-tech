@@ -59,7 +59,9 @@ class AuthControllerEmailVerificationTest {
             LocalDateTime.now(),
             true,
             LocalDateTime.now(),
-            LocalDateTime.now()
+            LocalDateTime.now(),
+            "v1.0",
+            true
         );
     }
 

@@ -42,12 +42,8 @@ mvn test
 
 ### **📊 Gerar Relatório de Cobertura**
 ```bash
-mvn clean test jacoco:report
-```
-
-### **📈 Verificar Cobertura Mínima (80%)**
-```bash
-mvn jacoco:check
+# Cobertura removida - JaCoCo desabilitado para melhor performance
+mvn clean test
 ```
 
 ### **🎯 Executar Testes Específicos**
@@ -76,27 +72,21 @@ mvn test -Dtest="*Email*,*Verification*"
 
 ## 📊 Relatórios de Cobertura
 
-### **📁 Localização dos Relatórios**
-Após executar `mvn test jacoco:report`:
-- **HTML:** `target/site/jacoco/index.html`
-- **XML:** `target/site/jacoco/jacoco.xml`
-- **CSV:** `target/site/jacoco/jacoco.csv`
+### **⚠️ JaCoCo Removido**
+JaCoCo foi removido permanentemente do projeto por causar:
+- Lentidão na compilação e testes
+- Problemas de compatibilidade com Java 21
+- Complexidade desnecessária no desenvolvimento
 
-### **🎯 Meta de Cobertura**
-- **Mínimo configurado:** 80% de cobertura de linha
-- **Exclusões configuradas:**
-  - Application class (main)
-  - DTOs (apenas transferência de dados)
-  - Entities (JPA entities)
-  - Configs (configurações)
+### **🔧 JVM Warnings Resolvidos**
+Configurações adicionadas para eliminar warnings recorrentes:
+- **`.mvn/jvm.config`** - Configurações JVM para Maven
+- **`.mvn/maven.config`** - Configurações Maven específicas
+- **Surefire Plugin** - Args JVM otimizados para testes
 
-### **📈 Como Visualizar**
-```bash
-# Abrir relatório HTML
-open target/site/jacoco/index.html
-# ou
-firefox target/site/jacoco/index.html
-```
+**Resultado**: Execução limpa sem warnings do ByteBuddy/Mockito/OpenJDK
+
+Para análise de cobertura, recomenda-se usar ferramentas IDE ou soluções externas quando necessário.
 
 ---
 
@@ -211,9 +201,9 @@ class JwtUtilTest {
 - **Spring Mail Test** - Testes de email
 - **MockMvc** - Testes HTTP com security context
 
-### **📈 Coverage Tools**
-- **JaCoCo** - Code coverage
+### **📈 Testing Tools**
 - **Maven Surefire** - Test execution
+- **JUnit 5** - Test framework
 
 ---
 

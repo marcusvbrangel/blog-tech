@@ -148,6 +148,8 @@ class TermsServiceTest {
         when(termsAcceptanceRepository.save(any(TermsAcceptance.class))).thenReturn(testAcceptance);
         when(userRepository.save(testUser)).thenReturn(testUser);
         when(httpServletRequest.getHeader("User-Agent")).thenReturn("Mozilla/5.0");
+        when(httpServletRequest.getHeader("X-Forwarded-For")).thenReturn(null);
+        when(httpServletRequest.getHeader("X-Real-IP")).thenReturn(null);
         when(httpServletRequest.getRemoteAddr()).thenReturn("192.168.1.1");
 
         // When
@@ -168,6 +170,8 @@ class TermsServiceTest {
         when(termsAcceptanceRepository.save(any(TermsAcceptance.class))).thenReturn(testAcceptance);
         when(userRepository.save(testUser)).thenReturn(testUser);
         when(httpServletRequest.getHeader("User-Agent")).thenReturn("Mozilla/5.0");
+        when(httpServletRequest.getHeader("X-Forwarded-For")).thenReturn(null);
+        when(httpServletRequest.getHeader("X-Real-IP")).thenReturn(null);
         when(httpServletRequest.getRemoteAddr()).thenReturn("192.168.1.1");
 
         // When
