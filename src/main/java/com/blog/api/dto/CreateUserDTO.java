@@ -1,6 +1,7 @@
 package com.blog.api.dto;
 
 import com.blog.api.entity.User;
+import com.blog.api.util.PasswordPolicyValidator;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -15,12 +16,18 @@ public record CreateUserDTO(
     String email,
 
     @NotBlank(message = "Password is required")
-    @Size(min = 6, message = "Password must be at least 6 characters")
     String password,
 
     User.Role role
 ) {
     public CreateUserDTO(String username, String email, String password) {
         this(username, email, password, User.Role.USER);
+    }
+
+    public CreateUserDTO {
+        PasswordPolicyValidator.ValidationResult result = PasswordPolicyValidator.validate(password);
+        if (!result.isValid()) {
+            throw new IllegalArgumentException("Password policy violation: " + result.getErrorMessage());
+        }
     }
 }

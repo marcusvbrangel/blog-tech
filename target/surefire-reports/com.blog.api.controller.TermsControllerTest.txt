@@ -1,59 +1,171 @@
 -------------------------------------------------------------------------------
 Test set: com.blog.api.controller.TermsControllerTest
 -------------------------------------------------------------------------------
-Tests run: 21, Failures: 5, Errors: 0, Skipped: 0, Time elapsed: 7.523 s <<< FAILURE! -- in com.blog.api.controller.TermsControllerTest
-com.blog.api.controller.TermsControllerTest.adminEndpoints_AsUser_ShouldReturn403 -- Time elapsed: 0.054 s <<< FAILURE!
-java.lang.AssertionError: Status expected:<403> but was:<500>
-	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
-	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
-	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$9(StatusResultMatchers.java:637)
-	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
-	at com.blog.api.controller.TermsControllerTest.adminEndpoints_AsUser_ShouldReturn403(TermsControllerTest.java:396)
+Tests run: 21, Failures: 0, Errors: 21, Skipped: 0, Time elapsed: 0.914 s <<< FAILURE! -- in com.blog.api.controller.TermsControllerTest
+com.blog.api.controller.TermsControllerTest.getUserTermsHistoryAdmin_AsAdmin_ShouldReturnHistory -- Time elapsed: 0.009 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 
-com.blog.api.controller.TermsControllerTest.getTermsStatistics_AsUser_ShouldReturn403 -- Time elapsed: 0.021 s <<< FAILURE!
-java.lang.AssertionError: Status expected:<403> but was:<500>
-	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
-	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
-	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$9(StatusResultMatchers.java:637)
-	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
-	at com.blog.api.controller.TermsControllerTest.getTermsStatistics_AsUser_ShouldReturn403(TermsControllerTest.java:320)
+com.blog.api.controller.TermsControllerTest.getCurrentTermsInfoForUser_WhenAuthenticated_ShouldReturnPersonalizedInfo -- Time elapsed: 0.004 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 
-com.blog.api.controller.TermsControllerTest.acceptTerms_WithValidRequest_ShouldReturnSuccess -- Time elapsed: 0.181 s <<< FAILURE!
-java.lang.AssertionError: No value at JSON path "$.status"
-	at org.springframework.test.util.JsonPathExpectationsHelper.evaluateJsonPath(JsonPathExpectationsHelper.java:302)
-	at org.springframework.test.util.JsonPathExpectationsHelper.assertValue(JsonPathExpectationsHelper.java:99)
-	at org.springframework.test.web.servlet.result.JsonPathResultMatchers.lambda$value$2(JsonPathResultMatchers.java:111)
-	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
-	at com.blog.api.controller.TermsControllerTest.acceptTerms_WithValidRequest_ShouldReturnSuccess(TermsControllerTest.java:195)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
-Caused by: com.jayway.jsonpath.PathNotFoundException: No results for path: $['status']
-
-com.blog.api.controller.TermsControllerTest.getNonCompliantUsers_AsAdmin_ShouldReturnUsers -- Time elapsed: 0.061 s <<< FAILURE!
-java.lang.AssertionError: Status expected:<200> but was:<500>
-	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
-	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
-	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$9(StatusResultMatchers.java:637)
-	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
-	at com.blog.api.controller.TermsControllerTest.getNonCompliantUsers_AsAdmin_ShouldReturnUsers(TermsControllerTest.java:337)
+com.blog.api.controller.TermsControllerTest.adminEndpoints_AsUser_ShouldReturn403 -- Time elapsed: 0.004 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 
-com.blog.api.controller.TermsControllerTest.getCurrentTermsInfo_ForAnonymousUser_ShouldReturnCurrentTerms -- Time elapsed: 0.025 s <<< FAILURE!
-java.lang.AssertionError: Status expected:<200> but was:<401>
-	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
-	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
-	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$9(StatusResultMatchers.java:637)
-	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
-	at com.blog.api.controller.TermsControllerTest.getCurrentTermsInfo_ForAnonymousUser_ShouldReturnCurrentTerms(TermsControllerTest.java:103)
+com.blog.api.controller.TermsControllerTest.getTermsStatistics_AsUser_ShouldReturn403 -- Time elapsed: 0.012 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.getCurrentTermsInfoForUser_AsAdmin_CanCheckOtherUsers -- Time elapsed: 0.004 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.acceptTerms_WithValidRequest_ShouldReturnSuccess -- Time elapsed: 0.006 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.cleanupOldRecords_AsAdmin_ShouldReturnSuccess -- Time elapsed: 0.006 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.getTermsStatistics_AsAdmin_ShouldReturnStatistics -- Time elapsed: 0.005 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.getUserTermsHistory_WhenNotAuthenticated_ShouldReturn401 -- Time elapsed: 0.003 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.getCurrentTermsInfoForUser_AsNonAdmin_CannotCheckOtherUsers -- Time elapsed: 0.005 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.acceptTerms_WithInvalidAcceptance_ShouldReturnBadRequest -- Time elapsed: 0.015 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.getUserTermsHistory_ShouldReturnHistory -- Time elapsed: 0.005 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.getVersionAcceptances_AsAdmin_ShouldReturnAcceptances -- Time elapsed: 0.006 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.acceptTerms_WhenNotAuthenticated_ShouldReturn401 -- Time elapsed: 0.003 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.getNonCompliantUsers_AsAdmin_ShouldReturnUsers -- Time elapsed: 0.007 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.getCurrentTermsInfo_ForAnonymousUser_ShouldReturnCurrentTerms -- Time elapsed: 0.004 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.forceReAcceptance_AsAdmin_ShouldReturnSuccess -- Time elapsed: 0.007 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.getCurrentTermsInfoForUser_WhenNeedsAcceptance_ShouldReturnRequiredStatus -- Time elapsed: 0.005 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.getCurrentTermsInfoForUser_WhenNotAuthenticated_ShouldReturn401 -- Time elapsed: 0.009 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.acceptTerms_WithWrongVersion_ShouldReturnBadRequest -- Time elapsed: 0.005 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.acceptTerms_WhenAlreadyAccepted_ShouldReturnConflict -- Time elapsed: 0.004 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.controller.TermsControllerTest.setUp(TermsControllerTest.java:76)
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
 	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)

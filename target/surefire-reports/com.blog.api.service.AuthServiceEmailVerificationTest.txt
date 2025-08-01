@@ -1,4 +1,85 @@
 -------------------------------------------------------------------------------
 Test set: com.blog.api.service.AuthServiceEmailVerificationTest
 -------------------------------------------------------------------------------
-Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.705 s -- in com.blog.api.service.AuthServiceEmailVerificationTest
+Tests run: 16, Failures: 3, Errors: 3, Skipped: 0, Time elapsed: 0.943 s <<< FAILURE! -- in com.blog.api.service.AuthServiceEmailVerificationTest
+com.blog.api.service.AuthServiceEmailVerificationTest.login_WithExpiredLock_UnlocksAccountAndProceedsWithLogin -- Time elapsed: 0.014 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception thrown: java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one digit; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?)
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertDoesNotThrow.createAssertionFailedError(AssertDoesNotThrow.java:84)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:75)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:58)
+	at org.junit.jupiter.api.Assertions.assertDoesNotThrow(Assertions.java:3228)
+	at com.blog.api.service.AuthServiceEmailVerificationTest.login_WithExpiredLock_UnlocksAccountAndProceedsWithLogin(AuthServiceEmailVerificationTest.java:176)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one digit; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?)
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.entity.User.from(User.java:283)
+	at com.blog.api.service.AuthService.login(AuthService.java:107)
+	at com.blog.api.service.AuthServiceEmailVerificationTest.lambda$login_WithExpiredLock_UnlocksAccountAndProceedsWithLogin$4(AuthServiceEmailVerificationTest.java:176)
+	at org.junit.jupiter.api.AssertDoesNotThrow.assertDoesNotThrow(AssertDoesNotThrow.java:71)
+	... 6 more
+
+com.blog.api.service.AuthServiceEmailVerificationTest.register_WithEmailVerificationEnabled_SendsVerificationEmail -- Time elapsed: 0.005 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one digit; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.dto.CreateUserDTO.<init>(CreateUserDTO.java:30)
+	at com.blog.api.service.AuthServiceEmailVerificationTest.register_WithEmailVerificationEnabled_SendsVerificationEmail(AuthServiceEmailVerificationTest.java:79)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.service.AuthServiceEmailVerificationTest.register_WithEmailVerificationDisabled_SetsEmailAsVerified -- Time elapsed: 0.003 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one digit; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.dto.CreateUserDTO.<init>(CreateUserDTO.java:30)
+	at com.blog.api.service.AuthServiceEmailVerificationTest.register_WithEmailVerificationDisabled_SetsEmailAsVerified(AuthServiceEmailVerificationTest.java:105)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.service.AuthServiceEmailVerificationTest.resetPassword_Success -- Time elapsed: 0.005 s <<< ERROR!
+com.blog.api.exception.BadRequestException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one digit; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?)
+	at com.blog.api.service.AuthService.resetPassword(AuthService.java:206)
+	at com.blog.api.service.AuthServiceEmailVerificationTest.resetPassword_Success(AuthServiceEmailVerificationTest.java:315)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.service.AuthServiceEmailVerificationTest.login_FiveFailedAttempts_LocksAccount -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception type thrown, expected: <com.blog.api.exception.BadRequestException> but was: <java.lang.IllegalArgumentException>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:67)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
+	at com.blog.api.service.AuthServiceEmailVerificationTest.login_FiveFailedAttempts_LocksAccount(AuthServiceEmailVerificationTest.java:356)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one digit; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?)
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.entity.User.from(User.java:283)
+	at com.blog.api.service.AuthService.incrementFailedLoginAttempts(AuthService.java:233)
+	at com.blog.api.service.AuthService.login(AuthService.java:144)
+	at com.blog.api.service.AuthServiceEmailVerificationTest.lambda$login_FiveFailedAttempts_LocksAccount$14(AuthServiceEmailVerificationTest.java:356)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
+	... 6 more
+
+com.blog.api.service.AuthServiceEmailVerificationTest.login_FailedAuthentication_IncrementsFailedAttempts -- Time elapsed: 0.005 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Unexpected exception type thrown, expected: <com.blog.api.exception.BadRequestException> but was: <java.lang.IllegalArgumentException>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:67)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3115)
+	at com.blog.api.service.AuthServiceEmailVerificationTest.login_FailedAuthentication_IncrementsFailedAttempts(AuthServiceEmailVerificationTest.java:338)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one digit; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?)
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.entity.User.from(User.java:283)
+	at com.blog.api.service.AuthService.incrementFailedLoginAttempts(AuthService.java:233)
+	at com.blog.api.service.AuthService.login(AuthService.java:144)
+	at com.blog.api.service.AuthServiceEmailVerificationTest.lambda$login_FailedAuthentication_IncrementsFailedAttempts$12(AuthServiceEmailVerificationTest.java:338)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
+	... 6 more
+

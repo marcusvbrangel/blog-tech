@@ -1,7 +1,7 @@
 package com.blog.api.dto;
 
+import com.blog.api.util.PasswordPolicyValidator;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 
 /**
  * Request DTO for password reset confirmation
@@ -11,9 +11,15 @@ public record PasswordResetConfirmRequest(
     String token,
     
     @NotBlank(message = "New password is required")
-    @Size(min = 6, message = "Password must be at least 6 characters long")
     String newPassword
 ) {
+    
+    public PasswordResetConfirmRequest {
+        PasswordPolicyValidator.ValidationResult result = PasswordPolicyValidator.validate(newPassword);
+        if (!result.isValid()) {
+            throw new IllegalArgumentException("Password policy violation: " + result.getErrorMessage());
+        }
+    }
     
     /**
      * Factory method to create from token and password

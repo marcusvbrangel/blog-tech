@@ -56,6 +56,13 @@ public class AuthService {
             throw new BadRequestException("Email already exists");
         }
 
+        // Validate password policy before encoding
+        com.blog.api.util.PasswordPolicyValidator.ValidationResult result = 
+            com.blog.api.util.PasswordPolicyValidator.validate(createUserDTO.password());
+        if (!result.isValid()) {
+            throw new BadRequestException("Password policy violation: " + result.getErrorMessage());
+        }
+
         // Create user using builder pattern with validation
         User user = User.of(createUserDTO.username(), createUserDTO.email(), passwordEncoder.encode(createUserDTO.password()))
                 .role(createUserDTO.role())
@@ -191,6 +198,13 @@ public class AuthService {
      */
     public UserDTO resetPassword(String token, String newPassword) {
         User user = verificationTokenService.verifyPasswordResetToken(token);
+        
+        // Validate password policy before encoding (Builder will validate raw password)
+        com.blog.api.util.PasswordPolicyValidator.ValidationResult result = 
+            com.blog.api.util.PasswordPolicyValidator.validate(newPassword);
+        if (!result.isValid()) {
+            throw new BadRequestException("Password policy violation: " + result.getErrorMessage());
+        }
         
         // Update password using builder pattern
         User updatedUser = User.from(user)

@@ -1,4 +1,60 @@
 -------------------------------------------------------------------------------
 Test set: com.blog.api.dto.TermsAcceptanceResponseTest
 -------------------------------------------------------------------------------
-Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.024 s -- in com.blog.api.dto.TermsAcceptanceResponseTest
+Tests run: 7, Failures: 0, Errors: 7, Skipped: 0, Time elapsed: 0.021 s <<< FAILURE! -- in com.blog.api.dto.TermsAcceptanceResponseTest
+com.blog.api.dto.TermsAcceptanceResponseTest.fromEntity_WithNullIpAndUserAgent_ShouldHandleGracefully -- Time elapsed: 0.003 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.dto.TermsAcceptanceResponseTest.setUp(TermsAcceptanceResponseTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.dto.TermsAcceptanceResponseTest.fromEntity_ShouldIncludeAllFields -- Time elapsed: 0.002 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.dto.TermsAcceptanceResponseTest.setUp(TermsAcceptanceResponseTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.dto.TermsAcceptanceResponseTest.constructor_ShouldSetAllFields -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.dto.TermsAcceptanceResponseTest.setUp(TermsAcceptanceResponseTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.dto.TermsAcceptanceResponseTest.fromEntitySafe_WithNullIpAndUserAgent_ShouldReturnNull -- Time elapsed: 0.002 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.dto.TermsAcceptanceResponseTest.setUp(TermsAcceptanceResponseTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.dto.TermsAcceptanceResponseTest.fromEntitySafe_ShouldHideIpAddressAndUserAgent -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.dto.TermsAcceptanceResponseTest.setUp(TermsAcceptanceResponseTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.dto.TermsAcceptanceResponseTest.toString_ShouldContainAllFields -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.dto.TermsAcceptanceResponseTest.setUp(TermsAcceptanceResponseTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.dto.TermsAcceptanceResponseTest.equals_ShouldWorkCorrectly -- Time elapsed: 0.001 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.entity.User$Builder.password(User.java:204)
+	at com.blog.api.dto.TermsAcceptanceResponseTest.setUp(TermsAcceptanceResponseTest.java:22)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+

@@ -8,6 +8,7 @@ com/blog/api/exception/GlobalExceptionHandler$ErrorResponse.class
 com/blog/api/controller/PostController.class
 com/blog/api/dto/CommentDTO.class
 com/blog/api/dto/PasswordResetConfirmRequest.class
+com/blog/api/util/PasswordPolicyValidator.class
 com/blog/api/dto/TermsAcceptanceResponse.class
 com/blog/api/dto/TermsStatisticsDTO.class
 com/blog/api/entity/TermsAcceptance.class
@@ -61,6 +62,7 @@ com/blog/api/dto/LoginRequest.class
 com/blog/api/exception/BadRequestException.class
 com/blog/api/service/CommentService.class
 com/blog/api/dto/UserDTO.class
+com/blog/api/util/PasswordPolicyValidator$ValidationResult.class
 com/blog/api/entity/User$Builder.class
 com/blog/api/exception/GlobalExceptionHandler$ValidationErrorResponse.class
 com/blog/api/entity/User$Role.class

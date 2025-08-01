@@ -1,4 +1,12 @@
 -------------------------------------------------------------------------------
 Test set: com.blog.api.integration.DebugSpecificFailuresTest
 -------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.649 s -- in com.blog.api.integration.DebugSpecificFailuresTest
+Tests run: 2, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 5.917 s <<< FAILURE! -- in com.blog.api.integration.DebugSpecificFailuresTest
+com.blog.api.integration.DebugSpecificFailuresTest.debugLoginAfterEmailVerification -- Time elapsed: 0.016 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.dto.CreateUserDTO.<init>(CreateUserDTO.java:30)
+	at com.blog.api.integration.DebugSpecificFailuresTest.debugLoginAfterEmailVerification(DebugSpecificFailuresTest.java:55)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+

@@ -2,6 +2,7 @@ com/blog/api/controller/AuthControllerEmailVerificationTest.class
 com/blog/api/service/VerificationTokenServiceTest.class
 com/blog/api/repository/TermsAcceptanceRepositoryTest.class
 com/blog/api/integration/DebugSpecificFailuresTest.class
+com/blog/api/util/PasswordPolicyValidatorTest.class
 com/blog/api/dto/TermsAcceptanceRequestTest.class
 com/blog/api/service/AuthServiceEmailVerificationTest.class
 com/blog/api/service/TermsServiceTest.class
@@ -11,8 +12,10 @@ com/blog/api/dto/TermsStatisticsDTOTest.class
 com/blog/api/repository/VerificationTokenRepositoryTest.class
 com/blog/api/entity/BuilderPatternsTest.class
 com/blog/api/dto/TermsInfoDTOTest.class
+com/blog/api/dto/CreateUserDTOPasswordPolicyTest.class
 com/blog/api/dto/TermsComplianceResponseTest.class
 com/blog/api/controller/TermsControllerTest.class
 com/blog/api/integration/EmailVerificationIntegrationTest.class
+com/blog/api/dto/PasswordResetConfirmRequestPasswordPolicyTest.class
 com/blog/api/config/TermsComplianceFilterTest.class
 com/blog/api/service/EmailServiceTest.class

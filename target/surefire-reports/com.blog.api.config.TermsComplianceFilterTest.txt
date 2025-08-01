@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.blog.api.config.TermsComplianceFilterTest
 -------------------------------------------------------------------------------
-Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.225 s -- in com.blog.api.config.TermsComplianceFilterTest
+Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.246 s -- in com.blog.api.config.TermsComplianceFilterTest

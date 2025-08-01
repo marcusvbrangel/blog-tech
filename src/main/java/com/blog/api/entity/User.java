@@ -196,9 +196,21 @@ public class User {
 
         public Builder password(String password) {
             Objects.requireNonNull(password, "Password cannot be null");
-            if (password.length() < 6) {
-                throw new IllegalArgumentException("Password must be at least 6 characters");
+            
+            // Apply password policy validation
+            com.blog.api.util.PasswordPolicyValidator.ValidationResult result = 
+                com.blog.api.util.PasswordPolicyValidator.validate(password);
+            if (!result.isValid()) {
+                throw new IllegalArgumentException("Password policy violation: " + result.getErrorMessage());
             }
+            
+            this.password = password;
+            return this;
+        }
+
+        @Deprecated(forRemoval = true)
+        public Builder rawPassword(String password) {
+            Objects.requireNonNull(password, "Password cannot be null");
             this.password = password;
             return this;
         }

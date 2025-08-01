@@ -18,7 +18,7 @@ class BuilderPatternsTest {
         // Given
         String username = "johndoe";
         String email = "john@example.com";
-        String password = "password123";
+        String password = "StrongP@ssw0rd1";
 
         // When
         User user = User.of(username, email, password)

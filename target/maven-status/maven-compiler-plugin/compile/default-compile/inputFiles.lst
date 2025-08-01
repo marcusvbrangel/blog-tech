@@ -28,6 +28,7 @@
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/config/RedisConfig.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/TermsComplianceResponse.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/exception/BadRequestException.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/util/PasswordPolicyValidator.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/repository/CategoryRepository.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/entity/User.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/repository/VerificationTokenRepository.java
