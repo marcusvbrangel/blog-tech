@@ -1,0 +1,60 @@
+-------------------------------------------------------------------------------
+Test set: com.blog.api.controller.TermsControllerTest
+-------------------------------------------------------------------------------
+Tests run: 21, Failures: 5, Errors: 0, Skipped: 0, Time elapsed: 7.523 s <<< FAILURE! -- in com.blog.api.controller.TermsControllerTest
+com.blog.api.controller.TermsControllerTest.adminEndpoints_AsUser_ShouldReturn403 -- Time elapsed: 0.054 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<403> but was:<500>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$9(StatusResultMatchers.java:637)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.blog.api.controller.TermsControllerTest.adminEndpoints_AsUser_ShouldReturn403(TermsControllerTest.java:396)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.getTermsStatistics_AsUser_ShouldReturn403 -- Time elapsed: 0.021 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<403> but was:<500>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$9(StatusResultMatchers.java:637)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.blog.api.controller.TermsControllerTest.getTermsStatistics_AsUser_ShouldReturn403(TermsControllerTest.java:320)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.acceptTerms_WithValidRequest_ShouldReturnSuccess -- Time elapsed: 0.181 s <<< FAILURE!
+java.lang.AssertionError: No value at JSON path "$.status"
+	at org.springframework.test.util.JsonPathExpectationsHelper.evaluateJsonPath(JsonPathExpectationsHelper.java:302)
+	at org.springframework.test.util.JsonPathExpectationsHelper.assertValue(JsonPathExpectationsHelper.java:99)
+	at org.springframework.test.web.servlet.result.JsonPathResultMatchers.lambda$value$2(JsonPathResultMatchers.java:111)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.blog.api.controller.TermsControllerTest.acceptTerms_WithValidRequest_ShouldReturnSuccess(TermsControllerTest.java:195)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: com.jayway.jsonpath.PathNotFoundException: No results for path: $['status']
+
+com.blog.api.controller.TermsControllerTest.getNonCompliantUsers_AsAdmin_ShouldReturnUsers -- Time elapsed: 0.061 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<200> but was:<500>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$9(StatusResultMatchers.java:637)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.blog.api.controller.TermsControllerTest.getNonCompliantUsers_AsAdmin_ShouldReturnUsers(TermsControllerTest.java:337)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.TermsControllerTest.getCurrentTermsInfo_ForAnonymousUser_ShouldReturnCurrentTerms -- Time elapsed: 0.025 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<200> but was:<401>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$9(StatusResultMatchers.java:637)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.blog.api.controller.TermsControllerTest.getCurrentTermsInfo_ForAnonymousUser_ShouldReturnCurrentTerms(TermsControllerTest.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
