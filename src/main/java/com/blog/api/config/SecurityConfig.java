@@ -28,6 +28,9 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    @Autowired
+    private TermsComplianceFilter termsComplianceFilter;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -58,6 +61,11 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/auth/resend-verification").permitAll()
                 .requestMatchers("/api/v1/auth/forgot-password").permitAll()
                 .requestMatchers("/api/v1/auth/reset-password").permitAll()
+                .requestMatchers("/api/v1/terms/current").permitAll()
+                .requestMatchers("/api/v1/terms/accept").authenticated()
+                .requestMatchers("/api/v1/terms/user-status").authenticated()
+                .requestMatchers("/api/v1/terms/history").authenticated()
+                .requestMatchers("/api/v1/terms/admin/**").hasRole("ADMIN")
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/v3/api-docs/**").permitAll()
                 .requestMatchers("/swagger-ui.html").permitAll()
@@ -96,6 +104,7 @@ public class SecurityConfig {
 
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(termsComplianceFilter, JwtAuthenticationFilter.class);
 
         return http.build();
     }

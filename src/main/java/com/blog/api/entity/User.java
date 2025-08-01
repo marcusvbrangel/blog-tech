@@ -62,6 +62,9 @@ public class User {
     @Column(name = "failed_login_attempts")
     private Integer failedLoginAttempts = 0;
 
+    @Column(name = "terms_accepted_version")
+    private String termsAcceptedVersion;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Post> posts = new ArrayList<>();
 
@@ -96,6 +99,7 @@ public class User {
         this.lockedUntil = builder.lockedUntil;
         this.passwordChangedAt = builder.passwordChangedAt;
         this.lastLogin = builder.lastLogin;
+        this.termsAcceptedVersion = builder.termsAcceptedVersion;
     }
 
     public Long getId() { return id; }
@@ -143,8 +147,13 @@ public class User {
     public Integer getFailedLoginAttempts() { return failedLoginAttempts; }
     public void setFailedLoginAttempts(Integer failedLoginAttempts) { this.failedLoginAttempts = failedLoginAttempts; }
 
+    public String getTermsAcceptedVersion() { return termsAcceptedVersion; }
+    public void setTermsAcceptedVersion(String termsAcceptedVersion) { this.termsAcceptedVersion = termsAcceptedVersion; }
+
     public boolean isEmailVerified() { return Boolean.TRUE.equals(emailVerified); }
     public boolean isAccountLocked() { return Boolean.TRUE.equals(accountLocked); }
+    public boolean hasAcceptedTerms() { return termsAcceptedVersion != null && !termsAcceptedVersion.trim().isEmpty(); }
+    public boolean hasAcceptedTermsVersion(String version) { return Objects.equals(termsAcceptedVersion, version); }
 
     // Builder Pattern Implementation
     public static class Builder {
@@ -159,6 +168,7 @@ public class User {
         private LocalDateTime lockedUntil;
         private LocalDateTime passwordChangedAt;
         private LocalDateTime lastLogin;
+        private String termsAcceptedVersion;
 
         public Builder username(String username) {
             Objects.requireNonNull(username, "Username cannot be null");
@@ -234,6 +244,11 @@ public class User {
             return this;
         }
 
+        public Builder termsAcceptedVersion(String termsAcceptedVersion) {
+            this.termsAcceptedVersion = termsAcceptedVersion;
+            return this;
+        }
+
         public User build() {
             // Final validation of required fields
             Objects.requireNonNull(username, "Username is required");
@@ -268,7 +283,8 @@ public class User {
                 .emailVerifiedAt(other.getEmailVerifiedAt())
                 .lockedUntil(other.getLockedUntil())
                 .passwordChangedAt(other.getPasswordChangedAt())
-                .lastLogin(other.getLastLogin());
+                .lastLogin(other.getLastLogin())
+                .termsAcceptedVersion(other.getTermsAcceptedVersion());
     }
 
     public static Builder of(String username, String email) {
