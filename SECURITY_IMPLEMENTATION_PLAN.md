@@ -39,7 +39,7 @@ Implementar 12 features avançadas de segurança para transformar a Blog API em 
 
 1. **Email Verification** - Base para comunicação
 2. **Password Recovery** - Funcionalidade crítica
-3. **Login Rate Limiting** - Proteção imediata
+3. **Login Rate Limiting** - ✅ **IMPLEMENTADO** - Proteção imediata
 4. **JWT Blacklist** - Controle de sessão
 
 ### **🥈 FASE 2 - Controle Avançado (2-3 semanas)**
@@ -216,38 +216,41 @@ public class VerificationToken {
 
 ---
 
-### **2. 🔒 Login Rate Limiting**
+### **2. 🔒 Login Rate Limiting** ✅ **IMPLEMENTADO**
 
-**Estratégia:**
-- **Nível 1**: Por email (5 tentativas/15min)
-- **Nível 2**: Por IP (15 tentativas/hora)
-- **Nível 3**: Global (50 tentativas/minuto)
+**✅ Status:** Implementado e funcional desde versão 1.0
 
-**Implementação:**
+**Implementação Atual:**
+- **Nível 1**: Por usuário (5 tentativas/15min) ✅ 
+- **Storage**: Campos diretos na tabela `users` ✅
+- **Auto-unlock**: Desbloqueio automático após expiração ✅
+
+**Diferenças vs Plano Original:**
+- ❌ **Nível 2**: Por IP (não implementado)
+- ❌ **Nível 3**: Global (não implementado)  
+- ❌ **Redis Cache**: Usa banco de dados direto
+- ❌ **Configuração**: Hard-coded (não configurável)
+
+**Localização:**
 ```java
-@Service
-public class LoginAttemptService {
+// AuthService.java - linhas 230-245
+private void incrementFailedLoginAttempts(User user) {
+    int attempts = user.getFailedLoginAttempts() + 1;
     
-    @Cacheable("login_attempts")
-    public boolean isBlocked(String identifier) {
-        // Verifica no Redis se está bloqueado
-    }
-    
-    public void recordFailedAttempt(String email, String ip) {
-        // Incrementa contadores
-        // Aplica políticas de bloqueio
-    }
-    
-    public void recordSuccessfulLogin(String email, String ip) {
-        // Reset contadores
+    // Lock account after 5 failed attempts for 15 minutes
+    if (attempts >= 5) {
+        builder.accountLocked(true)
+               .lockedUntil(LocalDateTime.now().plusMinutes(15));
     }
 }
 ```
 
-**Configuração:**
-- Cache Redis com TTL automático
-- Políticas configuráveis via `application.yml`
-- Logs de tentativas para análise
+**Campos do Banco:**
+- `failed_login_attempts` - Contador de tentativas
+- `account_locked` - Flag de bloqueio
+- `locked_until` - Timestamp de expiração
+
+**Documentação Detalhada:** Veja `RATE_LIMITING_LOGIN_SYSTEM.md`
 
 ---
 
