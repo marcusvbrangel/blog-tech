@@ -1,4 +1,5 @@
 com/blog/api/controller/AuthControllerEmailVerificationTest.class
+com/blog/api/integration/PasswordPolicyIntegrationTest.class
 com/blog/api/service/VerificationTokenServiceTest.class
 com/blog/api/repository/TermsAcceptanceRepositoryTest.class
 com/blog/api/integration/DebugSpecificFailuresTest.class

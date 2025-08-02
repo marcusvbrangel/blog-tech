@@ -76,11 +76,11 @@ class AuthServiceEmailVerificationTest {
     @Test
     void register_WithEmailVerificationEnabled_SendsVerificationEmail() {
         // Given
-        CreateUserDTO createUserDTO = new CreateUserDTO("testuser", "test@example.com", "password", User.Role.USER);
+        CreateUserDTO createUserDTO = new CreateUserDTO("testuser", "test@example.com", "TestP@ssw0rd1", User.Role.USER);
         
         when(userRepository.existsByUsername("testuser")).thenReturn(false);
         when(userRepository.existsByEmail("test@example.com")).thenReturn(false);
-        when(passwordEncoder.encode("password")).thenReturn("hashedpassword");
+        when(passwordEncoder.encode("TestP@ssw0rd1")).thenReturn("hashedpassword");
         when(userRepository.save(any(User.class))).thenReturn(testUser);
 
         // When
@@ -102,14 +102,14 @@ class AuthServiceEmailVerificationTest {
     void register_WithEmailVerificationDisabled_SetsEmailAsVerified() {
         // Given
         ReflectionTestUtils.setField(authService, "emailVerificationEnabled", false);
-        CreateUserDTO createUserDTO = new CreateUserDTO("testuser", "test@example.com", "password", User.Role.USER);
+        CreateUserDTO createUserDTO = new CreateUserDTO("testuser", "test@example.com", "TestP@ssw0rd1", User.Role.USER);
         
         testUser.setEmailVerified(true);
         testUser.setEmailVerifiedAt(LocalDateTime.now());
         
         when(userRepository.existsByUsername("testuser")).thenReturn(false);
         when(userRepository.existsByEmail("test@example.com")).thenReturn(false);
-        when(passwordEncoder.encode("password")).thenReturn("hashedpassword");
+        when(passwordEncoder.encode("TestP@ssw0rd1")).thenReturn("hashedpassword");
         when(userRepository.save(any(User.class))).thenReturn(testUser);
 
         // When
@@ -127,7 +127,7 @@ class AuthServiceEmailVerificationTest {
     @Test
     void login_WithUnverifiedEmail_ThrowsException() {
         // Given
-        LoginRequest loginRequest = new LoginRequest("testuser", "password");
+        LoginRequest loginRequest = new LoginRequest("testuser", "TestP@ssw0rd1");
         testUser.setEmailVerified(false);
         
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
@@ -143,7 +143,7 @@ class AuthServiceEmailVerificationTest {
     @Test
     void login_WithLockedAccount_ThrowsException() {
         // Given
-        LoginRequest loginRequest = new LoginRequest("testuser", "password");
+        LoginRequest loginRequest = new LoginRequest("testuser", "TestP@ssw0rd1");
         testUser.setEmailVerified(true);
         testUser.setAccountLocked(true);
         testUser.setLockedUntil(LocalDateTime.now().plusMinutes(10));
@@ -161,7 +161,7 @@ class AuthServiceEmailVerificationTest {
     @Test
     void login_WithExpiredLock_UnlocksAccountAndProceedsWithLogin() {
         // Given
-        LoginRequest loginRequest = new LoginRequest("testuser", "password");
+        LoginRequest loginRequest = new LoginRequest("testuser", "TestP@ssw0rd1");
         testUser.setEmailVerified(true);
         testUser.setAccountLocked(true);
         testUser.setLockedUntil(LocalDateTime.now().minusMinutes(10)); // Expired lock
@@ -305,7 +305,7 @@ class AuthServiceEmailVerificationTest {
     void resetPassword_Success() {
         // Given
         String token = "reset-token";
-        String newPassword = "newpassword";
+        String newPassword = "NewP@ssw0rd1";
         
         when(verificationTokenService.verifyPasswordResetToken(token)).thenReturn(testUser);
         when(passwordEncoder.encode(newPassword)).thenReturn("hashednewpassword");

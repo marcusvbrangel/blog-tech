@@ -64,7 +64,7 @@ public class AuthService {
         }
 
         // Create user using builder pattern with validation
-        User user = User.of(createUserDTO.username(), createUserDTO.email(), passwordEncoder.encode(createUserDTO.password()))
+        User user = User.ofEncrypted(createUserDTO.username(), createUserDTO.email(), passwordEncoder.encode(createUserDTO.password()))
                 .role(createUserDTO.role())
                 .passwordChangedAt(LocalDateTime.now())
                 .emailVerified(!emailVerificationEnabled) // Auto-verify if verification disabled
@@ -208,7 +208,7 @@ public class AuthService {
         
         // Update password using builder pattern
         User updatedUser = User.from(user)
-                .password(passwordEncoder.encode(newPassword))
+                .rawPassword(passwordEncoder.encode(newPassword)) // Use rawPassword for encrypted password
                 .passwordChangedAt(LocalDateTime.now())
                 .failedLoginAttempts(0)
                 .accountLocked(false)

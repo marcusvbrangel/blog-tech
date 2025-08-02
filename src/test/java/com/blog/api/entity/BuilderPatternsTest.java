@@ -54,7 +54,7 @@ class BuilderPatternsTest {
     @DisplayName("Post Builder - Deve criar post com validações")
     void postBuilder_ShouldCreatePostWithValidations() {
         // Given
-        User author = User.of("author", "author@test.com", "password123").build();
+        User author = User.of("author", "author@test.com", "AuthorP@ss1").build();
         Category category = Category.of("Technology").build();
 
         // When
@@ -76,7 +76,7 @@ class BuilderPatternsTest {
     @DisplayName("Post Builder - Factory methods semânticos")
     void postBuilder_SemanticFactoryMethods() {
         // Given
-        User author = User.asAuthor().username("author").email("author@test.com").password("pass123").build();
+        User author = User.asAuthor().username("author").email("author@test.com").password("AuthorP@ss1").build();
         
         // When - Draft
         Post draft = Post.draft("Draft Title", "Draft content for testing", author).build();
@@ -93,7 +93,7 @@ class BuilderPatternsTest {
     @DisplayName("VerificationToken Builder - Deve criar tokens com tipos específicos")
     void verificationTokenBuilder_ShouldCreateSpecificTokenTypes() {
         // Given
-        User user = User.withDefaults().username("user").email("user@test.com").password("pass123").build();
+        User user = User.withDefaults().username("user").email("user@test.com").password("TestP@ssw0rd1").build();
         String tokenValue = "abc123";
 
         // When - Email Verification
@@ -114,8 +114,8 @@ class BuilderPatternsTest {
     @DisplayName("Comment Builder - Deve criar comentários e replies")
     void commentBuilder_ShouldCreateCommentsAndReplies() {
         // Given
-        User author = User.asAuthor().username("author").email("author@test.com").password("pass123").build();
-        User commenter = User.withDefaults().username("commenter").email("commenter@test.com").password("pass123").build();
+        User author = User.asAuthor().username("author").email("author@test.com").password("AuthorP@ss2").build();
+        User commenter = User.withDefaults().username("commenter").email("commenter@test.com").password("Comment3r!P@ss").build();
         
         Category category = Category.of("Tech").build();
         Post post = Post.of("Test Post", "Content for testing comments", author).category(category).build();
@@ -158,7 +158,7 @@ class BuilderPatternsTest {
         User originalUser = User.asAdmin()
                 .username("admin")
                 .email("admin@test.com")
-                .password("admin123")
+                .password("SecureP@ss1")
                 .build();
 
         // When
@@ -177,7 +177,7 @@ class BuilderPatternsTest {
     @DisplayName("Business Rules - Deve aplicar regras de negócio")
     void businessRules_ShouldApplyCorrectly() {
         // Given
-        User user = User.withDefaults().username("user").email("user@test.com").password("pass123").build();
+        User user = User.withDefaults().username("user").email("user@test.com").password("TestP@ssw0rd1").build();
         Post post = Post.of("Title", "Content for testing", user).build();
         Comment parentComment = Comment.of("Parent comment", post, user).build();
 

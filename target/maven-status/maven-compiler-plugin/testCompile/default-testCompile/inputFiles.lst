@@ -1,4 +1,5 @@
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/service/TermsServiceTest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/integration/PasswordPolicyIntegrationTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/repository/TermsAcceptanceRepositoryTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/entity/TermsAcceptanceTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/dto/TermsComplianceResponseTest.java

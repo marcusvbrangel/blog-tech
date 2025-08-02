@@ -287,7 +287,7 @@ public class User {
         return new Builder()
                 .username(other.getUsername())
                 .email(other.getEmail())
-                .password(other.getPassword())
+                .rawPassword(other.getPassword()) // Use rawPassword for already encrypted passwords
                 .role(other.getRole())
                 .emailVerified(other.getEmailVerified())
                 .accountLocked(other.getAccountLocked())
@@ -310,6 +310,13 @@ public class User {
                 .username(username)
                 .email(email)
                 .password(password);
+    }
+
+    public static Builder ofEncrypted(String username, String email, String encryptedPassword) {
+        return new Builder()
+                .username(username)
+                .email(email)
+                .rawPassword(encryptedPassword);
     }
 
     public static Builder withDefaults() {
