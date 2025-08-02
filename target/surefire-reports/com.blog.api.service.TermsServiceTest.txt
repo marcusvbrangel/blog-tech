@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.blog.api.service.TermsServiceTest
--------------------------------------------------------------------------------
-Tests run: 25, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.207 s -- in com.blog.api.service.TermsServiceTest

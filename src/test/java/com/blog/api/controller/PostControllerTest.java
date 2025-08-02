@@ -34,6 +34,15 @@ class PostControllerTest {
 
     @MockBean
     private PostService postService;
+    
+    @MockBean
+    private com.blog.api.util.JwtUtil jwtUtil;
+    
+    @MockBean  
+    private com.blog.api.service.CustomUserDetailsService userDetailsService;
+    
+    @MockBean
+    private com.blog.api.service.TermsService termsService;
 
     @Autowired
     private ObjectMapper objectMapper;
