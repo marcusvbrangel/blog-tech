@@ -57,9 +57,17 @@ API REST para sistema de blog desenvolvida com Java e Spring Boot seguindo metod
 ### Sistema de Email
 - [x] **Email Verification** - Templates HTML profissionais
 - [x] **Password Recovery** - Tokens seguros com expiração
-- [x] **Rate Limiting** - Proteção contra spam de emails
+- [x] **Rate Limiting** - Proteção contra spam de emails e força bruta em login
 - [x] **MailHog Integration** - Ambiente de desenvolvimento
 - [x] **SMTP Support** - Configuração flexível de provedores
+
+### Segurança e Proteção
+- [x] **Login Rate Limiting** - Bloqueio automático após 5 tentativas incorretas
+- [x] **Account Locking** - Bloqueio temporário de 15 minutos
+- [x] **Auto-unlock** - Desbloqueio automático após expiração
+- [x] **Password Policies** - Validação rigorosa de senhas
+- [x] **JWT Security** - Tokens seguros com expiração
+- [x] **Email Verification** - Verificação obrigatória de conta
 
 ### Monitoramento e Observabilidade
 - [x] Métricas com Prometheus

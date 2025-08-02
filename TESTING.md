@@ -24,6 +24,7 @@
 ### **✅ Testes de Segurança**
 - **JwtUtilTest** - Geração, validação, expiração de tokens
 - **SecurityConfigTest** - Endpoints públicos vs protegidos
+- **Login Rate Limiting Tests** - Bloqueio automático, desbloqueio, tentativas falhadas
 - **Email Verification Security** - Rate limiting, token security, privacy protection
 
 ### **✅ Testes de Email System**
@@ -63,6 +64,10 @@ mvn test -Dtest="AuthServiceTest"
 # Testes de Email Verification
 mvn test -Dtest="EmailServiceTest"
 mvn test -Dtest="VerificationTokenServiceTest"
+
+# Testes de Rate Limiting de Login
+mvn test -Dtest="AuthServiceTest#*Lock*"
+mvn test -Dtest="AuthServiceTest#*Account*"
 
 # Todos os testes de Email System
 mvn test -Dtest="*Email*,*Verification*"
@@ -169,6 +174,12 @@ class JwtUtilTest {
 - Validação de roles (USER, AUTHOR, ADMIN)
 - Tokens JWT válidos/inválidos/expirados
 - CSRF protection
+- **Login Rate Limiting Security:**
+  - Bloqueio automático após 5 tentativas falhadas
+  - Lock temporário de 15 minutos por usuário
+  - Desbloqueio automático após expiração
+  - Reset de contador em login bem-sucedido
+  - Proteção contra ataques de força bruta
 - **Email Verification Security:**
   - Tokens únicos e seguros (UUID v4)
   - Rate limiting por email (3/hora verificação, 5/hora reset)
@@ -254,6 +265,42 @@ mvn test -T 4
 
 # Gerar site completo com relatórios
 mvn site
+```
+
+---
+
+## 🔐 Testes de Rate Limiting de Login
+
+### **AuthServiceTest - Testes de Bloqueio**
+```java
+@ExtendWith(MockitoExtension.class)
+class AuthServiceTest {
+    @Test void login_ShouldThrowBadRequestException_WhenAccountLocked()
+    @Test void login_ShouldUnlockAccount_WhenLockPeriodExpired()
+    @Test void login_ShouldResetFailedAttempts_OnSuccessfulLogin()
+    @Test void login_ShouldIncrementFailedAttempts_OnFailedLogin()
+}
+```
+
+**Cenários Testados:**
+- ✅ **Conta bloqueada ativa**: Verifica erro "Account is temporarily locked"
+- ✅ **Desbloqueio automático**: Testa unlock após 15 minutos
+- ✅ **Reset de contador**: Login correto zera tentativas falhadas
+- ✅ **Incremento de tentativas**: Falha aumenta contador
+- ✅ **Timestamp de bloqueio**: Verifica `locked_until` configurado corretamente
+
+**Cobertura:**
+- AuthService.incrementFailedLoginAttempts() - 100%
+- AuthService.login() - Fluxos de bloqueio/desbloqueio - 100%
+- User entity - Campos de rate limiting - 100%
+
+**Execução:**
+```bash
+# Todos os testes de rate limiting
+mvn test -Dtest="AuthServiceTest#*Lock*,AuthServiceTest#*Account*"
+
+# Teste específico de bloqueio
+mvn test -Dtest="AuthServiceTest#login_ShouldThrowBadRequestException_WhenAccountLocked"
 ```
 
 ---
