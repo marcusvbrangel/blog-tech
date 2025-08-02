@@ -1,0 +1,20 @@
+-------------------------------------------------------------------------------
+Test set: com.blog.api.integration.EmailVerificationIntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 11, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.496 s <<< FAILURE! -- in com.blog.api.integration.EmailVerificationIntegrationTest
+com.blog.api.integration.EmailVerificationIntegrationTest.fullEmailVerificationFlow_Success -- Time elapsed: 0.011 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?); Password is too common and easily guessable
+	at com.blog.api.dto.CreateUserDTO.<init>(CreateUserDTO.java:30)
+	at com.blog.api.integration.EmailVerificationIntegrationTest.fullEmailVerificationFlow_Success(EmailVerificationIntegrationTest.java:67)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.integration.EmailVerificationIntegrationTest.passwordResetFlow_Success -- Time elapsed: 0.041 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must contain at least one uppercase letter; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?)
+	at com.blog.api.dto.PasswordResetConfirmRequest.<init>(PasswordResetConfirmRequest.java:20)
+	at com.blog.api.integration.EmailVerificationIntegrationTest.passwordResetFlow_Success(EmailVerificationIntegrationTest.java:195)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+

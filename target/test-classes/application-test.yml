@@ -1,0 +1,62 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: false
+  h2:
+    console:
+      enabled: false
+  mail:
+    host: localhost
+    port: 25
+    test-connection: false
+  cache:
+    type: none # Disable caching in tests
+  data:
+    redis:
+      repositories:
+        enabled: false # Disable Redis repositories in tests
+
+# Security Configuration for Tests
+blog:
+  security:
+    email-verification:
+      enabled: true
+      token-expiration: 24h
+      max-attempts-per-hour: 3
+    password-reset:
+      enabled: true
+      token-expiration: 15m
+      max-attempts-per-hour: 5
+  email:
+    enabled: false # Disable email sending in tests
+    from: "test@blogapi.com"
+    base-url: "http://localhost:8080"
+
+# Disable JMX in tests
+spring.jmx.enabled: false
+
+# Disable Actuator endpoints in tests
+management:
+  endpoints:
+    enabled-by-default: false
+
+# JWT Configuration for tests
+jwt:
+  secret: testSecretKey123456789012345678901234567890
+  expiration: 86400000
+
+logging:
+  level:
+    com.blog.api: DEBUG
+    org.springframework.security: WARN
+    org.hibernate: WARN
