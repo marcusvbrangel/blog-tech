@@ -1,0 +1,70 @@
+-------------------------------------------------------------------------------
+Test set: com.blog.api.util.JwtUtilTest
+-------------------------------------------------------------------------------
+Tests run: 21, Failures: 1, Errors: 4, Skipped: 0, Time elapsed: 1.589 s <<< FAILURE! -- in com.blog.api.util.JwtUtilTest
+com.blog.api.util.JwtUtilTest.generateToken_WithNullUsername_ShouldThrowException -- Time elapsed: 1.014 s <<< ERROR!
+java.lang.IllegalArgumentException: username cannot be null
+	at org.springframework.util.Assert.notNull(Assert.java:172)
+	at org.springframework.security.core.userdetails.User$UserBuilder.username(User.java:357)
+	at com.blog.api.util.JwtUtilTest.generateToken_WithNullUsername_ShouldThrowException(JwtUtilTest.java:273)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.util.JwtUtilTest.validateToken_WhenExpiredToken_ShouldReturnFalse -- Time elapsed: 0.009 s <<< ERROR!
+io.jsonwebtoken.ExpiredJwtException: JWT expired at 2025-08-02T02:10:10Z. Current time: 2025-08-02T02:10:11Z, a difference of 1684 milliseconds.  Allowed clock skew: 0 milliseconds.
+	at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:427)
+	at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:529)
+	at io.jsonwebtoken.impl.DefaultJwtParser.parseClaimsJws(DefaultJwtParser.java:589)
+	at io.jsonwebtoken.impl.ImmutableJwtParser.parseClaimsJws(ImmutableJwtParser.java:173)
+	at com.blog.api.util.JwtUtil.getAllClaimsFromToken(JwtUtil.java:65)
+	at com.blog.api.util.JwtUtil.getClaimFromToken(JwtUtil.java:57)
+	at com.blog.api.util.JwtUtil.getUsernameFromToken(JwtUtil.java:49)
+	at com.blog.api.util.JwtUtil.validateToken(JwtUtil.java:44)
+	at com.blog.api.util.JwtUtilTest.validateToken_WhenExpiredToken_ShouldReturnFalse(JwtUtilTest.java:110)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.util.JwtUtilTest.validateToken_ShouldCheckBothUsernameAndExpiration -- Time elapsed: 0.006 s <<< ERROR!
+io.jsonwebtoken.ExpiredJwtException: JWT expired at 2025-08-02T02:10:11Z. Current time: 2025-08-02T02:10:11Z, a difference of 798 milliseconds.  Allowed clock skew: 0 milliseconds.
+	at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:427)
+	at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:529)
+	at io.jsonwebtoken.impl.DefaultJwtParser.parseClaimsJws(DefaultJwtParser.java:589)
+	at io.jsonwebtoken.impl.ImmutableJwtParser.parseClaimsJws(ImmutableJwtParser.java:173)
+	at com.blog.api.util.JwtUtil.getAllClaimsFromToken(JwtUtil.java:65)
+	at com.blog.api.util.JwtUtil.getClaimFromToken(JwtUtil.java:57)
+	at com.blog.api.util.JwtUtil.getUsernameFromToken(JwtUtil.java:49)
+	at com.blog.api.util.JwtUtil.validateToken(JwtUtil.java:44)
+	at com.blog.api.util.JwtUtilTest.validateToken_ShouldCheckBothUsernameAndExpiration(JwtUtilTest.java:248)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.util.JwtUtilTest.getExpirationDateFromToken_WhenExpiredToken_ShouldStillReturnDate -- Time elapsed: 0.005 s <<< ERROR!
+io.jsonwebtoken.ExpiredJwtException: JWT expired at 2025-08-02T02:10:10Z. Current time: 2025-08-02T02:10:11Z, a difference of 1805 milliseconds.  Allowed clock skew: 0 milliseconds.
+	at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:427)
+	at io.jsonwebtoken.impl.DefaultJwtParser.parse(DefaultJwtParser.java:529)
+	at io.jsonwebtoken.impl.DefaultJwtParser.parseClaimsJws(DefaultJwtParser.java:589)
+	at io.jsonwebtoken.impl.ImmutableJwtParser.parseClaimsJws(ImmutableJwtParser.java:173)
+	at com.blog.api.util.JwtUtil.getAllClaimsFromToken(JwtUtil.java:65)
+	at com.blog.api.util.JwtUtil.getClaimFromToken(JwtUtil.java:57)
+	at com.blog.api.util.JwtUtil.getExpirationDateFromToken(JwtUtil.java:53)
+	at com.blog.api.util.JwtUtilTest.getExpirationDateFromToken_WhenExpiredToken_ShouldStillReturnDate(JwtUtilTest.java:147)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.util.JwtUtilTest.generateToken_ShouldIncludeIssuedAtClaim -- Time elapsed: 0.010 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting actual:
+  2025-08-01T23:10:11.000 (java.util.Date)
+to be in period:
+  [2025-08-01T23:10:11.809 (java.util.Date), 2025-08-01T23:10:11.810 (java.util.Date)[
+
+	at com.blog.api.util.JwtUtilTest.generateToken_ShouldIncludeIssuedAtClaim(JwtUtilTest.java:226)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
