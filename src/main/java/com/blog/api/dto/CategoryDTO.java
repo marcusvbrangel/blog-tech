@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 
 public record CategoryDTO(
+
     Long id,
 
     @NotBlank(message = "Name is required")
@@ -16,8 +17,11 @@ public record CategoryDTO(
     String description,
 
     int postCount
+
 ) implements Serializable {
+
     public static CategoryDTO fromEntity(Category category) {
+
         try {
             int postCount = 0;
             try {
@@ -33,6 +37,7 @@ public record CategoryDTO(
                 category.getDescription(),
                 postCount
             );
+
         } catch (Exception e) {
             System.err.println("ERROR in CategoryDTO.fromEntity: " + e.getMessage());
             e.printStackTrace();

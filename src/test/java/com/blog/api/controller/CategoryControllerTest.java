@@ -3,15 +3,15 @@ package com.blog.api.controller;
 import com.blog.api.dto.CategoryDTO;
 import com.blog.api.exception.ResourceNotFoundException;
 import com.blog.api.service.CategoryService;
+import com.blog.api.service.CustomUserDetailsService;
+import com.blog.api.service.TermsService;
+import com.blog.api.util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,31 +23,37 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CategoryController.class)
 class CategoryControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    private final MockMvc mockMvc;
 
-    @MockBean
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
     
-    @MockBean
-    private com.blog.api.util.JwtUtil jwtUtil;
+    private final com.blog.api.util.JwtUtil jwtUtil;
     
-    @MockBean  
-    private com.blog.api.service.CustomUserDetailsService userDetailsService;
+    private final com.blog.api.service.CustomUserDetailsService userDetailsService;
     
-    @MockBean
-    private com.blog.api.service.TermsService termsService;
+    private final com.blog.api.service.TermsService termsService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     private CategoryDTO sampleCategoryDTO;
     private CategoryDTO createCategoryDTO;
+
+    CategoryControllerTest(MockMvc mockMvc, CategoryService categoryService, JwtUtil jwtUtil,
+                           CustomUserDetailsService userDetailsService, TermsService termsService,
+                           ObjectMapper objectMapper) {
+        this.mockMvc = mockMvc;
+        this.categoryService = categoryService;
+        this.jwtUtil = jwtUtil;
+        this.userDetailsService = userDetailsService;
+        this.termsService = termsService;
+        this.objectMapper = objectMapper;
+    }
 
     @BeforeEach
     void setUp() {

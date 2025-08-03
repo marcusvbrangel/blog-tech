@@ -16,6 +16,7 @@ com/blog/api/util/JwtUtil.class
 com/blog/api/config/MonitoringConfig.class
 com/blog/api/dto/TermsComplianceResponse.class
 com/blog/api/repository/CategoryRepository.class
+com/blog/api/service/JwtBlacklistService.class
 com/blog/api/service/EmailService.class
 com/blog/api/dto/PasswordResetRequest.class
 com/blog/api/controller/UserController.class
@@ -39,12 +40,14 @@ com/blog/api/service/TermsService$MonthlyStatistics.class
 com/blog/api/entity/Post.class
 com/blog/api/entity/TermsAcceptance$Builder.class
 com/blog/api/entity/User.class
+com/blog/api/entity/RevokedToken.class
 com/blog/api/exception/ResourceNotFoundException.class
 com/blog/api/repository/UserRepository.class
 com/blog/api/BlogApiApplication.class
 com/blog/api/repository/VerificationTokenRepository.class
 com/blog/api/entity/Comment$Builder.class
 com/blog/api/dto/TermsInfoDTO.class
+com/blog/api/config/SchedulingConfig.class
 com/blog/api/entity/Comment.class
 com/blog/api/config/TermsComplianceFilter.class
 com/blog/api/dto/CreateUserDTO.class
@@ -58,7 +61,9 @@ com/blog/api/controller/TermsController.class
 com/blog/api/dto/CreatePostDTO.class
 com/blog/api/entity/VerificationToken.class
 com/blog/api/dto/TermsAcceptanceRequest.class
+com/blog/api/entity/RevokedToken$Builder.class
 com/blog/api/dto/LoginRequest.class
+com/blog/api/repository/RevokedTokenRepository.class
 com/blog/api/exception/BadRequestException.class
 com/blog/api/service/CommentService.class
 com/blog/api/dto/UserDTO.class
@@ -69,5 +74,6 @@ com/blog/api/entity/User$Role.class
 com/blog/api/service/AuthService.class
 com/blog/api/service/VerificationTokenService$TokenStatistics.class
 com/blog/api/repository/PostRepository.class
+com/blog/api/entity/RevokedToken$RevokeReason.class
 com/blog/api/repository/CommentRepository.class
 com/blog/api/service/TermsService.class

@@ -32,6 +32,10 @@ spring:
     type: redis
     redis:
       time-to-live: 600000
+      cache-null-values: false
+      key-prefix: "blog-api:"
+    cache-names:
+      - blacklisted_tokens  # JWT Blacklist cache
   mail:
     host: localhost
     port: 1025
@@ -94,6 +98,17 @@ logging:
 jwt:
   secret: mySecretKey123456789012345678901234567890
   expiration: 86400000
+  blacklist:
+    # Rate limiting configuration
+    rate-limit:
+      max-per-user-per-hour: 10
+    # Cleanup configuration
+    cleanup:
+      enabled: true
+      cron: "0 0 2 * * *"  # Daily at 2 AM
+    # Monitoring configuration
+    monitoring:
+      enabled: true
 
 springdoc:
   api-docs:

@@ -39,7 +39,8 @@
       "Bash(gh pr create:*)",
       "Bash(git commit:*)",
       "Bash(/snap/bin/gh:*)",
-      "Bash(snap list:*)"
+      "Bash(snap list:*)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }

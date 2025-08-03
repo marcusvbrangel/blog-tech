@@ -1,19 +1,27 @@
 package com.blog.api.controller;
 
 import com.blog.api.dto.*;
+import com.blog.api.entity.RevokedToken;
+import com.blog.api.entity.User;
+import com.blog.api.repository.UserRepository;
 import com.blog.api.service.AuthService;
+import com.blog.api.service.JwtBlacklistService;
+import com.blog.api.util.JwtUtil;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -22,8 +30,21 @@ public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
+
+    private final JwtBlacklistService jwtBlacklistService;
+
+    private final JwtUtil jwtUtil;
+
+    private final UserRepository userRepository;
+
+    public AuthController(AuthService authService, JwtBlacklistService jwtBlacklistService,
+                          JwtUtil jwtUtil, UserRepository userRepository) {
+        this.authService = authService;
+        this.jwtBlacklistService = jwtBlacklistService;
+        this.jwtUtil = jwtUtil;
+        this.userRepository = userRepository;
+    }
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user")
@@ -175,6 +196,91 @@ public class AuthController {
             logger.warn("Invalid password reset token: {}", token, e);
             return ResponseEntity.badRequest().body(
                 VerificationResponse.error("Invalid or expired token: " + e.getMessage())
+            );
+        }
+    }
+
+    // JWT Blacklist/Logout Endpoint
+
+    @PostMapping("/logout")
+    @Operation(summary = "Logout user and revoke JWT token")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Logout successful"),
+        @ApiResponse(responseCode = "401", description = "Invalid or missing token")
+    })
+    public ResponseEntity<VerificationResponse> logout(HttpServletRequest request) {
+        try {
+            // Extract token from Authorization header
+            String authHeader = request.getHeader("Authorization");
+            
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                logger.debug("Logout attempt without valid Authorization header from IP: {}", 
+                           request.getRemoteAddr());
+                // Still return success for security (don't reveal token requirements)
+                return ResponseEntity.ok(
+                    VerificationResponse.success("Logout successful")
+                );
+            }
+
+            String token = authHeader.substring(7);
+            
+            // Validate token format before processing
+            if (!jwtUtil.isValidTokenFormat(token)) {
+                logger.debug("Logout attempt with invalid token format from IP: {}", 
+                           request.getRemoteAddr());
+                // Still return success for security
+                return ResponseEntity.ok(
+                    VerificationResponse.success("Logout successful")
+                );
+            }
+
+            try {
+                // Extract token information
+                String jti = jwtUtil.getJtiFromToken(token);
+                String username = jwtUtil.getUsernameFromToken(token);
+                
+                // Find user to get user ID
+                Optional<User> userOpt = userRepository.findByUsername(username);
+                if (userOpt.isPresent()) {
+                    User user = userOpt.get();
+                    
+                    // Check rate limiting for logout requests
+                    if (jwtBlacklistService.isRateLimitExceeded(user.getId())) {
+                        logger.warn("Logout rate limit exceeded for user: {} from IP: {}", 
+                                  username, request.getRemoteAddr());
+                        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(
+                            VerificationResponse.error("Too many logout requests. Please try again later.")
+                        );
+                    }
+                    
+                    // Revoke the token
+                    jwtBlacklistService.revokeToken(jti, user.getId(), RevokedToken.RevokeReason.LOGOUT);
+                    
+                    logger.info("User logged out successfully: {} (JTI: {}) from IP: {}", 
+                              username, jti, request.getRemoteAddr());
+                } else {
+                    logger.warn("Logout attempt with token for non-existent user: {} from IP: {}", 
+                              username, request.getRemoteAddr());
+                }
+                
+            } catch (ExpiredJwtException e) {
+                logger.debug("Logout attempt with expired token from IP: {}", request.getRemoteAddr());
+                // Token already expired, no need to revoke
+            } catch (Exception e) {
+                logger.error("Error processing logout request from IP: {}", request.getRemoteAddr(), e);
+                // Continue to return success for security
+            }
+
+            // Always return success to prevent information leakage
+            return ResponseEntity.ok(
+                VerificationResponse.success("Logout successful")
+            );
+            
+        } catch (Exception e) {
+            logger.error("Unexpected error during logout from IP: {}", request.getRemoteAddr(), e);
+            // Even in case of unexpected errors, return success for security
+            return ResponseEntity.ok(
+                VerificationResponse.success("Logout successful")
             );
         }
     }

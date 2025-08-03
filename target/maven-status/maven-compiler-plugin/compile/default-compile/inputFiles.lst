@@ -4,6 +4,7 @@
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/repository/UserRepository.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/service/CustomUserDetailsService.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/BlogApiApplication.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/entity/RevokedToken.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/service/TermsService.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/controller/CommentController.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/config/SwaggerConfig.java
@@ -12,6 +13,7 @@
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/VerificationResponse.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/CommentDTO.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/EmailVerificationRequest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/config/SchedulingConfig.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/CreateUserDTO.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/service/EmailService.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/JwtResponse.java
@@ -25,6 +27,7 @@
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/TermsInfoDTO.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/controller/UserController.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/entity/VerificationToken.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/repository/RevokedTokenRepository.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/config/RedisConfig.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/TermsComplianceResponse.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/exception/BadRequestException.java
@@ -47,6 +50,7 @@
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/LoginRequest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/config/MonitoringConfig.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/repository/PostRepository.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/service/JwtBlacklistService.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/CreatePostDTO.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/TermsStatisticsDTO.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/TermsAcceptanceResponse.java
