@@ -4,14 +4,17 @@ import com.blog.api.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@DisplayName("Testes de serialização JSON")
 class JsonSerializationTest {
 
     @Test
+    @DisplayName("Deve serializar e deserializar UserDTO corretamente")
     void testUserDTOSerialization() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule()); // For LocalDateTime support
@@ -38,6 +41,7 @@ class JsonSerializationTest {
     }
 
     @Test
+    @DisplayName("Deve serializar UserDTO usando ObjectMapper do Spring")
     void testUserDTOSerializationWithSpringMapper() {
         try {
             // Use Spring's default ObjectMapper configuration

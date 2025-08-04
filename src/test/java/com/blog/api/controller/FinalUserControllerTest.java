@@ -5,6 +5,7 @@ import com.blog.api.entity.User;
 import com.blog.api.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -42,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     "spring.security.user.name=testuser",
     "spring.security.user.password=password"
 })
+@DisplayName("Testes finais do controlador de usuários")
 class FinalUserControllerTest {
 
     @Autowired
@@ -80,6 +82,7 @@ class FinalUserControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
+    @DisplayName("Deve retornar página de usuários quando admin solicitar todos os usuários")
     void getAllUsers_ShouldReturnPageOfUsers() throws Exception {
         // Arrange
         Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO));
@@ -100,6 +103,7 @@ class FinalUserControllerTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
+    @DisplayName("Deve retornar usuário quando buscar por ID existente")
     void getUserById_ShouldReturnUser_WhenExists() throws Exception {
         // Arrange
         when(userService.getUserById(1L)).thenReturn(sampleUserDTO);
@@ -118,6 +122,7 @@ class FinalUserControllerTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER") 
+    @DisplayName("Deve retornar usuário quando buscar por nome de usuário existente")
     void getUserByUsername_ShouldReturnUser_WhenExists() throws Exception {
         // Arrange
         when(userService.getUserByUsername("testuser")).thenReturn(sampleUserDTO);
@@ -135,6 +140,7 @@ class FinalUserControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar não autorizado quando buscar todos os usuários sem autenticação")
     void getAllUsers_ShouldReturnUnauthorized_WhenNotAuthenticated() throws Exception {
         // Act & Assert
         mockMvc.perform(get("/api/v1/users")
@@ -143,6 +149,7 @@ class FinalUserControllerTest {
     }
 
     @Test 
+    @DisplayName("Deve retornar não autorizado quando buscar usuário por ID sem autenticação")
     void getUserById_ShouldReturnUnauthorized_WhenNotAuthenticated() throws Exception {
         // Act & Assert
         mockMvc.perform(get("/api/v1/users/1")

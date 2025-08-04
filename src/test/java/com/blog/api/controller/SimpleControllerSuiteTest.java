@@ -5,6 +5,7 @@ import com.blog.api.entity.User;
 import com.blog.api.service.*;
 import com.blog.api.service.AuditLogService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +27,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Suíte de testes simples dos controladores")
 class SimpleControllerSuiteTest {
 
     // UserController Tests
@@ -106,6 +108,7 @@ class SimpleControllerSuiteTest {
 
     // UserController Tests
     @Test
+    @DisplayName("Deve retornar página de usuários quando controlador de usuários solicitar todos os usuários")
     void userController_getAllUsers_ShouldReturnPageOfUsers() {
         // Arrange
         Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO));
@@ -124,6 +127,7 @@ class SimpleControllerSuiteTest {
     }
 
     @Test
+    @DisplayName("Deve retornar usuário quando controlador de usuários buscar por ID")
     void userController_getUserById_ShouldReturnUser() {
         // Arrange
         when(userService.getUserById(1L)).thenReturn(sampleUserDTO);
@@ -140,6 +144,7 @@ class SimpleControllerSuiteTest {
     }
 
     @Test
+    @DisplayName("Deve retornar usuário quando controlador de usuários buscar por nome de usuário")
     void userController_getUserByUsername_ShouldReturnUser() {
         // Arrange
         when(userService.getUserByUsername("testuser")).thenReturn(sampleUserDTO);
@@ -156,6 +161,7 @@ class SimpleControllerSuiteTest {
     }
 
     @Test
+    @DisplayName("Deve retornar sem conteúdo quando controlador de usuários deletar usuário")
     void userController_deleteUser_ShouldReturnNoContent() {
         // Arrange
         doNothing().when(userService).deleteUser(1L);
@@ -171,6 +177,7 @@ class SimpleControllerSuiteTest {
 
     // CommentController Tests
     @Test
+    @DisplayName("Deve retornar página de comentários quando controlador de comentários buscar por post")
     void commentController_getCommentsByPost_ShouldReturnPageOfComments() {
         // Arrange
         Page<CommentDTO> page = new PageImpl<>(Arrays.asList(sampleCommentDTO));
@@ -189,6 +196,7 @@ class SimpleControllerSuiteTest {
     }
 
     @Test
+    @DisplayName("Deve retornar lista de comentários quando controlador de comentários buscar por post simples")
     void commentController_getCommentsByPostSimple_ShouldReturnListOfComments() {
         // Arrange
         List<CommentDTO> comments = Arrays.asList(sampleCommentDTO);
@@ -207,6 +215,7 @@ class SimpleControllerSuiteTest {
     }
 
     @Test
+    @DisplayName("Deve retornar comentário quando controlador de comentários buscar por ID")
     void commentController_getCommentById_ShouldReturnComment() {
         // Arrange
         when(commentService.getCommentById(1L)).thenReturn(sampleCommentDTO);
@@ -223,6 +232,7 @@ class SimpleControllerSuiteTest {
     }
 
     @Test
+    @DisplayName("Deve retornar comentário criado quando controlador de comentários criar comentário")
     void commentController_createComment_ShouldReturnCreatedComment() {
         // Arrange
         when(authentication.getName()).thenReturn("testuser");
@@ -240,6 +250,7 @@ class SimpleControllerSuiteTest {
     }
 
     @Test
+    @DisplayName("Deve retornar sem conteúdo quando controlador de comentários deletar comentário")
     void commentController_deleteComment_ShouldReturnNoContent() {
         // Arrange
         when(authentication.getName()).thenReturn("testuser");
@@ -256,6 +267,7 @@ class SimpleControllerSuiteTest {
 
     // CategoryController Tests
     @Test
+    @DisplayName("Deve retornar página de categorias quando controlador de categorias solicitar todas as categorias")
     void categoryController_getAllCategories_ShouldReturnPageOfCategories() {
         // Arrange
         Page<CategoryDTO> page = new PageImpl<>(Arrays.asList(sampleCategoryDTO));
@@ -274,6 +286,7 @@ class SimpleControllerSuiteTest {
     }
 
     @Test
+    @DisplayName("Deve retornar categoria quando controlador de categorias buscar por ID")
     void categoryController_getCategoryById_ShouldReturnCategory() {
         // Arrange
         when(categoryService.getCategoryById(1L)).thenReturn(sampleCategoryDTO);
@@ -290,6 +303,7 @@ class SimpleControllerSuiteTest {
     }
 
     @Test
+    @DisplayName("Deve retornar categoria criada quando controlador de categorias criar categoria")
     void categoryController_createCategory_ShouldReturnCreatedCategory() {
         // Arrange
         when(categoryService.createCategory(any(CategoryDTO.class))).thenReturn(sampleCategoryDTO);
@@ -306,6 +320,7 @@ class SimpleControllerSuiteTest {
     }
 
     @Test
+    @DisplayName("Deve retornar sem conteúdo quando controlador de categorias deletar categoria")
     void categoryController_deleteCategory_ShouldReturnNoContent() {
         // Arrange
         doNothing().when(categoryService).deleteCategory(1L);
@@ -321,6 +336,7 @@ class SimpleControllerSuiteTest {
 
     // AuthController Tests
     @Test
+    @DisplayName("Deve retornar usuário criado quando controlador de autenticação registrar usuário")
     void authController_register_ShouldReturnCreatedUser() {
         // Arrange
         when(authService.register(any(CreateUserDTO.class))).thenReturn(sampleUserDTO);
@@ -337,6 +353,7 @@ class SimpleControllerSuiteTest {
     }
 
     @Test
+    @DisplayName("Deve retornar resposta JWT quando controlador de autenticação fazer login")
     void authController_login_ShouldReturnJwtResponse() {
         // Arrange
         when(authService.login(any(LoginRequest.class), any(), any(), any())).thenReturn(jwtResponse);
@@ -354,6 +371,7 @@ class SimpleControllerSuiteTest {
     }
 
     @Test
+    @DisplayName("Deve retornar resposta de sucesso quando controlador de autenticação verificar email")
     void authController_verifyEmail_ShouldReturnSuccessResponse() {
         // Arrange
         String token = "valid-token";
@@ -371,6 +389,7 @@ class SimpleControllerSuiteTest {
     }
 
     @Test
+    @DisplayName("Deve retornar resposta de sucesso quando controlador de autenticação reenviar verificação de email")
     void authController_resendEmailVerification_ShouldReturnSuccessResponse() {
         // Arrange
         EmailVerificationRequest request = new EmailVerificationRequest("test@example.com");
@@ -388,6 +407,7 @@ class SimpleControllerSuiteTest {
     }
 
     @Test
+    @DisplayName("Deve retornar resposta de sucesso quando controlador de autenticação esquecer senha")
     void authController_forgotPassword_ShouldReturnSuccessResponse() {
         // Arrange
         PasswordResetRequest request = new PasswordResetRequest("test@example.com");
@@ -405,6 +425,7 @@ class SimpleControllerSuiteTest {
     }
 
     @Test
+    @DisplayName("Deve retornar resposta de sucesso quando controlador de autenticação redefinir senha")
     void authController_resetPassword_ShouldReturnSuccessResponse() {
         // Arrange
         PasswordResetConfirmRequest request = new PasswordResetConfirmRequest("valid-token", "NewPassword123!");
@@ -422,6 +443,7 @@ class SimpleControllerSuiteTest {
     }
 
     @Test
+    @DisplayName("Deve retornar resposta de sucesso quando controlador de autenticação validar token de redefinição de senha")
     void authController_validatePasswordResetToken_ShouldReturnSuccessResponse() {
         // Arrange
         String token = "valid-token";

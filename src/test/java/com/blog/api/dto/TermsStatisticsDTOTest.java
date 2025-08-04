@@ -2,6 +2,7 @@ package com.blog.api.dto;
 
 import com.blog.api.service.TermsService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -10,9 +11,11 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayName("Testes do DTO TermsStatisticsDTO")
 class TermsStatisticsDTOTest {
 
     @Test
+    @DisplayName("Deve criar DTO a partir de objetos do serviço")
     void fromService_ShouldCreateDTOFromServiceObjects() {
         // Given
         LocalDateTime firstAcceptance = LocalDateTime.of(2025, 1, 1, 10, 0, 0);
@@ -46,6 +49,7 @@ class TermsStatisticsDTOTest {
     }
 
     @Test
+    @DisplayName("Deve tratar graciosamente quando estatísticas mensais forem nulas")
     void fromService_WithNullMonthlyStats_ShouldHandleGracefully() {
         // Given
         TermsService.AcceptanceStatistics acceptanceStats = new TermsService.AcceptanceStatistics(
@@ -59,6 +63,7 @@ class TermsStatisticsDTOTest {
     }
 
     @Test
+    @DisplayName("Deve retornar lista vazia quando estatísticas mensais estiverem vazias")
     void fromService_WithEmptyMonthlyStats_ShouldReturnEmptyList() {
         // Given
         TermsService.AcceptanceStatistics acceptanceStats = new TermsService.AcceptanceStatistics(
@@ -76,6 +81,7 @@ class TermsStatisticsDTOTest {
     }
 
     @Test
+    @DisplayName("Deve definir todos os campos quando usado construtor")
     void constructor_ShouldSetAllFields() {
         // Given
         String termsVersion = "v3.0";
@@ -109,6 +115,7 @@ class TermsStatisticsDTOTest {
     }
 
     @Test
+    @DisplayName("Deve definir todos os campos do MonthlyStatsDTO quando usado construtor")
     void monthlyStatsDTO_Constructor_ShouldSetAllFields() {
         // When
         TermsStatisticsDTO.MonthlyStatsDTO stat = new TermsStatisticsDTO.MonthlyStatsDTO(2025, 3, 45L);
@@ -120,6 +127,7 @@ class TermsStatisticsDTOTest {
     }
 
     @Test
+    @DisplayName("Deve implementar equals corretamente")
     void equals_ShouldWorkCorrectly() {
         // Given
         List<TermsStatisticsDTO.MonthlyStatsDTO> monthlyStats = Arrays.asList(
@@ -137,6 +145,7 @@ class TermsStatisticsDTOTest {
     }
 
     @Test
+    @DisplayName("Deve implementar equals corretamente no MonthlyStatsDTO")
     void monthlyStatsDTO_Equals_ShouldWorkCorrectly() {
         // Given
         TermsStatisticsDTO.MonthlyStatsDTO stat1 = new TermsStatisticsDTO.MonthlyStatsDTO(2025, 1, 10L);
@@ -150,6 +159,7 @@ class TermsStatisticsDTOTest {
     }
 
     @Test
+    @DisplayName("Deve conter campos relevantes no toString")
     void toString_ShouldContainRelevantFields() {
         // Given
         TermsStatisticsDTO dto = new TermsStatisticsDTO(
@@ -166,6 +176,7 @@ class TermsStatisticsDTOTest {
     }
 
     @Test
+    @DisplayName("Deve conter todos os campos no toString do MonthlyStatsDTO")
     void monthlyStatsDTO_ToString_ShouldContainAllFields() {
         // Given
         TermsStatisticsDTO.MonthlyStatsDTO stat = new TermsStatisticsDTO.MonthlyStatsDTO(2025, 3, 25L);

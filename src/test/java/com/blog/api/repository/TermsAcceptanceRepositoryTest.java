@@ -4,6 +4,7 @@ import com.blog.api.entity.TermsAcceptance;
 import com.blog.api.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -19,6 +20,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @DataJpaTest
 @ActiveProfiles("test")
+@DisplayName("Testes do repositório TermsAcceptanceRepository")
 class TermsAcceptanceRepositoryTest {
 
     @Autowired
@@ -76,6 +78,7 @@ class TermsAcceptanceRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar última aceitação quando buscar por usuário ordenado por data")
     void findTopByUserOrderByAcceptedAtDesc_ShouldReturnLatestAcceptance() {
         // When
         Optional<TermsAcceptance> result = termsAcceptanceRepository.findTopByUserOrderByAcceptedAtDesc(testUser1);
@@ -87,6 +90,7 @@ class TermsAcceptanceRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar última aceitação quando buscar por ID do usuário")
     void findLatestByUserId_ShouldReturnLatestAcceptance() {
         // When
         Optional<TermsAcceptance> result = termsAcceptanceRepository.findLatestByUserId(testUser1.getId());
@@ -98,6 +102,7 @@ class TermsAcceptanceRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar aceitação correta quando buscar por usuário e versão dos termos")
     void findByUserAndTermsVersion_ShouldReturnCorrectAcceptance() {
         // When
         Optional<TermsAcceptance> result = termsAcceptanceRepository.findByUserAndTermsVersion(testUser1, "v1.0");
@@ -109,6 +114,7 @@ class TermsAcceptanceRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar todas as aceitações do usuário ordenadas por data")
     void findByUserOrderByAcceptedAtDesc_ShouldReturnAllUserAcceptancesOrdered() {
         // When
         List<TermsAcceptance> result = termsAcceptanceRepository.findByUserOrderByAcceptedAtDesc(testUser1);
@@ -120,6 +126,7 @@ class TermsAcceptanceRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar todas as aceitações do usuário ordenadas por data usando ID")
     void findByUserIdOrderByAcceptedAtDesc_ShouldReturnAllUserAcceptancesOrdered() {
         // When
         List<TermsAcceptance> result = termsAcceptanceRepository.findByUserIdOrderByAcceptedAtDesc(testUser1.getId());
@@ -131,6 +138,7 @@ class TermsAcceptanceRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar todas as aceitações para uma versão específica")
     void findByTermsVersionOrderByAcceptedAtDesc_ShouldReturnAllAcceptancesForVersion() {
         // When
         List<TermsAcceptance> result = termsAcceptanceRepository.findByTermsVersionOrderByAcceptedAtDesc("v1.0");
@@ -141,6 +149,7 @@ class TermsAcceptanceRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar resultado correto ao verificar existência por usuário e versão")
     void existsByUserAndTermsVersion_ShouldReturnCorrectResult() {
         // Then
         assertThat(termsAcceptanceRepository.existsByUserAndTermsVersion(testUser1, "v1.0")).isTrue();
@@ -150,6 +159,7 @@ class TermsAcceptanceRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar resultado correto ao verificar existência por ID e versão")
     void existsByUserIdAndTermsVersion_ShouldReturnCorrectResult() {
         // Then
         assertThat(termsAcceptanceRepository.existsByUserIdAndTermsVersion(testUser1.getId(), "v1.0")).isTrue();
@@ -157,6 +167,7 @@ class TermsAcceptanceRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar contagem correta por versão dos termos")
     void countByTermsVersion_ShouldReturnCorrectCount() {
         // When
         long countV10 = termsAcceptanceRepository.countByTermsVersion("v1.0");
@@ -170,6 +181,7 @@ class TermsAcceptanceRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar aceitações em intervalo de datas")
     void findByAcceptedAtBetween_ShouldReturnAcceptancesInDateRange() {
         // Given
         LocalDateTime start = LocalDateTime.now().minusDays(2);
@@ -185,6 +197,7 @@ class TermsAcceptanceRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar resultados paginados em intervalo de datas")
     void findByAcceptedAtBetweenWithPagination_ShouldReturnPagedResults() {
         // Given
         LocalDateTime start = LocalDateTime.now().minusDays(2);
@@ -201,6 +214,7 @@ class TermsAcceptanceRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar usuários que não aceitaram última versão dos termos")
     void findUsersWithoutLatestTerms_ShouldReturnCorrectUsers() {
         // Given - user1 has v1.1, user2 has only v1.0
         testUser1.setTermsAcceptedVersion("v1.1");
@@ -218,6 +232,7 @@ class TermsAcceptanceRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar resultados paginados de usuários sem última versão dos termos")
     void findUsersWithoutLatestTermsWithPagination_ShouldReturnPagedResults() {
         // Given
         testUser1.setTermsAcceptedVersion("v1.0");
@@ -237,6 +252,7 @@ class TermsAcceptanceRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar aceitações por endereço IP ordenadas por data")
     void findByIpAddressOrderByAcceptedAtDesc_ShouldReturnAcceptancesByIp() {
         // When
         List<TermsAcceptance> result = termsAcceptanceRepository.findByIpAddressOrderByAcceptedAtDesc("192.168.1.1");
@@ -247,6 +263,7 @@ class TermsAcceptanceRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar estatísticas corretas de aceitação")
     void getAcceptanceStatistics_ShouldReturnCorrectStatistics() {
         // When
         Object[] stats = termsAcceptanceRepository.getAcceptanceStatistics("v1.0");
@@ -269,6 +286,7 @@ class TermsAcceptanceRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar resultado correto ao verificar existência por usuário")
     void existsByUser_ShouldReturnCorrectResult() {
         // Then
         assertThat(termsAcceptanceRepository.existsByUser(testUser1)).isTrue();
@@ -276,6 +294,7 @@ class TermsAcceptanceRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar resultado correto ao verificar existência por ID do usuário")
     void existsByUserId_ShouldReturnCorrectResult() {
         // Then
         assertThat(termsAcceptanceRepository.existsByUserId(testUser1.getId())).isTrue();
@@ -283,6 +302,7 @@ class TermsAcceptanceRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve deletar aceitações em cascata quando usuário for deletado")
     void cascadeDelete_WhenUserDeleted_ShouldDeleteAcceptances() {
         // Given - Count acceptances before deletion
         long countBefore = termsAcceptanceRepository.count();

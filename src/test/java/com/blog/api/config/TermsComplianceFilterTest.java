@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -32,6 +33,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Testes do filtro de conformidade de termos")
 class TermsComplianceFilterTest {
 
     @Mock
@@ -90,6 +92,7 @@ class TermsComplianceFilterTest {
     }
 
     @Test
+    @DisplayName("Deve continuar cadeia de filtros quando termos estiverem desabilitados")
     void doFilterInternal_WhenTermsDisabled_ShouldContinueFilterChain() throws Exception {
         // Given
         ReflectionTestUtils.setField(termsComplianceFilter, "termsEnabled", false);
@@ -103,6 +106,7 @@ class TermsComplianceFilterTest {
     }
 
     @Test
+    @DisplayName("Deve continuar cadeia de filtros quando conformidade não for aplicada")
     void doFilterInternal_WhenComplianceNotEnforced_ShouldContinueFilterChain() throws Exception {
         // Given
         ReflectionTestUtils.setField(termsComplianceFilter, "enforceCompliance", false);
@@ -116,6 +120,7 @@ class TermsComplianceFilterTest {
     }
 
     @Test
+    @DisplayName("Deve continuar cadeia de filtros quando path for excluído")
     void doFilterInternal_WhenExcludedPath_ShouldContinueFilterChain() throws Exception {
         // Given
         when(request.getRequestURI()).thenReturn("/api/v1/terms/current");
@@ -130,6 +135,7 @@ class TermsComplianceFilterTest {
     }
 
     @Test
+    @DisplayName("Deve continuar cadeia de filtros quando método for excluído")
     void doFilterInternal_WhenExcludedMethod_ShouldContinueFilterChain() throws Exception {
         // Given
         when(request.getRequestURI()).thenReturn("/api/v1/posts");
@@ -144,6 +150,7 @@ class TermsComplianceFilterTest {
     }
 
     @Test
+    @DisplayName("Deve continuar cadeia de filtros quando for recurso estático")
     void doFilterInternal_WhenStaticResource_ShouldContinueFilterChain() throws Exception {
         // Given
         when(request.getRequestURI()).thenReturn("/static/css/styles.css");
@@ -158,6 +165,7 @@ class TermsComplianceFilterTest {
     }
 
     @Test
+    @DisplayName("Deve continuar cadeia de filtros quando usuário não estiver autenticado")
     void doFilterInternal_WhenNotAuthenticated_ShouldContinueFilterChain() throws Exception {
         // Given
         when(request.getRequestURI()).thenReturn("/api/v1/posts");
@@ -173,6 +181,7 @@ class TermsComplianceFilterTest {
     }
 
     @Test
+    @DisplayName("Deve continuar cadeia de filtros quando usuário for anônimo")
     void doFilterInternal_WhenAnonymousUser_ShouldContinueFilterChain() throws Exception {
         // Given
         when(request.getRequestURI()).thenReturn("/api/v1/posts");
@@ -190,6 +199,7 @@ class TermsComplianceFilterTest {
     }
 
     @Test
+    @DisplayName("Deve continuar cadeia de filtros quando usuário tiver aceito os termos")
     void doFilterInternal_WhenUserAcceptedTerms_ShouldContinueFilterChain() throws Exception {
         // Given
         when(request.getRequestURI()).thenReturn("/api/v1/posts");
@@ -209,6 +219,7 @@ class TermsComplianceFilterTest {
     }
 
     @Test
+    @DisplayName("Deve bloquear requisição quando usuário precisar aceitar termos")
     void doFilterInternal_WhenUserNeedsToAcceptTerms_ShouldBlockRequest() throws Exception {
         // Given
         when(request.getRequestURI()).thenReturn("/api/v1/posts");
@@ -242,6 +253,7 @@ class TermsComplianceFilterTest {
     }
 
     @Test
+    @DisplayName("Deve continuar cadeia de filtros quando serviço lançar exceção")
     void doFilterInternal_WhenServiceThrowsException_ShouldContinueFilterChain() throws Exception {
         // Given
         when(request.getRequestURI()).thenReturn("/api/v1/posts");
@@ -261,6 +273,7 @@ class TermsComplianceFilterTest {
     }
 
     @Test
+    @DisplayName("Deve pular filtro quando paths forem excluídos")
     void shouldSkipFilter_WithExcludedPaths_ShouldReturnTrue() throws Exception {
         // Test various excluded paths
         String[] excludedPaths = {
@@ -286,6 +299,7 @@ class TermsComplianceFilterTest {
     }
 
     @Test
+    @DisplayName("Deve pular filtro quando forem recursos estáticos")
     void shouldSkipFilter_WithStaticResources_ShouldReturnTrue() throws Exception {
         // Test static resources
         String[] staticPaths = {
@@ -310,6 +324,7 @@ class TermsComplianceFilterTest {
     }
 
     @Test
+    @DisplayName("Deve pular filtro quando métodos forem excluídos")
     void shouldSkipFilter_WithExcludedMethods_ShouldReturnTrue() throws Exception {
         when(request.getRequestURI()).thenReturn("/api/v1/posts");
         when(request.getMethod()).thenReturn("OPTIONS");
@@ -321,6 +336,7 @@ class TermsComplianceFilterTest {
     }
 
     @Test
+    @DisplayName("Deve não pular filtro quando path da API for regular")
     void shouldSkipFilter_WithRegularApiPath_ShouldReturnFalse() throws Exception {
         when(request.getRequestURI()).thenReturn("/api/v1/posts");
         when(request.getMethod()).thenReturn("GET");
@@ -332,6 +348,7 @@ class TermsComplianceFilterTest {
     }
 
     @Test
+    @DisplayName("Deve identificar como endpoint público quando forem requisições GET públicas")
     void isPublicEndpoint_WithPublicGetRequests_ShouldReturnTrue() throws Exception {
         String[] publicPaths = {
             "/api/v1/categories",
@@ -353,6 +370,7 @@ class TermsComplianceFilterTest {
     }
 
     @Test
+    @DisplayName("Deve não identificar como endpoint público quando não forem requisições GET")
     void isPublicEndpoint_WithNonGetRequests_ShouldReturnFalse() throws Exception {
         when(request.getRequestURI()).thenReturn("/api/v1/posts");
         when(request.getMethod()).thenReturn("POST");
@@ -364,6 +382,7 @@ class TermsComplianceFilterTest {
     }
 
     @Test
+    @DisplayName("Deve não filtrar quando paths não forem da API")
     void shouldNotFilter_WithNonApiPaths_ShouldReturnTrue() throws Exception {
         when(request.getRequestURI()).thenReturn("/health");
         
@@ -374,6 +393,7 @@ class TermsComplianceFilterTest {
     }
 
     @Test
+    @DisplayName("Deve filtrar quando paths forem da API")
     void shouldNotFilter_WithApiPaths_ShouldReturnFalse() throws Exception {
         when(request.getRequestURI()).thenReturn("/api/v1/posts");
         

@@ -8,6 +8,7 @@ import com.blog.api.repository.UserRepository;
 import com.blog.api.repository.VerificationTokenRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -29,6 +30,7 @@ import static org.hamcrest.Matchers.containsString;
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional
+@DisplayName("Testes de integração da verificação de email")
 class EmailVerificationIntegrationTest {
 
     @Autowired
@@ -62,6 +64,7 @@ class EmailVerificationIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve realizar fluxo completo de verificação de email com sucesso")
     void fullEmailVerificationFlow_Success() throws Exception {
         // Step 1: Register user (should create verification token)
         CreateUserDTO createUserDTO = new CreateUserDTO(
@@ -117,6 +120,7 @@ class EmailVerificationIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve falhar ao fazer login com email não verificado")
     void loginWithUnverifiedEmail_Fails() throws Exception {
         // Try to login with unverified user
         LoginRequest loginRequest = new LoginRequest("test@example.com", "TestPass123!");
@@ -129,6 +133,7 @@ class EmailVerificationIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve reenviar email de verificação com sucesso")
     void resendVerificationEmail_Success() throws Exception {
         // Request resend verification
         EmailVerificationRequest request = new EmailVerificationRequest("test@example.com");
@@ -148,6 +153,7 @@ class EmailVerificationIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve falhar ao reenviar email de verificação quando já verificado")
     void resendVerificationEmail_AlreadyVerified_Fails() throws Exception {
         // Mark user as verified
         testUser.setEmailVerified(true);
@@ -166,6 +172,7 @@ class EmailVerificationIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve realizar fluxo de redefinição de senha com sucesso")
     void passwordResetFlow_Success() throws Exception {
         // Step 1: Request password reset
         PasswordResetRequest resetRequest = new PasswordResetRequest("test@example.com");
@@ -213,6 +220,7 @@ class EmailVerificationIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve falhar ao verificar token expirado")
     void verifyExpiredToken_Fails() throws Exception {
         // Create expired token
         VerificationToken expiredToken = new VerificationToken();
@@ -232,6 +240,7 @@ class EmailVerificationIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve falhar ao verificar token já usado")
     void verifyUsedToken_Fails() throws Exception {
         // Create used token
         VerificationToken usedToken = new VerificationToken();
@@ -252,6 +261,7 @@ class EmailVerificationIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve aplicar limite de taxa na verificação de email")
     void rateLimitingEmailVerification_Works() throws Exception {
         // Send multiple resend requests quickly
         EmailVerificationRequest request = new EmailVerificationRequest("test@example.com");
@@ -275,6 +285,7 @@ class EmailVerificationIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve retornar requisição inválida quando formato do token for inválido")
     void invalidTokenFormat_ReturnsBadRequest() throws Exception {
         // Try with invalid token format
         mockMvc.perform(get("/api/v1/auth/verify-email")
@@ -284,6 +295,7 @@ class EmailVerificationIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve retornar mensagem genérica ao resetar senha com email inexistente")
     void passwordResetWithNonExistentEmail_ReturnsGenericMessage() throws Exception {
         // Request password reset for non-existent email
         PasswordResetRequest resetRequest = new PasswordResetRequest("nonexistent@example.com");
@@ -300,6 +312,7 @@ class EmailVerificationIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve verificar token de usuário diferente com sucesso")
     void verifyTokenFromDifferentUser_Fails() throws Exception {
         // Create another user
         User anotherUser = new User();

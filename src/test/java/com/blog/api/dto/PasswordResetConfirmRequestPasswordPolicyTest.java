@@ -7,13 +7,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("PasswordResetConfirmRequest Password Policy Integration Tests")
+@DisplayName("Testes de integração da política de senha do PasswordResetConfirmRequest")
 class PasswordResetConfirmRequestPasswordPolicyTest {
 
     private static final String VALID_TOKEN = "valid-reset-token-123";
 
     @Test
-    @DisplayName("Should create request successfully with strong password")
+    @DisplayName("Deve criar solicitação com sucesso quando senha for forte")
     void shouldCreateRequestWithStrongPassword() {
         assertDoesNotThrow(() -> {
             PasswordResetConfirmRequest request = new PasswordResetConfirmRequest(VALID_TOKEN, "NewStr0ng!Pass");
@@ -23,7 +23,7 @@ class PasswordResetConfirmRequestPasswordPolicyTest {
     }
 
     @Test
-    @DisplayName("Should create request using factory method")
+    @DisplayName("Deve criar solicitação usando factory method")
     void shouldCreateRequestUsingFactoryMethod() {
         assertDoesNotThrow(() -> {
             PasswordResetConfirmRequest request = PasswordResetConfirmRequest.of(VALID_TOKEN, "FactoryM3th0d!");
@@ -34,7 +34,7 @@ class PasswordResetConfirmRequestPasswordPolicyTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"weak", "123456", "TestPass123!", "Password123", "qwerty"})
-    @DisplayName("Should reject weak passwords during request creation")
+    @DisplayName("Deve rejeitar senhas fracas durante criação da solicitação")
     void shouldRejectWeakPasswords(String weakPassword) {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             new PasswordResetConfirmRequest(VALID_TOKEN, weakPassword);
@@ -44,7 +44,7 @@ class PasswordResetConfirmRequestPasswordPolicyTest {
     }
 
     @Test
-    @DisplayName("Should reject null password during request creation")
+    @DisplayName("Deve rejeitar senha nula durante criação da solicitação")
     void shouldRejectNullPassword() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             new PasswordResetConfirmRequest(VALID_TOKEN, null);
@@ -55,7 +55,7 @@ class PasswordResetConfirmRequestPasswordPolicyTest {
     }
 
     @Test
-    @DisplayName("Should provide detailed error message for multiple violations")
+    @DisplayName("Deve fornecer mensagem de erro detalhada para múltiplas violações")
     void shouldProvideDetailedErrorMessage() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             new PasswordResetConfirmRequest(VALID_TOKEN, "abc");
@@ -74,7 +74,7 @@ class PasswordResetConfirmRequestPasswordPolicyTest {
         "ResetP@ssw0rd1", "NewSecure!123", "ChangedP@ss1", 
         "Fresh$ecret2", "Updated!Pass3", "Modified@123"
     })
-    @DisplayName("Should accept various strong passwords for reset")
+    @DisplayName("Deve aceitar várias senhas fortes para redefinir")
     void shouldAcceptVariousStrongPasswordsForReset(String strongPassword) {
         assertDoesNotThrow(() -> {
             PasswordResetConfirmRequest request = new PasswordResetConfirmRequest(VALID_TOKEN, strongPassword);
@@ -83,7 +83,7 @@ class PasswordResetConfirmRequestPasswordPolicyTest {
     }
 
     @Test
-    @DisplayName("Should handle factory method with weak password")
+    @DisplayName("Deve tratar factory method com senha fraca")
     void shouldHandleFactoryMethodWithWeakPassword() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             PasswordResetConfirmRequest.of(VALID_TOKEN, "weak");
@@ -93,7 +93,7 @@ class PasswordResetConfirmRequestPasswordPolicyTest {
     }
 
     @Test
-    @DisplayName("Should allow null token but validate password policy")
+    @DisplayName("Deve permitir token nulo mas validar política de senha")
     void shouldAllowNullTokenButValidatePassword() {
         // Null token should be allowed (will be validated by @NotBlank)
         // but password policy should still be enforced
@@ -105,7 +105,7 @@ class PasswordResetConfirmRequestPasswordPolicyTest {
     }
 
     @Test
-    @DisplayName("Should handle edge case passwords correctly")
+    @DisplayName("Deve tratar casos extremos de senhas corretamente")
     void shouldHandleEdgeCasePasswords() {
         // Exactly meets all requirements
         assertDoesNotThrow(() -> {

@@ -1,12 +1,15 @@
 package com.blog.api.dto;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("Testes do DTO TermsAcceptanceRequest")
 class TermsAcceptanceRequestTest {
 
     @Test
+    @DisplayName("Deve retornar verdadeiro quando todas as aceitações forem verdadeiras")
     void isValidAcceptance_WhenAllAcceptancesTrue_ShouldReturnTrue() {
         // Given
         TermsAcceptanceRequest request = new TermsAcceptanceRequest(
@@ -24,6 +27,7 @@ class TermsAcceptanceRequestTest {
     }
 
     @Test
+    @DisplayName("Deve retornar falso quando política de privacidade for falsa")
     void isValidAcceptance_WhenPrivacyPolicyFalse_ShouldReturnFalse() {
         // Given
         TermsAcceptanceRequest request = new TermsAcceptanceRequest(
@@ -41,6 +45,7 @@ class TermsAcceptanceRequestTest {
     }
 
     @Test
+    @DisplayName("Deve retornar falso quando termos de serviço forem falsos")
     void isValidAcceptance_WhenTermsOfServiceFalse_ShouldReturnFalse() {
         // Given
         TermsAcceptanceRequest request = new TermsAcceptanceRequest(
@@ -58,6 +63,7 @@ class TermsAcceptanceRequestTest {
     }
 
     @Test
+    @DisplayName("Deve retornar falso quando política de cookies for falsa")
     void isValidAcceptance_WhenCookiePolicyFalse_ShouldReturnFalse() {
         // Given
         TermsAcceptanceRequest request = new TermsAcceptanceRequest(
@@ -75,6 +81,7 @@ class TermsAcceptanceRequestTest {
     }
 
     @Test
+    @DisplayName("Deve retornar falso quando todas as aceitações forem nulas")
     void isValidAcceptance_WhenAllAcceptancesNull_ShouldReturnFalse() {
         // Given
         TermsAcceptanceRequest request = new TermsAcceptanceRequest(
@@ -92,6 +99,7 @@ class TermsAcceptanceRequestTest {
     }
 
     @Test
+    @DisplayName("Deve retornar falso quando houver mix de valores nulos e falsos")
     void isValidAcceptance_WhenMixedNullAndFalse_ShouldReturnFalse() {
         // Given
         TermsAcceptanceRequest request = new TermsAcceptanceRequest(
@@ -109,6 +117,7 @@ class TermsAcceptanceRequestTest {
     }
 
     @Test
+    @DisplayName("Deve criar solicitação válida quando usar método acceptAll")
     void acceptAll_ShouldCreateValidAcceptanceRequest() {
         // Given
         String termsVersion = "v2.0";
@@ -125,6 +134,7 @@ class TermsAcceptanceRequestTest {
     }
 
     @Test
+    @DisplayName("Deve definir todos os campos quando usado construtor")
     void constructor_ShouldSetAllFields() {
         // Given & When
         TermsAcceptanceRequest request = new TermsAcceptanceRequest(
@@ -142,6 +152,7 @@ class TermsAcceptanceRequestTest {
     }
 
     @Test
+    @DisplayName("Deve implementar equals corretamente")
     void equals_ShouldWorkCorrectly() {
         // Given
         TermsAcceptanceRequest request1 = new TermsAcceptanceRequest("v1.0", true, true, true);
@@ -155,6 +166,7 @@ class TermsAcceptanceRequestTest {
     }
 
     @Test
+    @DisplayName("Deve conter todos os campos no toString")
     void toString_ShouldContainAllFields() {
         // Given
         TermsAcceptanceRequest request = new TermsAcceptanceRequest(

@@ -4,6 +4,7 @@ import com.blog.api.entity.User;
 import com.blog.api.entity.VerificationToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Transactional
+@DisplayName("Testes do repositório VerificationTokenRepository")
 class VerificationTokenRepositoryTest {
 
     @Autowired
@@ -49,6 +51,7 @@ class VerificationTokenRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar token quando buscar por token existente")
     void findByToken_ExistingToken_ReturnsToken() {
         // Given
         testToken = entityManager.persistAndFlush(testToken);
@@ -63,6 +66,7 @@ class VerificationTokenRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar vazio quando buscar por token inexistente")
     void findByToken_NonExistentToken_ReturnsEmpty() {
         // When
         Optional<VerificationToken> found = tokenRepository.findByToken("non-existent-token");
@@ -72,6 +76,7 @@ class VerificationTokenRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar token quando buscar por token existente com tipo correto")
     void findByTokenAndTokenType_ExistingTokenWithCorrectType_ReturnsToken() {
         // Given
         testToken = entityManager.persistAndFlush(testToken);
@@ -87,6 +92,7 @@ class VerificationTokenRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar vazio quando buscar por token existente com tipo incorreto")
     void findByTokenAndTokenType_ExistingTokenWithWrongType_ReturnsEmpty() {
         // Given
         testToken = entityManager.persistAndFlush(testToken);
@@ -100,6 +106,7 @@ class VerificationTokenRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar todos os tokens do usuário quando existirem")
     void findByUser_ExistingTokens_ReturnsAllUserTokens() {
         // Given
         testToken = entityManager.persistAndFlush(testToken);
@@ -122,6 +129,7 @@ class VerificationTokenRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar tokens filtrados por tipo quando buscar por usuário e tipo")
     void findByUserAndTokenType_ExistingTokensWithSpecificType_ReturnsFilteredTokens() {
         // Given
         testToken = entityManager.persistAndFlush(testToken);
@@ -145,6 +153,7 @@ class VerificationTokenRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar apenas tokens válidos quando buscar por usuário e tipo")
     void findValidTokensByUserAndType_ValidTokens_ReturnsOnlyValidTokens() {
         // Given
         // Valid token
@@ -179,6 +188,7 @@ class VerificationTokenRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar verdadeiro quando token válido existir")
     void hasValidToken_ValidTokenExists_ReturnsTrue() {
         // Given
         testToken = entityManager.persistAndFlush(testToken);
@@ -192,6 +202,7 @@ class VerificationTokenRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar falso quando não houver token válido")
     void hasValidToken_NoValidToken_ReturnsFalse() {
         // Given
         testToken.setExpiresAt(LocalDateTime.now().minusHours(1)); // Expired
@@ -206,6 +217,7 @@ class VerificationTokenRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar tokens expirados quando existirem")
     void findExpiredTokens_ExpiredTokensExist_ReturnsExpiredTokens() {
         // Given
         // Valid token
@@ -229,6 +241,7 @@ class VerificationTokenRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve deletar tokens expirados quando existirem")
     void deleteExpiredTokens_ExpiredTokensExist_DeletesThem() {
         // Given
         // Valid token
@@ -259,6 +272,7 @@ class VerificationTokenRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve deletar tokens usados antigos quando existirem")
     void deleteUsedTokensOlderThan_OldUsedTokensExist_DeletesThem() {
         // Given
         // Recent used token
@@ -292,6 +306,7 @@ class VerificationTokenRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar contagem correta de tokens criados desde data específica")
     void countTokensCreatedSince_RecentTokensExist_ReturnsCorrectCount() {
         // Given
         testToken.setCreatedAt(LocalDateTime.now().minusMinutes(30));
@@ -324,6 +339,7 @@ class VerificationTokenRepositoryTest {
     }
 
     @Test
+    @DisplayName("Deve retornar token válido mais recente quando existirem")
     void findMostRecentValidToken_ValidTokensExist_ReturnsMostRecent() {
         // Given
         testToken.setCreatedAt(LocalDateTime.now().minusHours(2));

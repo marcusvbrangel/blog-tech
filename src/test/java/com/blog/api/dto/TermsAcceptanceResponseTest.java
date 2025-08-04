@@ -5,11 +5,13 @@ import com.blog.api.entity.User;
 import com.blog.api.util.TestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("Testes do DTO TermsAcceptanceResponse")
 class TermsAcceptanceResponseTest {
 
     private TermsAcceptance testAcceptance;
@@ -31,6 +33,7 @@ class TermsAcceptanceResponseTest {
     }
 
     @Test
+    @DisplayName("Deve incluir todos os campos quando criado a partir de entidade")
     void fromEntity_ShouldIncludeAllFields() {
         // When
         TermsAcceptanceResponse response = TermsAcceptanceResponse.fromEntity(testAcceptance);
@@ -46,6 +49,7 @@ class TermsAcceptanceResponseTest {
     }
 
     @Test
+    @DisplayName("Deve ocultar endereço IP e user agent quando usado método safe")
     void fromEntitySafe_ShouldHideIpAddressAndUserAgent() {
         // When
         TermsAcceptanceResponse response = TermsAcceptanceResponse.fromEntitySafe(testAcceptance);
@@ -61,6 +65,7 @@ class TermsAcceptanceResponseTest {
     }
 
     @Test
+    @DisplayName("Deve tratar graciosamente quando IP e user agent forem nulos")
     void fromEntity_WithNullIpAndUserAgent_ShouldHandleGracefully() {
         // Given
         TermsAcceptance acceptanceWithNulls = TermsAcceptance.withCurrentTimestamp(testUser, "v1.0")
@@ -82,6 +87,7 @@ class TermsAcceptanceResponseTest {
     }
 
     @Test
+    @DisplayName("Deve retornar nulo para IP e user agent quando usado método safe com valores nulos")
     void fromEntitySafe_WithNullIpAndUserAgent_ShouldReturnNull() {
         // Given
         TermsAcceptance acceptanceWithNulls = TermsAcceptance.withCurrentTimestamp(testUser, "v1.0")
@@ -99,6 +105,7 @@ class TermsAcceptanceResponseTest {
     }
 
     @Test
+    @DisplayName("Deve definir todos os campos quando usado construtor")
     void constructor_ShouldSetAllFields() {
         // Given
         LocalDateTime now = LocalDateTime.now();
@@ -125,6 +132,7 @@ class TermsAcceptanceResponseTest {
     }
 
     @Test
+    @DisplayName("Deve implementar equals corretamente")
     void equals_ShouldWorkCorrectly() {
         // Given
         LocalDateTime time = LocalDateTime.now();
@@ -139,6 +147,7 @@ class TermsAcceptanceResponseTest {
     }
 
     @Test
+    @DisplayName("Deve conter todos os campos no toString")
     void toString_ShouldContainAllFields() {
         // Given
         TermsAcceptanceResponse response = new TermsAcceptanceResponse(

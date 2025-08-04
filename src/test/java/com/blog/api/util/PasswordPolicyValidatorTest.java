@@ -7,11 +7,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("Password Policy Validator Tests")
+@DisplayName("Testes do validador de política de senhas")
 class PasswordPolicyValidatorTest {
 
     @Test
-    @DisplayName("Should validate strong password successfully")
+    @DisplayName("Deve validar senha forte com sucesso")
     void shouldValidateStrongPasswordSuccessfully() {
         String strongPassword = "MyStr0ng!Pass";
         
@@ -22,7 +22,7 @@ class PasswordPolicyValidatorTest {
     }
 
     @Test
-    @DisplayName("Should reject null password")
+    @DisplayName("Deve rejeitar senha nula")
     void shouldRejectNullPassword() {
         PasswordPolicyValidator.ValidationResult result = PasswordPolicyValidator.validate(null);
         
@@ -33,7 +33,7 @@ class PasswordPolicyValidatorTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"1234567", "short", "a", "Ab1@"})
-    @DisplayName("Should reject passwords shorter than 8 characters")
+    @DisplayName("Deve rejeitar senhas com menos de 8 caracteres")
     void shouldRejectShortPasswords(String shortPassword) {
         PasswordPolicyValidator.ValidationResult result = PasswordPolicyValidator.validate(shortPassword);
         
@@ -44,7 +44,7 @@ class PasswordPolicyValidatorTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"PASSWORD123!", "MYSTRONG!PASS", "UPPERCASE1@"})
-    @DisplayName("Should reject passwords without lowercase letters")
+    @DisplayName("Deve rejeitar senhas sem letras minúsculas")
     void shouldRejectPasswordsWithoutLowercase(String password) {
         PasswordPolicyValidator.ValidationResult result = PasswordPolicyValidator.validate(password);
         
@@ -55,7 +55,7 @@ class PasswordPolicyValidatorTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"password123!", "mystrong!pass", "lowercase1@"})
-    @DisplayName("Should reject passwords without uppercase letters")
+    @DisplayName("Deve rejeitar senhas sem letras maiúsculas")
     void shouldRejectPasswordsWithoutUppercase(String password) {
         PasswordPolicyValidator.ValidationResult result = PasswordPolicyValidator.validate(password);
         
@@ -66,7 +66,7 @@ class PasswordPolicyValidatorTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"Password!", "MyStrongPass!", "NoNumbers@"})
-    @DisplayName("Should reject passwords without digits")
+    @DisplayName("Deve rejeitar senhas sem dígitos")
     void shouldRejectPasswordsWithoutDigits(String password) {
         PasswordPolicyValidator.ValidationResult result = PasswordPolicyValidator.validate(password);
         
@@ -77,7 +77,7 @@ class PasswordPolicyValidatorTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"Password123", "MyStrongPass1", "NoSpecialChars1"})
-    @DisplayName("Should reject passwords without special characters")
+    @DisplayName("Deve rejeitar senhas sem caracteres especiais")
     void shouldRejectPasswordsWithoutSpecialChars(String password) {
         PasswordPolicyValidator.ValidationResult result = PasswordPolicyValidator.validate(password);
         
@@ -88,7 +88,7 @@ class PasswordPolicyValidatorTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"123456", "password", "123456789", "qwerty", "admin", "letmein"})
-    @DisplayName("Should reject common passwords")
+    @DisplayName("Deve rejeitar senhas comuns")
     void shouldRejectCommonPasswords(String commonPassword) {
         PasswordPolicyValidator.ValidationResult result = PasswordPolicyValidator.validate(commonPassword);
         
@@ -99,7 +99,7 @@ class PasswordPolicyValidatorTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"123456Aa!", "QwertyAa1!", "AbcdefGh1!"})
-    @DisplayName("Should reject passwords with sequential patterns")
+    @DisplayName("Deve rejeitar senhas com padrões sequenciais")
     void shouldRejectSequentialPatterns(String password) {
         PasswordPolicyValidator.ValidationResult result = PasswordPolicyValidator.validate(password);
         
@@ -110,7 +110,7 @@ class PasswordPolicyValidatorTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"AAAAbbbb1!", "MyPaaaaaass1!", "1234aaaa!"})
-    @DisplayName("Should reject passwords with too many repeated characters")
+    @DisplayName("Deve rejeitar senhas com muitos caracteres repetidos")
     void shouldRejectRepeatedCharacters(String password) {
         PasswordPolicyValidator.ValidationResult result = PasswordPolicyValidator.validate(password);
         
@@ -121,7 +121,7 @@ class PasswordPolicyValidatorTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"UserPass1!", "AdminSystem1!", "BlogApi123!"})
-    @DisplayName("Should reject passwords with personal information")
+    @DisplayName("Deve rejeitar senhas com informações pessoais")
     void shouldRejectPersonalInformation(String password) {
         PasswordPolicyValidator.ValidationResult result = PasswordPolicyValidator.validate(password);
         
@@ -131,7 +131,7 @@ class PasswordPolicyValidatorTest {
     }
 
     @Test
-    @DisplayName("Should return multiple validation errors for weak password")
+    @DisplayName("Deve retornar múltiplos erros de validação para senha fraca")
     void shouldReturnMultipleErrorsForWeakPassword() {
         String weakPassword = "123";
         
@@ -153,7 +153,7 @@ class PasswordPolicyValidatorTest {
         "MyStr0ng!Pass", "Secure@Password1", "C0mplex!Secret", 
         "Rnd0m$Phrase2", "StrongP@ssw0rd", "Val1d!Password"
     })
-    @DisplayName("Should validate various strong passwords")
+    @DisplayName("Deve validar várias senhas fortes")
     void shouldValidateVariousStrongPasswords(String strongPassword) {
         PasswordPolicyValidator.ValidationResult result = PasswordPolicyValidator.validate(strongPassword);
         
@@ -163,7 +163,7 @@ class PasswordPolicyValidatorTest {
     }
 
     @Test
-    @DisplayName("Should provide helpful error message")
+    @DisplayName("Deve fornecer mensagem de erro útil")
     void shouldProvideHelpfulErrorMessage() {
         String weakPassword = "weak";
         
@@ -175,7 +175,7 @@ class PasswordPolicyValidatorTest {
     }
 
     @Test
-    @DisplayName("Should check if password is strong using convenience method")
+    @DisplayName("Deve verificar se senha é forte usando método de conveniência")
     void shouldCheckPasswordStrengthUsingConvenienceMethod() {
         assertTrue(PasswordPolicyValidator.isStrongPassword("MyStr0ng!Pass"));
         assertFalse(PasswordPolicyValidator.isStrongPassword("weak"));
@@ -183,7 +183,7 @@ class PasswordPolicyValidatorTest {
     }
 
     @Test
-    @DisplayName("Should provide password requirements")
+    @DisplayName("Deve fornecer requisitos de senha")
     void shouldProvidePasswordRequirements() {
         String requirements = PasswordPolicyValidator.getPasswordRequirements();
         
@@ -197,7 +197,7 @@ class PasswordPolicyValidatorTest {
     }
 
     @Test
-    @DisplayName("Should handle edge cases correctly")
+    @DisplayName("Deve lidar com casos extremos corretamente")
     void shouldHandleEdgeCases() {
         // Empty string
         PasswordPolicyValidator.ValidationResult emptyResult = PasswordPolicyValidator.validate("");

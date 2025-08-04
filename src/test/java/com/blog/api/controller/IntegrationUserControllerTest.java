@@ -5,6 +5,7 @@ import com.blog.api.dto.UserDTO;
 import com.blog.api.entity.User;
 import com.blog.api.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -33,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     "spring.security.user.password=password",
     "spring.security.user.roles=ADMIN"
 })
+@DisplayName("Testes de integração do controlador de usuários")
 class IntegrationUserControllerTest {
 
     @Autowired
@@ -61,6 +63,7 @@ class IntegrationUserControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
+    @DisplayName("Deve retornar página de usuários quando usuário admin solicitar todos os usuários")
     void getAllUsers_ShouldReturnPageOfUsers() throws Exception {
         // Arrange
         Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO));
@@ -80,6 +83,7 @@ class IntegrationUserControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Deve retornar usuário quando buscar por ID existente")
     void getUserById_ShouldReturnUser_WhenExists() throws Exception {
         // Arrange
         when(userService.getUserById(1L)).thenReturn(sampleUserDTO);
@@ -97,6 +101,7 @@ class IntegrationUserControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Deve retornar usuário quando buscar por nome de usuário existente")
     void getUserByUsername_ShouldReturnUser_WhenExists() throws Exception {
         // Arrange
         when(userService.getUserByUsername("testuser")).thenReturn(sampleUserDTO);
@@ -113,6 +118,7 @@ class IntegrationUserControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar não autorizado quando buscar usuário por ID sem autenticação")
     void getUserById_ShouldReturnUnauthorized_WhenNotAuthenticated() throws Exception {
         // Act & Assert
         mockMvc.perform(get("/api/v1/users/1")
@@ -121,6 +127,7 @@ class IntegrationUserControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar não autorizado quando buscar todos os usuários sem autenticação")
     void getAllUsers_ShouldReturnUnauthorized_WhenNotAuthenticated() throws Exception {
         // Act & Assert
         mockMvc.perform(get("/api/v1/users")

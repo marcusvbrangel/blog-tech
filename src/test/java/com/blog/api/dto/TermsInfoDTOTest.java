@@ -1,14 +1,17 @@
 package com.blog.api.dto;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("Testes do DTO TermsInfoDTO")
 class TermsInfoDTOTest {
 
     @Test
+    @DisplayName("Deve criar status de aceitação obrigatória quando requer aceitação")
     void requiresAcceptance_ShouldCreateRequiredStatus() {
         // Given
         String currentVersion = "v2.0";
@@ -28,6 +31,7 @@ class TermsInfoDTOTest {
     }
 
     @Test
+    @DisplayName("Deve criar status de aceitação não obrigatória quando não requerida")
     void notRequired_ShouldCreateNotRequiredStatus() {
         // Given
         String currentVersion = "v1.5";
@@ -45,6 +49,7 @@ class TermsInfoDTOTest {
     }
 
     @Test
+    @DisplayName("Deve criar status de já aceito com data de aceitação")
     void alreadyAccepted_WithAcceptedAt_ShouldCreateAcceptedStatus() {
         // Given
         String currentVersion = "v1.0";
@@ -63,6 +68,7 @@ class TermsInfoDTOTest {
     }
 
     @Test
+    @DisplayName("Deve criar status de já aceito com data de aceitação nula")
     void alreadyAccepted_WithNullAcceptedAt_ShouldCreateAcceptedStatus() {
         // Given
         String currentVersion = "v1.0";
@@ -80,6 +86,7 @@ class TermsInfoDTOTest {
     }
 
     @Test
+    @DisplayName("Deve definir todos os campos quando usado construtor")
     void constructor_ShouldSetAllFields() {
         // Given
         String currentVersion = "v3.0";
@@ -115,6 +122,7 @@ class TermsInfoDTOTest {
     }
 
     @Test
+    @DisplayName("Deve implementar equals corretamente")
     void equals_ShouldWorkCorrectly() {
         // Given
         LocalDateTime time = LocalDateTime.now();
@@ -129,6 +137,7 @@ class TermsInfoDTOTest {
     }
 
     @Test
+    @DisplayName("Deve conter campos relevantes no toString")
     void toString_ShouldContainRelevantFields() {
         // Given
         TermsInfoDTO dto = new TermsInfoDTO("v1.0", true, false, "v0.9", LocalDateTime.now(), "/terms", "/privacy", "/cookies");

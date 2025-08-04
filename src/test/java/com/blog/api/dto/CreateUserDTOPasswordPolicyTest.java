@@ -8,11 +8,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("CreateUserDTO Password Policy Integration Tests")
+@DisplayName("Testes de integração da política de senha do CreateUserDTO")
 class CreateUserDTOPasswordPolicyTest {
 
     @Test
-    @DisplayName("Should create DTO successfully with strong password")
+    @DisplayName("Deve criar DTO com sucesso quando senha for forte")
     void shouldCreateDTOWithStrongPassword() {
         assertDoesNotThrow(() -> {
             CreateUserDTO dto = new CreateUserDTO("testuser", "test@example.com", "StrongP@ssw0rd1");
@@ -24,7 +24,7 @@ class CreateUserDTOPasswordPolicyTest {
     }
 
     @Test
-    @DisplayName("Should create DTO successfully with role parameter")
+    @DisplayName("Deve criar DTO com sucesso quando incluir parâmetro de role")
     void shouldCreateDTOWithRole() {
         assertDoesNotThrow(() -> {
             CreateUserDTO dto = new CreateUserDTO("testadmin", "testadmin@example.com", "SecureP@ss123", User.Role.ADMIN);
@@ -37,7 +37,7 @@ class CreateUserDTOPasswordPolicyTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"weak", "123456", "TestPass123!", "Password123"})
-    @DisplayName("Should reject weak passwords during DTO creation")
+    @DisplayName("Deve rejeitar senhas fracas durante criação do DTO")
     void shouldRejectWeakPasswords(String weakPassword) {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             new CreateUserDTO("testuser", "test@example.com", weakPassword);
@@ -47,7 +47,7 @@ class CreateUserDTOPasswordPolicyTest {
     }
 
     @Test
-    @DisplayName("Should reject null password during DTO creation")
+    @DisplayName("Deve rejeitar senha nula durante criação do DTO")
     void shouldRejectNullPassword() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             new CreateUserDTO("testuser", "test@example.com", null);
@@ -58,7 +58,7 @@ class CreateUserDTOPasswordPolicyTest {
     }
 
     @Test
-    @DisplayName("Should provide detailed error message for multiple violations")
+    @DisplayName("Deve fornecer mensagem de erro detalhada para múltiplas violações")
     void shouldProvideDetailedErrorMessage() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             new CreateUserDTO("testuser", "test@example.com", "123");
@@ -77,7 +77,7 @@ class CreateUserDTOPasswordPolicyTest {
         "MyStr0ng!Pass", "Secure@Password1", "C0mplex!Secret", 
         "Rnd0m$Phrase2", "StrongP@ssw0rd", "Val1d!Password"
     })
-    @DisplayName("Should accept various strong passwords")
+    @DisplayName("Deve aceitar várias senhas fortes")
     void shouldAcceptVariousStrongPasswords(String strongPassword) {
         assertDoesNotThrow(() -> {
             CreateUserDTO dto = new CreateUserDTO("testuser", "test@example.com", strongPassword);
@@ -86,7 +86,7 @@ class CreateUserDTOPasswordPolicyTest {
     }
 
     @Test
-    @DisplayName("Should handle edge case passwords correctly")
+    @DisplayName("Deve tratar casos extremos de senhas corretamente")
     void shouldHandleEdgeCasePasswords() {
         // Exactly meets all requirements
         assertDoesNotThrow(() -> {

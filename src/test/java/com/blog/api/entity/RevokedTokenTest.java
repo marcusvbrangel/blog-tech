@@ -1,5 +1,6 @@
 package com.blog.api.entity;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests for RevokedToken entity including Builder pattern, factory methods,
  * validation, and business logic methods.
  */
+@DisplayName("Revoked Token Tests")
 class RevokedTokenTest {
 
     // =====================================================================
@@ -17,6 +19,7 @@ class RevokedTokenTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve criar entidade válida quando usar builder com todos os campos")
     void builder_WithAllFields_ShouldCreateValidEntity() {
         // Given
         String jti = "test-jti-123";
@@ -46,6 +49,7 @@ class RevokedTokenTest {
     }
 
     @Test
+    @DisplayName("Deve criar entidade válida quando usar builder com campos mínimos")
     void builder_WithMinimalFields_ShouldCreateValidEntity() {
         // Given
         String jti = "minimal-jti";
@@ -66,6 +70,7 @@ class RevokedTokenTest {
     }
 
     @Test
+    @DisplayName("Deve criar builder quando usar entidade existente")
     void from_WithExistingEntity_ShouldCreateBuilder() {
         // Given
         LocalDateTime now = LocalDateTime.now();
@@ -95,6 +100,7 @@ class RevokedTokenTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve criar token com motivo de logout quando usar factory forLogout")
     void forLogout_ShouldCreateTokenWithLogoutReason() {
         // Given
         String jti = "logout-jti";
@@ -113,6 +119,7 @@ class RevokedTokenTest {
     }
 
     @Test
+    @DisplayName("Deve criar token com motivo de mudança de senha quando usar factory forPasswordChange")
     void forPasswordChange_ShouldCreateTokenWithPasswordChangeReason() {
         // Given
         String jti = "password-change-jti";
@@ -131,6 +138,7 @@ class RevokedTokenTest {
     }
 
     @Test
+    @DisplayName("Deve criar token com motivo de revogação admin quando usar factory forAdminRevoke")
     void forAdminRevoke_ShouldCreateTokenWithAdminRevokeReason() {
         // Given
         String jti = "admin-revoke-jti";
@@ -153,6 +161,7 @@ class RevokedTokenTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve retornar false quando token tem expiração futura")
     void isExpired_WithFutureExpiration_ShouldReturnFalse() {
         // Given
         LocalDateTime futureExpiration = LocalDateTime.now().plusHours(1);
@@ -166,6 +175,7 @@ class RevokedTokenTest {
     }
 
     @Test
+    @DisplayName("Deve retornar true quando token tem expiração passada")
     void isExpired_WithPastExpiration_ShouldReturnTrue() {
         // Given
         LocalDateTime pastExpiration = LocalDateTime.now().minusHours(1);
@@ -179,6 +189,7 @@ class RevokedTokenTest {
     }
 
     @Test
+    @DisplayName("Deve retornar true quando expiração é null")
     void isExpired_WithNullExpiration_ShouldReturnTrue() {
         // Given
         RevokedToken token = RevokedToken.builder()
@@ -191,6 +202,7 @@ class RevokedTokenTest {
     }
 
     @Test
+    @DisplayName("Deve retornar true quando revogação é recente")
     void isRecentRevocation_WithRecentRevocation_ShouldReturnTrue() {
         // Given
         LocalDateTime recentRevocation = LocalDateTime.now().minusMinutes(30);
@@ -205,6 +217,7 @@ class RevokedTokenTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando revogação é antiga")
     void isRecentRevocation_WithOldRevocation_ShouldReturnFalse() {
         // Given
         LocalDateTime oldRevocation = LocalDateTime.now().minusHours(2);
@@ -219,6 +232,7 @@ class RevokedTokenTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando revogação é null")
     void isRecentRevocation_WithNullRevocation_ShouldReturnFalse() {
         // Given
         RevokedToken token = RevokedToken.builder()
@@ -236,6 +250,7 @@ class RevokedTokenTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve retornar true quando comparar tokens com mesmo JTI")
     void equals_WithSameJti_ShouldReturnTrue() {
         // Given
         String jti = "same-jti";
@@ -257,6 +272,7 @@ class RevokedTokenTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando comparar tokens com JTI diferentes")
     void equals_WithDifferentJti_ShouldReturnFalse() {
         // Given
         RevokedToken token1 = RevokedToken.builder()
@@ -275,6 +291,7 @@ class RevokedTokenTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando comparar com null")
     void equals_WithNull_ShouldReturnFalse() {
         // Given
         RevokedToken token = RevokedToken.builder()
@@ -287,6 +304,7 @@ class RevokedTokenTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando comparar com classe diferente")
     void equals_WithDifferentClass_ShouldReturnFalse() {
         // Given
         RevokedToken token = RevokedToken.builder()
@@ -299,6 +317,7 @@ class RevokedTokenTest {
     }
 
     @Test
+    @DisplayName("Deve retornar true quando comparar mesma instância")
     void equals_WithSameInstance_ShouldReturnTrue() {
         // Given
         RevokedToken token = RevokedToken.builder()
@@ -315,6 +334,7 @@ class RevokedTokenTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve conter todos os campos quando chamar toString")
     void toString_ShouldContainAllFields() {
         // Given
         LocalDateTime now = LocalDateTime.now();
@@ -344,6 +364,7 @@ class RevokedTokenTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve ter todos os valores esperados no enum RevokeReason")
     void revokeReason_ShouldHaveAllExpectedValues() {
         // When & Then
         RevokedToken.RevokeReason[] reasons = RevokedToken.RevokeReason.values();
@@ -359,6 +380,7 @@ class RevokedTokenTest {
     }
 
     @Test
+    @DisplayName("Deve ter valores string corretos no enum RevokeReason")
     void revokeReason_ShouldHaveCorrectStringValues() {
         // When & Then
         assertEquals("LOGOUT", RevokedToken.RevokeReason.LOGOUT.name());
@@ -373,6 +395,7 @@ class RevokedTokenTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve atualizar campos quando usar setters")
     void setters_ShouldUpdateFields() {
         // Given
         RevokedToken token = new RevokedToken();
@@ -402,6 +425,7 @@ class RevokedTokenTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve criar entidade quando JTI for string vazia")
     void builder_WithEmptyStringJti_ShouldCreateEntity() {
         // Given & When
         RevokedToken token = RevokedToken.builder()
@@ -415,6 +439,7 @@ class RevokedTokenTest {
     }
 
     @Test
+    @DisplayName("Deve retornar true quando no tempo exato de expiração")
     void isExpired_AtExactExpirationTime_ShouldReturnTrue() {
         // Given
         LocalDateTime exactExpiration = LocalDateTime.now();
@@ -435,6 +460,7 @@ class RevokedTokenTest {
     }
 
     @Test
+    @DisplayName("Deve criar entidade com nulls quando factory methods recebem parâmetros null")
     void factoryMethods_WithNullParameters_ShouldCreateEntityWithNulls() {
         // Given & When
         RevokedToken logoutToken = RevokedToken.forLogout(null, null, null);

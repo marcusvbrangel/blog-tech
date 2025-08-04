@@ -3,6 +3,7 @@ package com.blog.api.controller;
 import com.blog.api.dto.PostDTO;
 import com.blog.api.service.PostService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,6 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Testes simples do controlador de posts")
 class SimplePostControllerTest {
 
     @Mock
@@ -51,6 +53,7 @@ class SimplePostControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar página de posts quando solicitar todos os posts publicados")
     void getAllPublishedPosts_ShouldReturnPageOfPosts() {
         // Arrange
         Page<PostDTO> page = new PageImpl<>(Arrays.asList(samplePostDTO));
@@ -69,6 +72,7 @@ class SimplePostControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar post quando buscar por ID")
     void getPostById_ShouldReturnPost() {
         // Arrange
         when(postService.getPostById(1L)).thenReturn(samplePostDTO);
@@ -86,6 +90,7 @@ class SimplePostControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar posts filtrados quando pesquisar posts")
     void searchPosts_ShouldReturnFilteredPosts() {
         // Arrange
         Page<PostDTO> page = new PageImpl<>(Arrays.asList(samplePostDTO));
@@ -103,6 +108,7 @@ class SimplePostControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar posts da categoria quando buscar posts por categoria")
     void getPostsByCategory_ShouldReturnPostsFromCategory() {
         // Arrange
         Page<PostDTO> page = new PageImpl<>(Arrays.asList(samplePostDTO));
@@ -120,6 +126,7 @@ class SimplePostControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar posts do usuário quando buscar posts por usuário")
     void getPostsByUser_ShouldReturnUserPosts() {
         // Arrange
         Page<PostDTO> page = new PageImpl<>(Arrays.asList(samplePostDTO));

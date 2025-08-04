@@ -2,11 +2,13 @@ package com.blog.api.entity;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.*;
 
+@DisplayName("Testes da entidade TermsAcceptance")
 class TermsAcceptanceTest {
 
     private User testUser;
@@ -21,6 +23,7 @@ class TermsAcceptanceTest {
     }
 
     @Test
+    @DisplayName("Deve criar aceitação de termos com dados válidos")
     void builderPattern_WithValidData_ShouldCreateTermsAcceptance() {
         // Given
         String termsVersion = "v1.0";
@@ -45,6 +48,7 @@ class TermsAcceptanceTest {
     }
 
     @Test
+    @DisplayName("Deve definir timestamp atual quando usado factory method withCurrentTimestamp")
     void builderPattern_WithCurrentTimestamp_ShouldSetCurrentTime() {
         // Given
         String termsVersion = "v1.0";
@@ -61,6 +65,7 @@ class TermsAcceptanceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando usuário for nulo")
     void builderPattern_WithNullUser_ShouldThrowException() {
         // When & Then
         assertThatThrownBy(() -> TermsAcceptance.of(null, "v1.0"))
@@ -69,6 +74,7 @@ class TermsAcceptanceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando versão dos termos for nula")
     void builderPattern_WithNullTermsVersion_ShouldThrowException() {
         // When & Then
         assertThatThrownBy(() -> TermsAcceptance.of(testUser, null))
@@ -77,6 +83,7 @@ class TermsAcceptanceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando versão dos termos for vazia")
     void builderPattern_WithEmptyTermsVersion_ShouldThrowException() {
         // When & Then
         assertThatThrownBy(() -> TermsAcceptance.of(testUser, "   "))
@@ -85,6 +92,7 @@ class TermsAcceptanceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando versão dos termos exceder 10 caracteres")
     void builderPattern_WithTooLongTermsVersion_ShouldThrowException() {
         // Given
         String longVersion = "v1.0.0.0.0.0"; // More than 10 characters
@@ -96,6 +104,7 @@ class TermsAcceptanceTest {
     }
 
     @Test
+    @DisplayName("Deve definir IP como nulo quando endereço IP for vazio")
     void builderPattern_WithEmptyIpAddress_ShouldSetToNull() {
         // When
         TermsAcceptance acceptance = TermsAcceptance.of(testUser, "v1.0")
@@ -107,6 +116,7 @@ class TermsAcceptanceTest {
     }
 
     @Test
+    @DisplayName("Deve definir user agent como nulo quando for vazio")
     void builderPattern_WithEmptyUserAgent_ShouldSetToNull() {
         // When
         TermsAcceptance acceptance = TermsAcceptance.of(testUser, "v1.0")
@@ -118,6 +128,7 @@ class TermsAcceptanceTest {
     }
 
     @Test
+    @DisplayName("Deve copiar todos os campos quando criado a partir de outra aceitação")
     void builderPattern_FromAnotherAcceptance_ShouldCopyAllFields() {
         // Given
         TermsAcceptance original = TermsAcceptance.of(testUser, "v1.0")
@@ -140,6 +151,7 @@ class TermsAcceptanceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar resultado correto ao verificar correspondência de versão")
     void businessMethods_IsVersionMatch_ShouldReturnCorrectResult() {
         // Given
         TermsAcceptance acceptance = TermsAcceptance.of(testUser, "v1.0").build();
@@ -151,6 +163,7 @@ class TermsAcceptanceTest {
     }
 
     @Test
+    @DisplayName("Deve realizar comparações de tempo de aceitação corretamente")
     void businessMethods_AcceptanceTimeComparisons_ShouldWorkCorrectly() {
         // Given
         LocalDateTime acceptedAt = LocalDateTime.now();
@@ -169,6 +182,7 @@ class TermsAcceptanceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar resultado correto ao verificar presença de IP e user agent")
     void businessMethods_HasIpAddressAndUserAgent_ShouldReturnCorrectResult() {
         // Given
         TermsAcceptance withDetails = TermsAcceptance.of(testUser, "v1.0")
@@ -187,6 +201,7 @@ class TermsAcceptanceTest {
     }
 
     @Test
+    @DisplayName("Deve implementar equals e hashCode corretamente")
     void equalsAndHashCode_ShouldWorkCorrectly() {
         // Given
         LocalDateTime acceptedAt = LocalDateTime.now();
@@ -212,6 +227,7 @@ class TermsAcceptanceTest {
     }
 
     @Test
+    @DisplayName("Deve conter informações essenciais no toString")
     void toString_ShouldContainEssentialInformation() {
         // Given
         TermsAcceptance acceptance = TermsAcceptance.of(testUser, "v1.0")
@@ -231,6 +247,7 @@ class TermsAcceptanceTest {
     }
 
     @Test
+    @DisplayName("Deve fornecer criação conveniente através de factory methods")
     void factoryMethods_ShouldProvideConvenientCreation() {
         // Test newInstance
         TermsAcceptance newInstance = TermsAcceptance.newInstance()

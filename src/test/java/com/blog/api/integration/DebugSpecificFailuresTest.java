@@ -7,6 +7,7 @@ import com.blog.api.repository.UserRepository;
 import com.blog.api.repository.VerificationTokenRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional
+@DisplayName("Testes de depuração de falhas específicas")
 class DebugSpecificFailuresTest {
 
     @Autowired
@@ -48,6 +50,7 @@ class DebugSpecificFailuresTest {
     }
 
     @Test
+    @DisplayName("Deve depurar login após verificação de email")
     void debugLoginAfterEmailVerification() throws Exception {
         System.out.println("=== DEBUG LOGIN AFTER EMAIL VERIFICATION ===");
         
@@ -108,6 +111,7 @@ class DebugSpecificFailuresTest {
     }
 
     @Test
+    @DisplayName("Deve depurar redefinição de senha com email inexistente")
     void debugPasswordResetWithNonExistentEmail() throws Exception {
         System.out.println("=== DEBUG PASSWORD RESET WITH NON-EXISTENT EMAIL ===");
         

@@ -5,6 +5,7 @@ import com.blog.api.dto.PostDTO;
 import com.blog.api.service.PostService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -42,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
         org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration.class
     })
+@DisplayName("Testes de integração funcionais do controlador de posts")
 class WorkingPostControllerIntegrationTest {
 
     @Autowired
@@ -79,6 +81,7 @@ class WorkingPostControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve retornar página de posts quando solicitar todos os posts")
     void getAllPosts_ShouldReturnPageOfPosts() throws Exception {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
@@ -101,6 +104,7 @@ class WorkingPostControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve retornar post quando buscar por ID existente")
     void getPostById_ShouldReturnPost_WhenExists() throws Exception {
         // Arrange
         when(postService.getPostById(1L)).thenReturn(samplePostDTO);
@@ -118,6 +122,7 @@ class WorkingPostControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve criar e retornar post quando criar post")
     void createPost_ShouldCreateAndReturnPost() throws Exception {
         // Arrange
         when(postService.createPost(any(CreatePostDTO.class), eq("testuser"))).thenReturn(samplePostDTO);
@@ -135,6 +140,7 @@ class WorkingPostControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve atualizar e retornar post quando atualizar post")
     void updatePost_ShouldUpdateAndReturnPost() throws Exception {
         // Arrange
         when(postService.updatePost(eq(1L), any(CreatePostDTO.class), eq("testuser"))).thenReturn(samplePostDTO);
@@ -153,6 +159,7 @@ class WorkingPostControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve retornar sem conteúdo quando deletar post")
     void deletePost_ShouldReturnNoContent() throws Exception {
         // Act & Assert
         mockMvc.perform(delete("/api/v1/posts/1")
@@ -164,6 +171,7 @@ class WorkingPostControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve retornar página de posts quando pesquisar posts")
     void searchPosts_ShouldReturnPageOfPosts() throws Exception {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
@@ -185,6 +193,7 @@ class WorkingPostControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve retornar página de posts quando buscar posts por categoria")
     void getPostsByCategory_ShouldReturnPageOfPosts() throws Exception {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
@@ -205,6 +214,7 @@ class WorkingPostControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve retornar página de posts quando buscar posts por usuário")
     void getPostsByUser_ShouldReturnPageOfPosts() throws Exception {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);

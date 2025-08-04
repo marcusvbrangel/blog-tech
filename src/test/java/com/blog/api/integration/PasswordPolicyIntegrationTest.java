@@ -16,14 +16,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-@DisplayName("Password Policy Integration Tests")
+@DisplayName("Testes de integração da política de senhas")
 class PasswordPolicyIntegrationTest {
 
     @Autowired
     private AuthService authService;
 
     @Test
-    @DisplayName("Should enforce password policy during user registration")
+    @DisplayName("Deve aplicar política de senhas durante o registro de usuário")
     void shouldEnforcePasswordPolicyDuringRegistration() {
         // Test with weak password - should fail
         assertThrows(Exception.class, () -> {
@@ -39,7 +39,7 @@ class PasswordPolicyIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should enforce password policy during password reset")
+    @DisplayName("Deve aplicar política de senhas durante a redefinição de senha")
     void shouldEnforcePasswordPolicyDuringPasswordReset() {
         // Test weak password in PasswordResetConfirmRequest - should fail at DTO level
         assertThrows(IllegalArgumentException.class, () -> {
@@ -53,7 +53,7 @@ class PasswordPolicyIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should validate various password policy rules")
+    @DisplayName("Deve validar várias regras da política de senhas")
     void shouldValidateVariousPasswordPolicyRules() {
         // Test minimum length
         assertThrows(IllegalArgumentException.class, () -> {
@@ -92,7 +92,7 @@ class PasswordPolicyIntegrationTest {
     }
 
     @Test
-    @DisplayName("Should allow User Builder to work with encrypted passwords")
+    @DisplayName("Deve permitir que User Builder funcione com senhas criptografadas")
     void shouldAllowUserBuilderWithEncryptedPasswords() {
         // This should work for encrypted passwords
         assertDoesNotThrow(() -> {

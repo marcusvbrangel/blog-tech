@@ -1,14 +1,17 @@
 package com.blog.api.dto;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("Testes do DTO TermsComplianceResponse")
 class TermsComplianceResponseTest {
 
     @Test
+    @DisplayName("Deve criar resposta de aceitação obrigatória quando chamado método required")
     void required_ShouldCreateRequiredResponse() {
         // Given
         TermsInfoDTO termsInfo = TermsInfoDTO.requiresAcceptance("v2.0");
@@ -24,6 +27,7 @@ class TermsComplianceResponseTest {
     }
 
     @Test
+    @DisplayName("Deve criar resposta personalizada quando requer aceitação com mensagem customizada")
     void requiresAcceptance_WithCustomMessage_ShouldCreateCustomResponse() {
         // Given
         String customMessage = "Please accept the updated privacy policy";
@@ -40,6 +44,7 @@ class TermsComplianceResponseTest {
     }
 
     @Test
+    @DisplayName("Deve criar resposta de sucesso quando termos foram aceitos")
     void accepted_ShouldCreateAcceptedResponse() {
         // Given
         TermsAcceptanceResponse acceptance = new TermsAcceptanceResponse(
@@ -57,6 +62,7 @@ class TermsComplianceResponseTest {
     }
 
     @Test
+    @DisplayName("Deve criar resposta de sucesso com todos os parâmetros")
     void success_WithAllParameters_ShouldCreateSuccessResponse() {
         // Given
         String message = "Operation completed successfully";
@@ -76,6 +82,7 @@ class TermsComplianceResponseTest {
     }
 
     @Test
+    @DisplayName("Deve tratar graciosamente quando aceitação for nula no success")
     void success_WithNullAcceptance_ShouldHandleGracefully() {
         // Given
         String message = "Terms not required";
@@ -92,6 +99,7 @@ class TermsComplianceResponseTest {
     }
 
     @Test
+    @DisplayName("Deve definir todos os campos quando usado construtor")
     void constructor_ShouldSetAllFields() {
         // Given
         boolean success = true;
@@ -112,6 +120,7 @@ class TermsComplianceResponseTest {
     }
 
     @Test
+    @DisplayName("Deve implementar equals corretamente")
     void equals_ShouldWorkCorrectly() {
         // Given
         TermsInfoDTO termsInfo = TermsInfoDTO.requiresAcceptance("v1.0");
@@ -128,6 +137,7 @@ class TermsComplianceResponseTest {
     }
 
     @Test
+    @DisplayName("Deve conter campos relevantes no toString")
     void toString_ShouldContainRelevantFields() {
         // Given
         TermsComplianceResponse response = TermsComplianceResponse.required(

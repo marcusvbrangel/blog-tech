@@ -5,6 +5,7 @@ import com.blog.api.entity.User;
 import com.blog.api.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -38,6 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
         org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration.class
     })
+@DisplayName("Testes de integração simples do controlador de usuários")
 class SimpleIntegrationUserControllerTest {
 
     @Autowired
@@ -68,6 +70,7 @@ class SimpleIntegrationUserControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar página de usuários quando solicitar todos os usuários")
     void getAllUsers_ShouldReturnPageOfUsers() throws Exception {
         // Arrange
         Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO));
@@ -87,6 +90,7 @@ class SimpleIntegrationUserControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar usuário quando buscar por ID existente")
     void getUserById_ShouldReturnUser_WhenExists() throws Exception {
         // Arrange
         when(userService.getUserById(1L)).thenReturn(sampleUserDTO);
@@ -104,6 +108,7 @@ class SimpleIntegrationUserControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar usuário quando buscar por nome de usuário existente")
     void getUserByUsername_ShouldReturnUser_WhenExists() throws Exception {
         // Arrange
         when(userService.getUserByUsername("testuser")).thenReturn(sampleUserDTO);
@@ -121,6 +126,7 @@ class SimpleIntegrationUserControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar não encontrado quando buscar usuário por ID inexistente")
     void getUserById_ShouldReturnNotFound_WhenNotExists() throws Exception {
         // Arrange
         when(userService.getUserById(999L))
@@ -135,6 +141,7 @@ class SimpleIntegrationUserControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar página vazia quando não houver usuários")
     void getAllUsers_ShouldReturnEmptyPage_WhenNoUsers() throws Exception {
         // Arrange
         Page<UserDTO> emptyPage = new PageImpl<>(Arrays.asList());
@@ -152,6 +159,7 @@ class SimpleIntegrationUserControllerTest {
     }
 
     @Test
+    @DisplayName("Deve lidar com paginação quando solicitar todos os usuários")
     void getAllUsers_ShouldHandlePagination() throws Exception {
         // Arrange
         Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO));

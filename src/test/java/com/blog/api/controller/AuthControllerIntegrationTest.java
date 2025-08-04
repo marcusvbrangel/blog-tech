@@ -8,6 +8,7 @@ import com.blog.api.repository.UserRepository;
 import com.blog.api.util.TestDataFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -33,6 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     "blog.security.email-verification.enabled=false"
 })
 @Transactional
+@DisplayName("Testes de integração do controlador de autenticação")
 class AuthControllerIntegrationTest {
 
     @Autowired
@@ -54,6 +56,7 @@ class AuthControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve criar usuário e registrar evento de auditoria ao registrar")
     void register_ShouldCreateUser_AndLogAuditEvent() throws Exception {
         // Arrange
         CreateUserDTO createUserDTO = new CreateUserDTO(
@@ -77,6 +80,7 @@ class AuthControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve retornar JWT com refresh token e registrar evento de auditoria ao fazer login")
     void login_ShouldReturnJwtWithRefreshToken_AndLogAuditEvent() throws Exception {
         // Arrange - Create user first
         CreateUserDTO createUserDTO = new CreateUserDTO(
@@ -109,6 +113,7 @@ class AuthControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve falhar com credenciais inválidas e registrar evento de auditoria ao fazer login")
     void login_ShouldFailWithInvalidCredentials_AndLogAuditEvent() throws Exception {
         // Arrange
         LoginRequest loginRequest = new LoginRequest("nonexistent", "wrongpassword");
@@ -121,6 +126,7 @@ class AuthControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve retornar novos tokens quando refresh token for válido")
     void refreshToken_ShouldReturnNewTokens_WhenValidRefreshToken() throws Exception {
         // Arrange - Register and login to get refresh token
         CreateUserDTO createUserDTO = new CreateUserDTO(
@@ -162,6 +168,7 @@ class AuthControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve falhar ao renovar token com token inválido")
     void refreshToken_ShouldFailWithInvalidToken() throws Exception {
         // Arrange
         RefreshTokenRequest refreshRequest = new RefreshTokenRequest("invalid-refresh-token");
@@ -174,6 +181,7 @@ class AuthControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve revogar refresh token com sucesso quando token for válido")
     void revokeRefreshToken_ShouldSucceed_WhenValidToken() throws Exception {
         // Arrange - Get a valid refresh token
         CreateUserDTO createUserDTO = new CreateUserDTO(
@@ -209,6 +217,7 @@ class AuthControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve falhar ao registrar com senha fraca")
     void register_ShouldFailWithWeakPassword() throws Exception {
         // Arrange
         CreateUserDTO createUserDTO = new CreateUserDTO(
@@ -226,6 +235,7 @@ class AuthControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve falhar ao registrar com nome de usuário duplicado")
     void register_ShouldFailWithDuplicateUsername() throws Exception {
         // Arrange - Create first user
         CreateUserDTO firstUser = new CreateUserDTO(
@@ -256,6 +266,7 @@ class AuthControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Deve falhar ao registrar com email duplicado")
     void register_ShouldFailWithDuplicateEmail() throws Exception {
         // Arrange - Create first user
         CreateUserDTO firstUser = new CreateUserDTO(
