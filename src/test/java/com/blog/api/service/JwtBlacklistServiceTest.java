@@ -6,6 +6,7 @@ import com.blog.api.util.JwtUtil;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -19,7 +20,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
@@ -28,6 +30,7 @@ import static org.mockito.Mockito.*;
  * rate limiting, cleanup, and error handling.
  */
 @ExtendWith(MockitoExtension.class)
+@DisplayName("JWT Blacklist Service Tests")
 class JwtBlacklistServiceTest {
 
     @Mock
@@ -57,6 +60,7 @@ class JwtBlacklistServiceTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve verificar se token está revogado quando existe na blacklist")
     void isTokenRevoked_WhenTokenExists_ShouldReturnTrue() {
         // Given
         String jti = "test-jti-123";
@@ -71,6 +75,7 @@ class JwtBlacklistServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando token não está na blacklist")
     void isTokenRevoked_WhenTokenDoesNotExist_ShouldReturnFalse() {
         // Given
         String jti = "non-existent-jti";
@@ -85,6 +90,7 @@ class JwtBlacklistServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando ocorre erro na base de dados")
     void isTokenRevoked_WhenDatabaseError_ShouldReturnFalse() {
         // Given
         String jti = "error-jti";
@@ -104,6 +110,7 @@ class JwtBlacklistServiceTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve revogar token quando parâmetros são válidos")
     void revokeToken_WhenValidParameters_ShouldSaveRevokedToken() {
         // Given
         String jti = "valid-jti-123";
@@ -124,6 +131,7 @@ class JwtBlacklistServiceTest {
     }
 
     @Test
+    @DisplayName("Não deve salvar novamente quando token já está revogado")
     void revokeToken_WhenTokenAlreadyRevoked_ShouldNotSaveAgain() {
         // Given
         String jti = "already-revoked-jti";
@@ -141,6 +149,7 @@ class JwtBlacklistServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar SecurityException quando limite de taxa é excedido")
     void revokeToken_WhenRateLimitExceeded_ShouldThrowSecurityException() {
         // Given
         String jti = "rate-limited-jti";
@@ -159,6 +168,7 @@ class JwtBlacklistServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar IllegalArgumentException quando JTI é nulo")
     void revokeToken_WhenJtiIsNull_ShouldThrowIllegalArgumentException() {
         // Given
         String jti = null;
@@ -174,6 +184,7 @@ class JwtBlacklistServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar IllegalArgumentException quando JTI está vazio")
     void revokeToken_WhenJtiIsEmpty_ShouldThrowIllegalArgumentException() {
         // Given
         String jti = "";
@@ -189,6 +200,7 @@ class JwtBlacklistServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar IllegalArgumentException quando ID do usuário é nulo")
     void revokeToken_WhenUserIdIsNull_ShouldThrowIllegalArgumentException() {
         // Given
         String jti = "valid-jti";
@@ -204,6 +216,7 @@ class JwtBlacklistServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar IllegalArgumentException quando razão é nula")
     void revokeToken_WhenReasonIsNull_ShouldThrowIllegalArgumentException() {
         // Given
         String jti = "valid-jti";
@@ -223,6 +236,7 @@ class JwtBlacklistServiceTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve extrair JTI do token e revogar quando token é válido")
     void revokeTokenFromString_WhenValidToken_ShouldExtractJtiAndRevoke() {
         // Given
         String token = "valid.jwt.token";
@@ -245,6 +259,7 @@ class JwtBlacklistServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar IllegalArgumentException quando token é inválido")
     void revokeTokenFromString_WhenInvalidToken_ShouldThrowIllegalArgumentException() {
         // Given
         String token = "invalid.token";
@@ -266,6 +281,7 @@ class JwtBlacklistServiceTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve revogar todos os tokens do usuário quando ID é válido")
     void revokeAllUserTokens_WhenValidUserId_ShouldDeleteAllUserTokens() {
         // Given
         Long userId = 1L;
@@ -283,6 +299,7 @@ class JwtBlacklistServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar IllegalArgumentException quando ID do usuário é nulo")
     void revokeAllUserTokens_WhenUserIdIsNull_ShouldThrowIllegalArgumentException() {
         // Given
         Long userId = null;
@@ -301,6 +318,7 @@ class JwtBlacklistServiceTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve retornar informações do token quando token existe")
     void getRevokedTokenInfo_WhenTokenExists_ShouldReturnTokenInfo() {
         // Given
         String jti = "existing-jti";
@@ -322,6 +340,7 @@ class JwtBlacklistServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar null quando token não existe")
     void getRevokedTokenInfo_WhenTokenDoesNotExist_ShouldReturnNull() {
         // Given
         String jti = "non-existent-jti";
@@ -439,6 +458,7 @@ class JwtBlacklistServiceTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve deletar tokens expirados quando limpeza está habilitada")
     void cleanupExpiredTokens_WhenCleanupEnabled_ShouldDeleteExpiredTokens() {
         // Given
         int deletedCount = 10;
@@ -546,3 +566,4 @@ class JwtBlacklistServiceTest {
         verify(revokedTokenRepository, times(2)).existsByTokenJti(jti);
     }
 }
+

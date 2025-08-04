@@ -1,0 +1,20 @@
+-------------------------------------------------------------------------------
+Test set: com.blog.api.service.CommentServiceTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.414 s <<< FAILURE! -- in com.blog.api.service.CommentServiceTest
+com.blog.api.service.CommentServiceTest.deleteComment_ShouldOnlyAllowAuthorToDelete -- Time elapsed: 0.020 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting actual throwable to be an instance of:
+  java.lang.IllegalArgumentException
+but was:
+  java.lang.RuntimeException: You can only delete your own comments
+	at com.blog.api.service.CommentService.deleteComment(CommentService.java:127)
+	at com.blog.api.service.CommentServiceTest.lambda$deleteComment_ShouldOnlyAllowAuthorToDelete$1(CommentServiceTest.java:236)
+	at org.assertj.core.api.ThrowableAssert.catchThrowable(ThrowableAssert.java:63)
+	...(73 remaining lines not displayed - this can be changed with Assertions.setMaxStackTraceElementsDisplayed)
+	at com.blog.api.service.CommentServiceTest.deleteComment_ShouldOnlyAllowAuthorToDelete(CommentServiceTest.java:237)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+

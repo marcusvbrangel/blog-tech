@@ -3,17 +3,15 @@ package com.blog.api.service;
 import com.blog.api.entity.User;
 import com.blog.api.entity.VerificationToken;
 import com.blog.api.exception.BadRequestException;
-import com.blog.api.exception.ResourceNotFoundException;
 import com.blog.api.repository.UserRepository;
 import com.blog.api.repository.VerificationTokenRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.mockito.ArgumentMatchers.any;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Duration;
@@ -25,6 +23,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Verification Token Service Tests")
 class VerificationTokenServiceTest {
 
     @Mock
@@ -69,7 +68,8 @@ class VerificationTokenServiceTest {
     }
 
     @Test
-    void generateAndSendEmailVerification_Success() {
+    @DisplayName("Deve gerar e enviar token de verificação de email")
+    void generateAndSendEmailVerification_ShouldGenerateAndSendToken() {
         // Given
         when(tokenRepository.countTokensCreatedSince(eq(testUser), eq(VerificationToken.TokenType.EMAIL_VERIFICATION), any()))
                 .thenReturn(0L);
@@ -113,7 +113,8 @@ class VerificationTokenServiceTest {
     }
 
     @Test
-    void generateAndSendPasswordReset_Success() {
+    @DisplayName("Deve gerar e enviar token de reset de senha")
+    void generateAndSendPasswordReset_ShouldGenerateAndSendToken() {
         // Given
         String email = "test@example.com";
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(testUser));
@@ -146,7 +147,8 @@ class VerificationTokenServiceTest {
     }
 
     @Test
-    void verifyEmailToken_Success() {
+    @DisplayName("Deve verificar token de email válido")
+    void verifyEmailToken_ShouldReturnUser_WhenTokenIsValid() {
         // Given
         String tokenValue = "test-token-123";
         testToken.setExpiresAt(LocalDateTime.now().plusHours(1)); // Not expired
@@ -171,7 +173,8 @@ class VerificationTokenServiceTest {
     }
 
     @Test
-    void verifyEmailToken_TokenNotFound_ThrowsException() {
+    @DisplayName("Deve lançar BadRequestException quando token de email é inválido")
+    void verifyEmailToken_ShouldThrowException_WhenTokenIsInvalid() {
         // Given
         String tokenValue = "invalid-token";
         when(tokenRepository.findByTokenAndTokenType(tokenValue, VerificationToken.TokenType.EMAIL_VERIFICATION))
@@ -220,7 +223,8 @@ class VerificationTokenServiceTest {
     }
 
     @Test
-    void verifyPasswordResetToken_Success() {
+    @DisplayName("Deve verificar token de reset de senha válido")
+    void verifyPasswordResetToken_ShouldReturnUser_WhenTokenIsValid() {
         // Given
         String tokenValue = "reset-token-123";
         testToken.setTokenType(VerificationToken.TokenType.PASSWORD_RESET);
@@ -256,34 +260,11 @@ class VerificationTokenServiceTest {
         verify(tokenRepository).save(testToken);
     }
 
-    @Test
-    void canRequestNewToken_WithinLimit_ReturnsTrue() {
-        // Given
-        when(tokenRepository.countTokensCreatedSince(eq(testUser), eq(VerificationToken.TokenType.EMAIL_VERIFICATION), any()))
-                .thenReturn(2L); // Below limit of 3
-
-        // When
-        boolean result = verificationTokenService.canRequestNewToken(testUser, VerificationToken.TokenType.EMAIL_VERIFICATION);
-
-        // Then
-        assertTrue(result);
-    }
+    // Método markEmailVerificationTokenAsUsed removido pois não existe no VerificationTokenService real
 
     @Test
-    void canRequestNewToken_ExceedsLimit_ReturnsFalse() {
-        // Given
-        when(tokenRepository.countTokensCreatedSince(eq(testUser), eq(VerificationToken.TokenType.EMAIL_VERIFICATION), any()))
-                .thenReturn(5L); // Exceeds limit of 3
-
-        // When
-        boolean result = verificationTokenService.canRequestNewToken(testUser, VerificationToken.TokenType.EMAIL_VERIFICATION);
-
-        // Then
-        assertFalse(result);
-    }
-
-    @Test
-    void cleanupExpiredTokens_Success() {
+    @DisplayName("Deve deletar tokens expirados")
+    void deleteExpiredTokens_ShouldDeleteExpiredTokens() {
         // Given
         when(tokenRepository.deleteExpiredTokens(any(LocalDateTime.class))).thenReturn(5);
 

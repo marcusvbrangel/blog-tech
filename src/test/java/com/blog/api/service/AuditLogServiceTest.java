@@ -2,14 +2,12 @@ package com.blog.api.service;
 
 import com.blog.api.entity.AuditLog;
 import com.blog.api.repository.AuditLogRepository;
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
@@ -17,6 +15,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -24,11 +24,10 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.lenient;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Audit Log Service Tests")
 class AuditLogServiceTest {
 
     @Mock
@@ -39,13 +38,11 @@ class AuditLogServiceTest {
 
     private AuditLogService auditLogService;
 
-    private MeterRegistry meterRegistry;
-
     @BeforeEach
     void setUp() {
-        meterRegistry = new SimpleMeterRegistry();
+        MeterRegistry meterRegistry = new SimpleMeterRegistry();
         auditLogService = new AuditLogService(meterRegistry);
-        
+
         // Inject mock repository
         ReflectionTestUtils.setField(auditLogService, "auditLogRepository", auditLogRepository);
         
@@ -57,7 +54,8 @@ class AuditLogServiceTest {
     }
 
     @Test
-    void logSuccess_ShouldCreateAuditLog_WithCorrectData() {
+    @DisplayName("Deve registrar log de auditoria com sucesso quando dados são válidos")
+    void logUserAction_ShouldLogSuccessfully_WhenValidData() {
         // Arrange
         ArgumentCaptor<AuditLog> auditLogCaptor = ArgumentCaptor.forClass(AuditLog.class);
         when(auditLogRepository.save(any(AuditLog.class))).thenReturn(null);
@@ -432,3 +430,4 @@ class AuditLogServiceTest {
             .build();
     }
 }
+

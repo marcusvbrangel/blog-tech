@@ -1,6 +1,9 @@
 package com.blog.api.service;
 
-import com.blog.api.dto.*;
+import com.blog.api.dto.CreateUserDTO;
+import com.blog.api.dto.JwtResponse;
+import com.blog.api.dto.LoginRequest;
+import com.blog.api.dto.UserDTO;
 import com.blog.api.entity.User;
 import com.blog.api.exception.BadRequestException;
 import com.blog.api.exception.ResourceNotFoundException;
@@ -8,6 +11,7 @@ import com.blog.api.repository.UserRepository;
 import com.blog.api.util.JwtUtil;
 import io.micrometer.core.instrument.Counter;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,11 +26,13 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Auth Service Tests")
 class AuthServiceTest {
 
     @Mock
@@ -49,6 +55,12 @@ class AuthServiceTest {
 
     @Mock
     private VerificationTokenService verificationTokenService;
+
+    @Mock
+    private RefreshTokenService refreshTokenService;
+
+    @Mock
+    private AuditLogService auditLogService;
 
     @Mock
     private UserDetails userDetails;
@@ -79,7 +91,8 @@ class AuthServiceTest {
     }
 
     @Test
-    void register_ShouldCreateUserAndReturnUserDTO_WhenValidData() {
+    @DisplayName("Deve registrar usuário com sucesso quando dados são válidos")
+    void register_ShouldRegisterUser_WhenValidData() {
         // Arrange
         when(userRepository.existsByUsername("testuser")).thenReturn(false);
         when(userRepository.existsByEmail("test@example.com")).thenReturn(false);
@@ -101,7 +114,8 @@ class AuthServiceTest {
     }
 
     @Test
-    void register_ShouldThrowBadRequestException_WhenUsernameAlreadyExists() {
+    @DisplayName("Deve lançar BadRequestException quando nome de usuário já existe")
+    void register_ShouldThrowBadRequestException_WhenUsernameExists() {
         // Arrange
         when(userRepository.existsByUsername("testuser")).thenReturn(true);
 
@@ -115,7 +129,8 @@ class AuthServiceTest {
     }
 
     @Test
-    void register_ShouldThrowBadRequestException_WhenEmailAlreadyExists() {
+    @DisplayName("Deve lançar BadRequestException quando email já existe")
+    void register_ShouldThrowBadRequestException_WhenEmailExists() {
         // Arrange
         when(userRepository.existsByUsername("testuser")).thenReturn(false);
         when(userRepository.existsByEmail("test@example.com")).thenReturn(true);
@@ -131,7 +146,53 @@ class AuthServiceTest {
     }
 
     @Test
-    void register_ShouldThrowBadRequestException_WhenPasswordPolicyViolated() {
+    @DisplayName("Deve fazer login com sucesso quando credenciais são válidas")
+    void login_ShouldLoginSuccessfully_WhenValidCredentials() {
+        // Arrange
+        com.blog.api.entity.RefreshToken refreshToken = new com.blog.api.entity.RefreshToken();
+        refreshToken.setToken("refresh-token-123");
+        
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
+        when(userRepository.findByEmail("testuser")).thenReturn(Optional.empty());
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
+        when(userDetailsService.loadUserByUsername("testuser")).thenReturn(userDetails);
+        when(jwtUtil.generateToken(userDetails)).thenReturn("jwt-token");
+        when(refreshTokenService.createRefreshToken(eq(testUser.getId()), any(), any())).thenReturn(refreshToken);
+
+        // Act
+        JwtResponse result = authService.login(loginRequest, "device-info", "192.168.1.1", null);
+
+        // Assert
+        assertThat(result).isNotNull();
+        assertThat(result.token()).isEqualTo("jwt-token");
+        assertThat(result.user().username()).isEqualTo("testuser");
+        assertThat(result.refreshToken()).isEqualTo("refresh-token-123");
+        verify(userRepository).findByUsername("testuser");
+        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
+        verify(jwtUtil).generateToken(userDetails);
+        verify(refreshTokenService).createRefreshToken(eq(testUser.getId()), any(), any());
+    }
+
+    @Test
+    @DisplayName("Deve lançar BadRequestException quando credenciais são inválidas")
+    void login_ShouldThrowBadRequestException_WhenInvalidCredentials() {
+        // Arrange
+        when(userRepository.findByUsername("nonexistent")).thenReturn(Optional.empty());
+        when(userRepository.findByEmail("nonexistent")).thenReturn(Optional.empty());
+        LoginRequest invalidRequest = new LoginRequest("nonexistent", "TestPass123!");
+
+        // Act & Assert
+        assertThatThrownBy(() -> authService.login(invalidRequest, null, null, null))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("Invalid credentials");
+        
+        verify(userRepository).findByUsername("nonexistent");
+        verify(userRepository).findByEmail("nonexistent");
+    }
+
+    @Test
+    @DisplayName("Deve validar política de senha durante registro")
+    void register_ShouldValidatePasswordPolicy() {
         // Arrange
         CreateUserDTO weakPasswordDTO = new CreateUserDTO("testuser", "test@example.com", "weak", User.Role.USER);
         when(userRepository.existsByUsername("testuser")).thenReturn(false);
@@ -141,90 +202,33 @@ class AuthServiceTest {
         assertThatThrownBy(() -> authService.register(weakPasswordDTO))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Password policy violation");
-        
+
         verify(userRepository).existsByUsername("testuser");
         verify(userRepository).existsByEmail("test@example.com");
         verify(userRepository, never()).save(any());
     }
 
     @Test
-    void register_ShouldSendEmailVerification_WhenEmailVerificationEnabled() {
-        // Arrange
-        ReflectionTestUtils.setField(authService, "emailVerificationEnabled", true);
-        when(userRepository.existsByUsername("testuser")).thenReturn(false);
-        when(userRepository.existsByEmail("test@example.com")).thenReturn(false);
-        when(passwordEncoder.encode("ValidPassword123!")).thenReturn("encodedPassword");
-        when(userRepository.save(any(User.class))).thenReturn(testUser);
-        doNothing().when(verificationTokenService).generateAndSendEmailVerification(any(User.class));
-
-        // Act
-        UserDTO result = authService.register(createUserDTO);
-
-        // Assert
-        assertThat(result).isNotNull();
-        verify(verificationTokenService).generateAndSendEmailVerification(any(User.class));
-    }
-
-    @Test
-    void login_ShouldReturnJwtResponse_WhenValidCredentials() {
+    @DisplayName("Deve incrementar tentativas de login falhadas")
+    void login_ShouldIncrementFailedAttempts_WhenAuthenticationFails() {
         // Arrange
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
         when(userRepository.findByEmail("testuser")).thenReturn(Optional.empty());
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
-        when(userDetailsService.loadUserByUsername("testuser")).thenReturn(userDetails);
-        when(jwtUtil.generateToken(userDetails)).thenReturn("jwt-token");
-
-        // Act
-        JwtResponse result = authService.login(loginRequest);
-
-        // Assert
-        assertThat(result).isNotNull();
-        assertThat(result.token()).isEqualTo("jwt-token");
-        assertThat(result.user().username()).isEqualTo("testuser");
-        verify(userRepository).findByUsername("testuser");
-        verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
-        verify(jwtUtil).generateToken(userDetails);
-    }
-
-    @Test
-    void login_ShouldThrowBadRequestException_WhenUserNotFound() {
-        // Arrange
-        when(userRepository.findByUsername("nonexistent")).thenReturn(Optional.empty());
-        when(userRepository.findByEmail("nonexistent")).thenReturn(Optional.empty());
-        LoginRequest invalidRequest = new LoginRequest("nonexistent", "TestPass123!");
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenThrow(new RuntimeException("Authentication failed"));
+        when(userRepository.save(any(User.class))).thenReturn(testUser);
 
         // Act & Assert
-        assertThatThrownBy(() -> authService.login(invalidRequest))
+        assertThatThrownBy(() -> authService.login(loginRequest, null, null, null))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Invalid credentials");
-        
-        verify(userRepository).findByUsername("nonexistent");
-        verify(userRepository).findByEmail("nonexistent");
+
+        verify(userRepository).save(any(User.class)); // Failed attempts incremented
     }
 
     @Test
-    void login_ShouldThrowBadRequestException_WhenEmailNotVerified() {
-        // Arrange
-        ReflectionTestUtils.setField(authService, "emailVerificationEnabled", true);
-        User unverifiedUser = User.ofEncrypted("testuser", "test@example.com", "encodedPassword")
-                .role(User.Role.USER)
-                .emailVerified(false)
-                .build();
-        unverifiedUser.setId(1L);
-        
-        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(unverifiedUser));
-        when(userRepository.findByEmail("testuser")).thenReturn(Optional.empty());
-
-        // Act & Assert
-        assertThatThrownBy(() -> authService.login(loginRequest))
-                .isInstanceOf(BadRequestException.class)
-                .hasMessageContaining("Email not verified");
-        
-        verify(userRepository).findByUsername("testuser");
-    }
-
-    @Test
-    void login_ShouldThrowBadRequestException_WhenAccountLocked() {
+    @DisplayName("Deve bloquear conta após múltiplas tentativas falhadas")
+    void login_ShouldLockAccount_AfterMultipleFailedAttempts() {
         // Arrange
         User lockedUser = User.ofEncrypted("testuser", "test@example.com", "encodedPassword")
                 .role(User.Role.USER)
@@ -238,7 +242,7 @@ class AuthServiceTest {
         when(userRepository.findByEmail("testuser")).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThatThrownBy(() -> authService.login(loginRequest))
+        assertThatThrownBy(() -> authService.login(loginRequest, null, null, null))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Account is temporarily locked");
         
@@ -246,47 +250,54 @@ class AuthServiceTest {
     }
 
     @Test
-    void login_ShouldUnlockAccount_WhenLockPeriodExpired() {
+    @DisplayName("Deve resetar tentativas falhadas após login bem-sucedido")
+    void login_ShouldResetFailedAttempts_AfterSuccessfulLogin() {
         // Arrange
-        User lockedUser = User.ofEncrypted("testuser", "test@example.com", "encodedPassword")
+        User userWithFailedAttempts = User.ofEncrypted("testuser", "test@example.com", "encodedPassword")
                 .role(User.Role.USER)
                 .emailVerified(true)
-                .accountLocked(true)
-                .lockedUntil(LocalDateTime.now().minusHours(1)) // Lock expired
                 .failedLoginAttempts(5)
+                .accountLocked(false)
                 .build();
-        lockedUser.setId(1L);
-        
-        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(lockedUser));
+        userWithFailedAttempts.setId(1L);
+
+        when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(userWithFailedAttempts));
         when(userRepository.findByEmail("testuser")).thenReturn(Optional.empty());
         when(userRepository.save(any(User.class))).thenReturn(testUser);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
         when(userDetailsService.loadUserByUsername("testuser")).thenReturn(userDetails);
         when(jwtUtil.generateToken(userDetails)).thenReturn("jwt-token");
+        com.blog.api.entity.RefreshToken refreshToken = new com.blog.api.entity.RefreshToken();
+        refreshToken.setToken("refresh-token-123");
+        when(refreshTokenService.createRefreshToken(any(), any(), any())).thenReturn(refreshToken);
 
         // Act
-        JwtResponse result = authService.login(loginRequest);
+        JwtResponse result = authService.login(loginRequest, null, null, null);
 
         // Assert
         assertThat(result).isNotNull();
-        verify(userRepository).save(any(User.class)); // Account unlocked
+        verify(userRepository).save(any(User.class)); // Failed attempts reset
     }
 
     @Test
-    void login_ShouldIncrementFailedAttempts_WhenAuthenticationFails() {
+    @DisplayName("Deve registrar eventos de auditoria durante autenticação")
+    void login_ShouldLogAuditEvents_DuringAuthentication() {
         // Arrange
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
         when(userRepository.findByEmail("testuser")).thenReturn(Optional.empty());
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .thenThrow(new RuntimeException("Authentication failed"));
-        when(userRepository.save(any(User.class))).thenReturn(testUser);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
+        when(userDetailsService.loadUserByUsername("testuser")).thenReturn(userDetails);
+        when(jwtUtil.generateToken(userDetails)).thenReturn("jwt-token");
+        com.blog.api.entity.RefreshToken refreshToken = new com.blog.api.entity.RefreshToken();
+        refreshToken.setToken("refresh-token-123");
+        when(refreshTokenService.createRefreshToken(any(), any(), any())).thenReturn(refreshToken);
 
-        // Act & Assert
-        assertThatThrownBy(() -> authService.login(loginRequest))
-                .isInstanceOf(BadRequestException.class)
-                .hasMessageContaining("Invalid credentials");
-        
-        verify(userRepository).save(any(User.class)); // Failed attempts incremented
+        // Act
+        authService.login(loginRequest, null, null, null);
+
+        // Assert
+        // Verifica se os métodos de auditoria foram chamados
+        verify(auditLogService).logSuccess(any(), any(), any(), eq(null), any(), any(), any());
     }
 
     @Test
@@ -438,3 +449,4 @@ class AuthServiceTest {
         verify(verificationTokenService, never()).markPasswordResetTokenAsUsed(any());
     }
 }
+

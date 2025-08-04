@@ -4,6 +4,7 @@ import com.blog.api.dto.UserDTO;
 import com.blog.api.entity.User;
 import com.blog.api.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -29,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration",
     "spring.main.allow-bean-definition-overriding=true"
 })
+@DisplayName("Working User Controller Tests")
 class WorkingUserControllerTest {
 
     @Autowired
@@ -73,6 +75,7 @@ class WorkingUserControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
+    @DisplayName("Deve retornar página de usuários quando buscar todos os usuários")
     void getAllUsers_ShouldReturnPageOfUsers() throws Exception {
         // Arrange
         Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO));
@@ -94,6 +97,7 @@ class WorkingUserControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Deve retornar usuário quando buscar por ID existente")
     void getUserById_ShouldReturnUser_WhenExists() throws Exception {
         // Arrange
         when(userService.getUserById(1L)).thenReturn(sampleUserDTO);
@@ -113,6 +117,7 @@ class WorkingUserControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Deve retornar usuário quando buscar por nome de usuário existente")
     void getUserByUsername_ShouldReturnUser_WhenExists() throws Exception {
         // Arrange
         when(userService.getUserByUsername("testuser")).thenReturn(sampleUserDTO);

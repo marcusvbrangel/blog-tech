@@ -6,6 +6,7 @@ import com.blog.api.exception.BadRequestException;
 import com.blog.api.exception.ResourceNotFoundException;
 import com.blog.api.repository.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Category Service Tests")
 class CategoryServiceTest {
 
     private final CategoryRepository categoryRepository;
@@ -51,6 +53,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar uma página de CategoryDTOs quando buscar todas as categorias")
     void getAllCategories_ShouldReturnPageOfCategoryDTOs() {
         // Arrange
         Page<Category> categoryPage = new PageImpl<>(Arrays.asList(testCategory), pageable, 1);
@@ -71,6 +74,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar uma página vazia quando não existirem categorias")
     void getAllCategories_ShouldReturnEmptyPageWhenNoCategories() {
         // Arrange
         Page<Category> emptyPage = new PageImpl<>(Arrays.asList(), pageable, 0);
@@ -89,6 +93,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar uma lista de CategoryDTOs quando buscar todas as categorias como lista")
     void getAllCategoriesList_ShouldReturnListOfCategoryDTOs() {
         // Arrange
         Page<Category> categoryPage = new PageImpl<>(Arrays.asList(testCategory), pageable, 1);
@@ -106,6 +111,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar CategoryDTO quando buscar categoria por ID existente")
     void getCategoryById_ShouldReturnCategoryDTO_WhenCategoryExists() {
         // Arrange
         Long categoryId = 1L;
@@ -123,6 +129,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar ResourceNotFoundException quando buscar categoria por ID inexistente")
     void getCategoryById_ShouldThrowResourceNotFoundException_WhenCategoryNotExists() {
         // Arrange
         Long categoryId = 999L;
@@ -139,6 +146,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Deve criar e retornar CategoryDTO quando os dados são válidos")
     void createCategory_ShouldCreateAndReturnCategoryDTO_WhenValidData() {
         // Arrange
         CategoryDTO newCategoryDTO = new CategoryDTO(null, "Science", "Science related posts", 0);
@@ -156,6 +164,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar BadRequestException quando o nome da categoria já existe")
     void createCategory_ShouldThrowBadRequestException_WhenCategoryNameAlreadyExists() {
         // Arrange
         CategoryDTO newCategoryDTO = new CategoryDTO(null, "Technology", "Tech related posts", 0);
@@ -171,6 +180,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Deve atualizar e retornar CategoryDTO quando os dados são válidos")
     void updateCategory_ShouldUpdateAndReturnCategoryDTO_WhenValidData() {
         // Arrange
         Long categoryId = 1L;
@@ -190,6 +200,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Deve atualizar categoria mantendo o mesmo nome quando o nome não é alterado")
     void updateCategory_ShouldUpdateWithSameName_WhenNameNotChanged() {
         // Arrange
         Long categoryId = 1L;
@@ -208,6 +219,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar ResourceNotFoundException quando tentar atualizar categoria inexistente")
     void updateCategory_ShouldThrowResourceNotFoundException_WhenCategoryNotExists() {
         // Arrange
         Long categoryId = 999L;
@@ -226,6 +238,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar BadRequestException quando o novo nome já existe em outra categoria")
     void updateCategory_ShouldThrowBadRequestException_WhenNewNameAlreadyExists() {
         // Arrange
         Long categoryId = 1L;
@@ -244,6 +257,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Deve deletar categoria quando ela existe")
     void deleteCategory_ShouldDeleteCategory_WhenCategoryExists() {
         // Arrange
         Long categoryId = 1L;
@@ -258,6 +272,7 @@ class CategoryServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar ResourceNotFoundException quando categoria a ser deletada não existe")
     void deleteCategory_ShouldThrowResourceNotFoundException_WhenCategoryNotExists() {
         // Arrange
         Long categoryId = 999L;

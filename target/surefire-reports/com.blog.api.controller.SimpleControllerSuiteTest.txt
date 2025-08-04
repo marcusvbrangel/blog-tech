@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.blog.api.controller.SimpleControllerSuiteTest
 -------------------------------------------------------------------------------
-Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.987 s -- in com.blog.api.controller.SimpleControllerSuiteTest
+Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.225 s -- in com.blog.api.controller.SimpleControllerSuiteTest

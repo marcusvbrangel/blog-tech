@@ -5,6 +5,7 @@ import com.blog.api.entity.User;
 import com.blog.api.exception.ResourceNotFoundException;
 import com.blog.api.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -19,13 +20,15 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
+@DisplayName("User Controller Tests")
 class UserControllerTest {
 
     @Autowired
@@ -63,6 +66,7 @@ class UserControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
+    @DisplayName("Deve retornar página de usuários quando buscar todos os usuários")
     void getAllUsers_ShouldReturnPageOfUsers() throws Exception {
         // Arrange
         Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO));
@@ -93,6 +97,7 @@ class UserControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Deve retornar usuário quando buscar por ID existente")
     void getUserById_ShouldReturnUser_WhenExists() throws Exception {
         // Arrange
         when(userService.getUserById(1L)).thenReturn(sampleUserDTO);
@@ -110,6 +115,7 @@ class UserControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Deve retornar NotFound quando buscar usuário por ID inexistente")
     void getUserById_ShouldReturnNotFound_WhenNotExists() throws Exception {
         // Arrange
         when(userService.getUserById(999L)).thenThrow(new ResourceNotFoundException("User", "id", 999L));
@@ -124,6 +130,7 @@ class UserControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Deve retornar usuário quando buscar por nome de usuário existente")
     void getUserByUsername_ShouldReturnUser_WhenExists() throws Exception {
         // Arrange
         when(userService.getUserByUsername("testuser")).thenReturn(sampleUserDTO);
@@ -141,6 +148,7 @@ class UserControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Deve retornar NotFound quando buscar usuário por nome inexistente")
     void getUserByUsername_ShouldReturnNotFound_WhenNotExists() throws Exception {
         // Arrange
         when(userService.getUserByUsername("nonexistent")).thenThrow(new ResourceNotFoundException("User", "username", "nonexistent"));
@@ -215,6 +223,7 @@ class UserControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
+    @DisplayName("Deve retornar página vazia quando não há usuários")
     void getAllUsers_ShouldReturnEmptyPage_WhenNoUsers() throws Exception {
         // Arrange
         Page<UserDTO> emptyPage = new PageImpl<>(Arrays.asList());
@@ -233,6 +242,7 @@ class UserControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
+    @DisplayName("Deve lidar com paginação corretamente")
     void getAllUsers_ShouldHandlePagination() throws Exception {
         // Arrange
         Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO));

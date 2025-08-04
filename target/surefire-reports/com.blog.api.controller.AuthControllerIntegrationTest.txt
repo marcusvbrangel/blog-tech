@@ -1,0 +1,45 @@
+-------------------------------------------------------------------------------
+Test set: com.blog.api.controller.AuthControllerIntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 9, Failures: 3, Errors: 1, Skipped: 0, Time elapsed: 6.768 s <<< FAILURE! -- in com.blog.api.controller.AuthControllerIntegrationTest
+com.blog.api.controller.AuthControllerIntegrationTest.refreshToken_ShouldFailWithInvalidToken -- Time elapsed: 0.089 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<401> but was:<403>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$9(StatusResultMatchers.java:637)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.blog.api.controller.AuthControllerIntegrationTest.refreshToken_ShouldFailWithInvalidToken(AuthControllerIntegrationTest.java:173)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.AuthControllerIntegrationTest.register_ShouldFailWithWeakPassword -- Time elapsed: 0.009 s <<< ERROR!
+java.lang.IllegalArgumentException: Password policy violation: Password must be at least 8 characters long; Password must contain at least one uppercase letter; Password must contain at least one digit; Password must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?)
+	at com.blog.api.dto.CreateUserDTO.<init>(CreateUserDTO.java:30)
+	at com.blog.api.controller.AuthControllerIntegrationTest.register_ShouldFailWithWeakPassword(AuthControllerIntegrationTest.java:214)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.AuthControllerIntegrationTest.revokeRefreshToken_ShouldSucceed_WhenValidToken -- Time elapsed: 0.230 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<200> but was:<403>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$9(StatusResultMatchers.java:637)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.blog.api.controller.AuthControllerIntegrationTest.revokeRefreshToken_ShouldSucceed_WhenValidToken(AuthControllerIntegrationTest.java:206)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.controller.AuthControllerIntegrationTest.refreshToken_ShouldReturnNewTokens_WhenValidRefreshToken -- Time elapsed: 0.268 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<200> but was:<403>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$9(StatusResultMatchers.java:637)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.blog.api.controller.AuthControllerIntegrationTest.refreshToken_ShouldReturnNewTokens_WhenValidRefreshToken(AuthControllerIntegrationTest.java:158)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+

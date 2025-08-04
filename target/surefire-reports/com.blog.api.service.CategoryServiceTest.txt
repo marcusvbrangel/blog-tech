@@ -1,0 +1,82 @@
+-------------------------------------------------------------------------------
+Test set: com.blog.api.service.CategoryServiceTest
+-------------------------------------------------------------------------------
+Tests run: 13, Failures: 0, Errors: 13, Skipped: 0, Time elapsed: 0.012 s <<< FAILURE! -- in com.blog.api.service.CategoryServiceTest
+com.blog.api.service.CategoryServiceTest.getCategoryById_ShouldReturnCategoryDTO_WhenCategoryExists -- Time elapsed: 0 s <<< ERROR!
+org.junit.jupiter.api.extension.ParameterResolutionException: No ParameterResolver registered for parameter [com.blog.api.repository.CategoryRepository categoryRepository] in constructor [com.blog.api.service.CategoryServiceTest(com.blog.api.repository.CategoryRepository)].
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.service.CategoryServiceTest.getAllCategories_ShouldReturnEmptyPageWhenNoCategories -- Time elapsed: 0 s <<< ERROR!
+org.junit.jupiter.api.extension.ParameterResolutionException: No ParameterResolver registered for parameter [com.blog.api.repository.CategoryRepository categoryRepository] in constructor [com.blog.api.service.CategoryServiceTest(com.blog.api.repository.CategoryRepository)].
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.service.CategoryServiceTest.updateCategory_ShouldThrowResourceNotFoundException_WhenCategoryNotExists -- Time elapsed: 0 s <<< ERROR!
+org.junit.jupiter.api.extension.ParameterResolutionException: No ParameterResolver registered for parameter [com.blog.api.repository.CategoryRepository categoryRepository] in constructor [com.blog.api.service.CategoryServiceTest(com.blog.api.repository.CategoryRepository)].
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.service.CategoryServiceTest.getCategoryById_ShouldThrowResourceNotFoundException_WhenCategoryNotExists -- Time elapsed: 0.001 s <<< ERROR!
+org.junit.jupiter.api.extension.ParameterResolutionException: No ParameterResolver registered for parameter [com.blog.api.repository.CategoryRepository categoryRepository] in constructor [com.blog.api.service.CategoryServiceTest(com.blog.api.repository.CategoryRepository)].
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.service.CategoryServiceTest.deleteCategory_ShouldThrowResourceNotFoundException_WhenCategoryNotExists -- Time elapsed: 0 s <<< ERROR!
+org.junit.jupiter.api.extension.ParameterResolutionException: No ParameterResolver registered for parameter [com.blog.api.repository.CategoryRepository categoryRepository] in constructor [com.blog.api.service.CategoryServiceTest(com.blog.api.repository.CategoryRepository)].
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.service.CategoryServiceTest.getAllCategoriesList_ShouldReturnListOfCategoryDTOs -- Time elapsed: 0 s <<< ERROR!
+org.junit.jupiter.api.extension.ParameterResolutionException: No ParameterResolver registered for parameter [com.blog.api.repository.CategoryRepository categoryRepository] in constructor [com.blog.api.service.CategoryServiceTest(com.blog.api.repository.CategoryRepository)].
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.service.CategoryServiceTest.createCategory_ShouldThrowBadRequestException_WhenCategoryNameAlreadyExists -- Time elapsed: 0.001 s <<< ERROR!
+org.junit.jupiter.api.extension.ParameterResolutionException: No ParameterResolver registered for parameter [com.blog.api.repository.CategoryRepository categoryRepository] in constructor [com.blog.api.service.CategoryServiceTest(com.blog.api.repository.CategoryRepository)].
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.service.CategoryServiceTest.updateCategory_ShouldThrowBadRequestException_WhenNewNameAlreadyExists -- Time elapsed: 0 s <<< ERROR!
+org.junit.jupiter.api.extension.ParameterResolutionException: No ParameterResolver registered for parameter [com.blog.api.repository.CategoryRepository categoryRepository] in constructor [com.blog.api.service.CategoryServiceTest(com.blog.api.repository.CategoryRepository)].
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.service.CategoryServiceTest.createCategory_ShouldCreateAndReturnCategoryDTO_WhenValidData -- Time elapsed: 0 s <<< ERROR!
+org.junit.jupiter.api.extension.ParameterResolutionException: No ParameterResolver registered for parameter [com.blog.api.repository.CategoryRepository categoryRepository] in constructor [com.blog.api.service.CategoryServiceTest(com.blog.api.repository.CategoryRepository)].
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.service.CategoryServiceTest.getAllCategories_ShouldReturnPageOfCategoryDTOs -- Time elapsed: 0 s <<< ERROR!
+org.junit.jupiter.api.extension.ParameterResolutionException: No ParameterResolver registered for parameter [com.blog.api.repository.CategoryRepository categoryRepository] in constructor [com.blog.api.service.CategoryServiceTest(com.blog.api.repository.CategoryRepository)].
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.service.CategoryServiceTest.deleteCategory_ShouldDeleteCategory_WhenCategoryExists -- Time elapsed: 0 s <<< ERROR!
+org.junit.jupiter.api.extension.ParameterResolutionException: No ParameterResolver registered for parameter [com.blog.api.repository.CategoryRepository categoryRepository] in constructor [com.blog.api.service.CategoryServiceTest(com.blog.api.repository.CategoryRepository)].
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.service.CategoryServiceTest.updateCategory_ShouldUpdateAndReturnCategoryDTO_WhenValidData -- Time elapsed: 0.001 s <<< ERROR!
+org.junit.jupiter.api.extension.ParameterResolutionException: No ParameterResolver registered for parameter [com.blog.api.repository.CategoryRepository categoryRepository] in constructor [com.blog.api.service.CategoryServiceTest(com.blog.api.repository.CategoryRepository)].
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+com.blog.api.service.CategoryServiceTest.updateCategory_ShouldUpdateWithSameName_WhenNameNotChanged -- Time elapsed: 0 s <<< ERROR!
+org.junit.jupiter.api.extension.ParameterResolutionException: No ParameterResolver registered for parameter [com.blog.api.repository.CategoryRepository categoryRepository] in constructor [com.blog.api.service.CategoryServiceTest(com.blog.api.repository.CategoryRepository)].
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+

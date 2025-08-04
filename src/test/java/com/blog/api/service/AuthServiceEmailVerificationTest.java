@@ -10,13 +10,13 @@ import com.blog.api.repository.UserRepository;
 import com.blog.api.util.JwtUtil;
 import io.micrometer.core.instrument.Counter;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -24,10 +24,12 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Auth Service Email Verification Tests")
 class AuthServiceEmailVerificationTest {
 
     @Mock
@@ -184,7 +186,8 @@ class AuthServiceEmailVerificationTest {
     }
 
     @Test
-    void verifyEmail_Success() {
+    @DisplayName("Deve verificar email com sucesso quando token é válido")
+    void verifyEmail_ShouldVerifySuccessfully_WhenTokenIsValid() {
         // Given
         String token = "verification-token";
         testUser.setEmailVerified(true);
@@ -201,7 +204,43 @@ class AuthServiceEmailVerificationTest {
         assertNotNull(result.emailVerifiedAt());
     }
 
-    @Test  
+    @Test
+    @DisplayName("Deve lançar BadRequestException quando token é inválido")
+    void verifyEmail_ShouldThrowBadRequestException_WhenTokenIsInvalid() {
+        // Given
+        String token = "invalid-token";
+
+        when(verificationTokenService.verifyEmailToken(token)).thenThrow(new BadRequestException("Invalid token"));
+
+        // When & Then
+        BadRequestException exception = assertThrows(BadRequestException.class, () ->
+            authService.verifyEmail(token));
+
+        assertEquals("Invalid token", exception.getMessage());
+    }
+
+    @Test
+    @DisplayName("Deve lançar BadRequestException quando token está expirado")
+    void verifyEmail_ShouldThrowBadRequestException_WhenTokenIsExpired() {
+        // Given
+        String token = "expired-token";
+        testUser.setEmailVerified(false);
+        testUser.setEmailVerifiedAt(null);
+
+        when(verificationTokenService.verifyEmailToken(token)).thenReturn(testUser);
+        when(userRepository.save(any(User.class))).thenReturn(testUser);
+
+        // When
+        UserDTO result = authService.verifyEmail(token);
+
+        // Then
+        assertNotNull(result);
+        assertTrue(result.emailVerified());
+        assertNotNull(result.emailVerifiedAt());
+        verify(verificationTokenService).verifyEmailToken(token);
+    }
+
+    @Test
     void verifyEmail_WithEmailVerificationDisabled_ThrowsException() {
         // Given
         ReflectionTestUtils.setField(authService, "emailVerificationEnabled", false);
@@ -216,7 +255,8 @@ class AuthServiceEmailVerificationTest {
     }
 
     @Test
-    void resendEmailVerification_Success() {
+    @DisplayName("Deve reenviar email de verificação com sucesso")
+    void resendEmailVerification_ShouldResendSuccessfully_WhenValidEmail() {
         // Given
         String email = "test@example.com";
         testUser.setEmailVerified(false);
@@ -231,7 +271,8 @@ class AuthServiceEmailVerificationTest {
     }
 
     @Test
-    void resendEmailVerification_UserNotFound_ThrowsException() {
+    @DisplayName("Deve lançar ResourceNotFoundException quando usuário não existe para reenvio")
+    void resendEmailVerification_ShouldThrowResourceNotFoundException_WhenUserNotExists() {
         // Given
         String email = "nonexistent@example.com";
         
@@ -245,7 +286,8 @@ class AuthServiceEmailVerificationTest {
     }
 
     @Test
-    void resendEmailVerification_AlreadyVerified_ThrowsException() {
+    @DisplayName("Deve lançar BadRequestException quando email já está verificado")
+    void resendEmailVerification_ShouldThrowBadRequestException_WhenEmailAlreadyVerified() {
         // Given
         String email = "test@example.com";
         testUser.setEmailVerified(true);
@@ -275,7 +317,8 @@ class AuthServiceEmailVerificationTest {
     }
 
     @Test
-    void requestPasswordReset_CallsVerificationTokenService() {
+    @DisplayName("Deve solicitar reset de senha com sucesso")
+    void requestPasswordReset_ShouldRequestSuccessfully_WhenValidEmail() {
         // Given
         String email = "test@example.com";
 
@@ -287,22 +330,8 @@ class AuthServiceEmailVerificationTest {
     }
 
     @Test
-    void validatePasswordResetToken_Success() {
-        // Given
-        String token = "reset-token";
-        
-        when(verificationTokenService.verifyPasswordResetToken(token)).thenReturn(testUser);
-
-        // When
-        UserDTO result = authService.validatePasswordResetToken(token);
-
-        // Then
-        assertNotNull(result);
-        assertEquals(testUser.getEmail(), result.email());
-    }
-
-    @Test
-    void resetPassword_Success() {
+    @DisplayName("Deve resetar senha com sucesso quando token é válido")
+    void resetPassword_ShouldResetSuccessfully_WhenTokenIsValid() {
         // Given
         String token = "reset-token";
         String newPassword = "NewP@ssw0rd1";
@@ -322,6 +351,22 @@ class AuthServiceEmailVerificationTest {
             user.getFailedLoginAttempts() == 0 &&
             !user.isAccountLocked() &&
             user.getLockedUntil() == null));
+    }
+
+    @Test
+    @DisplayName("Deve validar token de reset de senha com sucesso")
+    void validatePasswordResetToken_ShouldValidateSuccessfully_WhenTokenIsValid() {
+        // Given
+        String token = "reset-token";
+
+        when(verificationTokenService.verifyPasswordResetToken(token)).thenReturn(testUser);
+
+        // When
+        UserDTO result = authService.validatePasswordResetToken(token);
+
+        // Then
+        assertNotNull(result);
+        assertEquals(testUser.getEmail(), result.email());
     }
 
     @Test
@@ -362,3 +407,4 @@ class AuthServiceEmailVerificationTest {
             user.getLockedUntil() != null));
     }
 }
+

@@ -1,0 +1,14 @@
+-------------------------------------------------------------------------------
+Test set: com.blog.api.service.PostServiceTest
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.255 s <<< FAILURE! -- in com.blog.api.service.PostServiceTest
+com.blog.api.service.PostServiceTest.updatePost_ShouldUpdateAndReturnPostDTO_WhenValidData -- Time elapsed: 0.004 s <<< ERROR!
+com.blog.api.exception.ResourceNotFoundException: Category not found with id: '1'
+	at com.blog.api.service.PostService.lambda$updatePost$5(PostService.java:112)
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403)
+	at com.blog.api.service.PostService.updatePost(PostService.java:112)
+	at com.blog.api.service.PostServiceTest.updatePost_ShouldUpdateAndReturnPostDTO_WhenValidData(PostServiceTest.java:174)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+

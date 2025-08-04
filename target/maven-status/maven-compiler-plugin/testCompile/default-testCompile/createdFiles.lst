@@ -6,7 +6,6 @@ com/blog/api/service/AuditLogServiceTest.class
 com/blog/api/repository/VerificationTokenRepositoryTest.class
 com/blog/api/dto/TermsComplianceResponseTest.class
 com/blog/api/controller/UserControllerTest.class
-com/blog/api/service/AuthServiceTest.class
 com/blog/api/service/CommentServiceTest.class
 com/blog/api/dto/JsonSerializationTest.class
 com/blog/api/controller/PostControllerTest.class
@@ -24,7 +23,6 @@ com/blog/api/dto/TermsInfoDTOTest.class
 com/blog/api/dto/CreateUserDTOPasswordPolicyTest.class
 com/blog/api/controller/FixedUserControllerTest.class
 com/blog/api/controller/FixedSimpleIntegrationUserControllerTest.class
-com/blog/api/integration/EmailVerificationIntegrationTest.class
 com/blog/api/config/TermsComplianceFilterTest.class
 com/blog/api/controller/SimplePostControllerTest.class
 com/blog/api/service/JwtBlacklistServiceTest.class
@@ -33,7 +31,6 @@ com/blog/api/util/JwtUtilBlacklistTest.class
 com/blog/api/controller/IntegrationUserControllerTest.class
 com/blog/api/service/CustomUserDetailsServiceTest.class
 com/blog/api/service/PostServiceTest.class
-com/blog/api/util/PasswordPolicyValidatorTest.class
 com/blog/api/controller/SimpleIntegrationUserControllerTest.class
 com/blog/api/service/TermsServiceTest.class
 com/blog/api/util/TestDataFactory.class

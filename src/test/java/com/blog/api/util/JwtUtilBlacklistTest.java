@@ -2,12 +2,13 @@ package com.blog.api.util;
 
 import com.blog.api.service.JwtBlacklistService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Date;
@@ -20,6 +21,7 @@ import static org.mockito.Mockito.*;
  * Focuses on JTI generation, blacklist checks, and token validation with revocation.
  */
 @ExtendWith(MockitoExtension.class)
+@DisplayName("JWT Util Blacklist Tests")
 class JwtUtilBlacklistTest {
 
     @Mock
@@ -49,6 +51,7 @@ class JwtUtilBlacklistTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve incluir JTI único ao gerar token")
     void generateToken_ShouldIncludeUniqueJTI() {
         // When
         String token1 = jwtUtil.generateToken(testUserDetails);
@@ -73,6 +76,7 @@ class JwtUtilBlacklistTest {
     }
 
     @Test
+    @DisplayName("Deve retornar JTI válido quando token é válido")
     void getJtiFromToken_WithValidToken_ShouldReturnJTI() {
         // Given
         String token = jwtUtil.generateToken(testUserDetails);
@@ -88,6 +92,7 @@ class JwtUtilBlacklistTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando token é inválido para extração de JTI")
     void getJtiFromToken_WithInvalidToken_ShouldThrowException() {
         // Given
         String invalidToken = "invalid.token.format";
@@ -101,6 +106,7 @@ class JwtUtilBlacklistTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve validar token com sucesso quando não está revogado")
     void validateToken_WithNonRevokedToken_ShouldReturnTrue() {
         // Given
         String token = jwtUtil.generateToken(testUserDetails);
@@ -117,6 +123,7 @@ class JwtUtilBlacklistTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando token está revogado")
     void validateToken_WithRevokedToken_ShouldReturnFalse() {
         // Given
         String token = jwtUtil.generateToken(testUserDetails);
@@ -133,6 +140,7 @@ class JwtUtilBlacklistTest {
     }
 
     @Test
+    @DisplayName("Deve pular verificação de blacklist quando serviço é nulo")
     void validateToken_WithBlacklistServiceNull_ShouldSkipBlacklistCheck() {
         // Given
         ReflectionTestUtils.setField(jwtUtil, "jwtBlacklistService", null);
@@ -147,6 +155,7 @@ class JwtUtilBlacklistTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando nome de usuário está incorreto")
     void validateToken_WithWrongUsername_ShouldReturnFalse() {
         // Given
         String token = jwtUtil.generateToken(testUserDetails);
@@ -168,6 +177,7 @@ class JwtUtilBlacklistTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando serviço de blacklist lança exceção")
     void validateToken_WithBlacklistServiceException_ShouldReturnFalse() {
         // Given
         String token = jwtUtil.generateToken(testUserDetails);
@@ -188,6 +198,7 @@ class JwtUtilBlacklistTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve validar formato de token JWT válido")
     void isValidTokenFormat_WithValidJWT_ShouldReturnTrue() {
         // Given
         String validToken = jwtUtil.generateToken(testUserDetails);
@@ -200,6 +211,7 @@ class JwtUtilBlacklistTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false para token nulo")
     void isValidTokenFormat_WithNullToken_ShouldReturnFalse() {
         // When
         Boolean isValid = jwtUtil.isValidTokenFormat(null);
@@ -209,6 +221,7 @@ class JwtUtilBlacklistTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false para token vazio")
     void isValidTokenFormat_WithEmptyToken_ShouldReturnFalse() {
         // When
         Boolean isValid = jwtUtil.isValidTokenFormat("");
@@ -218,6 +231,7 @@ class JwtUtilBlacklistTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false para token com espaços em branco")
     void isValidTokenFormat_WithWhitespaceToken_ShouldReturnFalse() {
         // When
         Boolean isValid = jwtUtil.isValidTokenFormat("   ");
@@ -227,6 +241,7 @@ class JwtUtilBlacklistTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false para formato de token inválido")
     void isValidTokenFormat_WithInvalidFormat_ShouldReturnFalse() {
         // Given
         String invalidToken = "not.a.valid.jwt.token.format";
@@ -239,6 +254,7 @@ class JwtUtilBlacklistTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false para token com duas partes")
     void isValidTokenFormat_WithTwoParts_ShouldReturnFalse() {
         // Given
         String twoPartToken = "header.payload";
@@ -255,6 +271,7 @@ class JwtUtilBlacklistTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve extrair token do cabeçalho Bearer válido")
     void extractTokenFromHeader_WithValidBearerHeader_ShouldReturnToken() {
         // Given
         String token = "eyJhbGciOiJIUzI1NiJ9.payload.signature";
@@ -268,6 +285,7 @@ class JwtUtilBlacklistTest {
     }
 
     @Test
+    @DisplayName("Deve retornar null quando cabeçalho é nulo")
     void extractTokenFromHeader_WithNullHeader_ShouldReturnNull() {
         // When
         String extractedToken = jwtUtil.extractTokenFromHeader(null);
@@ -277,6 +295,7 @@ class JwtUtilBlacklistTest {
     }
 
     @Test
+    @DisplayName("Deve retornar null para cabeçalho inválido")
     void extractTokenFromHeader_WithInvalidHeader_ShouldReturnNull() {
         // Given
         String invalidHeader = "Invalid header format";
@@ -289,6 +308,7 @@ class JwtUtilBlacklistTest {
     }
 
     @Test
+    @DisplayName("Deve retornar null para cabeçalho de autenticação básica")
     void extractTokenFromHeader_WithBasicAuth_ShouldReturnNull() {
         // Given
         String basicAuthHeader = "Basic dXNlcjpwYXNzd29yZA==";
@@ -301,6 +321,7 @@ class JwtUtilBlacklistTest {
     }
 
     @Test
+    @DisplayName("Deve retornar string vazia para token Bearer vazio")
     void extractTokenFromHeader_WithEmptyBearerToken_ShouldReturnEmptyString() {
         // Given
         String authHeader = "Bearer ";
@@ -317,6 +338,7 @@ class JwtUtilBlacklistTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve verificar se token pode ser renovado quando não expirado")
     void canTokenBeRefreshed_WithNonExpiredToken_ShouldReturnTrue() {
         // Given
         String token = jwtUtil.generateToken(testUserDetails);
@@ -329,6 +351,7 @@ class JwtUtilBlacklistTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false para token inválido")
     void canTokenBeRefreshed_WithInvalidToken_ShouldReturnFalse() {
         // Given
         String invalidToken = "invalid.token.format";
@@ -345,6 +368,7 @@ class JwtUtilBlacklistTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve retornar data de emissão válida do token")
     void getIssuedAtDateFromToken_ShouldReturnValidDate() {
         // Given
         String token = jwtUtil.generateToken(testUserDetails);
@@ -359,6 +383,7 @@ class JwtUtilBlacklistTest {
     }
 
     @Test
+    @DisplayName("Deve retornar data de expiração futura do token")
     void getExpirationDateFromToken_ShouldReturnFutureDate() {
         // Given
         String token = jwtUtil.generateToken(testUserDetails);
@@ -372,6 +397,7 @@ class JwtUtilBlacklistTest {
     }
 
     @Test
+    @DisplayName("Deve retornar nome de usuário correto do token")
     void getUsernameFromToken_ShouldReturnCorrectUsername() {
         // Given
         String token = jwtUtil.generateToken(testUserDetails);
@@ -388,6 +414,7 @@ class JwtUtilBlacklistTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve funcionar corretamente no ciclo de vida completo do token")
     void tokenLifecycle_CreateValidateRevoke_ShouldWorkCorrectly() {
         // Step 1: Generate token
         String token = jwtUtil.generateToken(testUserDetails);
@@ -410,6 +437,7 @@ class JwtUtilBlacklistTest {
     }
 
     @Test
+    @DisplayName("Deve gerar JTIs únicos para múltiplos tokens")
     void multipleTokens_ShouldHaveUniqueJTIs() {
         // Given - generate multiple tokens for same user
         String token1 = jwtUtil.generateToken(testUserDetails);

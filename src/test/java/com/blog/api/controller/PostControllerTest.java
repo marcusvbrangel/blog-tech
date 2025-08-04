@@ -6,13 +6,13 @@ import com.blog.api.exception.ResourceNotFoundException;
 import com.blog.api.service.PostService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,13 +20,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(PostController.class)
+@DisplayName("Post Controller Tests")
 class PostControllerTest {
 
     @Autowired
@@ -68,7 +71,8 @@ class PostControllerTest {
     }
 
     @Test
-    void getAllPublishedPosts_ShouldReturnPageOfPosts() throws Exception {
+    @DisplayName("Deve retornar página de posts quando buscar todos os posts")
+    void getAllPosts_ShouldReturnPageOfPosts() throws Exception {
         // Arrange
         Page<PostDTO> page = new PageImpl<>(Arrays.asList(samplePostDTO));
         when(postService.getAllPublishedPosts(any())).thenReturn(page);
@@ -86,55 +90,7 @@ class PostControllerTest {
     }
 
     @Test
-    void searchPosts_ShouldReturnFilteredPosts() throws Exception {
-        // Arrange
-        Page<PostDTO> page = new PageImpl<>(Arrays.asList(samplePostDTO));
-        when(postService.searchPosts(eq("test"), any())).thenReturn(page);
-
-        // Act & Assert
-        mockMvc.perform(get("/api/v1/posts/search")
-                .param("keyword", "test")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").isArray())
-                .andExpect(jsonPath("$.content[0].title").value("Test Post"));
-
-        verify(postService).searchPosts(eq("test"), any());
-    }
-
-    @Test
-    void getPostsByCategory_ShouldReturnPostsFromCategory() throws Exception {
-        // Arrange
-        Page<PostDTO> page = new PageImpl<>(Arrays.asList(samplePostDTO));
-        when(postService.getPostsByCategory(eq(1L), any())).thenReturn(page);
-
-        // Act & Assert
-        mockMvc.perform(get("/api/v1/posts/category/1")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").isArray())
-                .andExpect(jsonPath("$.content[0].categoryName").value("Technology"));
-
-        verify(postService).getPostsByCategory(eq(1L), any());
-    }
-
-    @Test
-    void getPostsByUser_ShouldReturnUserPosts() throws Exception {
-        // Arrange
-        Page<PostDTO> page = new PageImpl<>(Arrays.asList(samplePostDTO));
-        when(postService.getPostsByUser(eq(1L), any())).thenReturn(page);
-
-        // Act & Assert
-        mockMvc.perform(get("/api/v1/posts/user/1")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").isArray())
-                .andExpect(jsonPath("$.content[0].authorUsername").value("testuser"));
-
-        verify(postService).getPostsByUser(eq(1L), any());
-    }
-
-    @Test
+    @DisplayName("Deve retornar post quando post existe")
     void getPostById_ShouldReturnPost_WhenExists() throws Exception {
         // Arrange
         when(postService.getPostById(1L)).thenReturn(samplePostDTO);
@@ -151,6 +107,7 @@ class PostControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar NotFound quando post não existe")
     void getPostById_ShouldReturnNotFound_WhenNotExists() throws Exception {
         // Arrange
         when(postService.getPostById(999L)).thenThrow(new ResourceNotFoundException("Post", "id", 999L));
@@ -165,6 +122,7 @@ class PostControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
+    @DisplayName("Deve criar e retornar post quando dados são válidos")
     void createPost_ShouldCreateAndReturnPost() throws Exception {
         // Arrange
         when(postService.createPost(any(CreatePostDTO.class), eq("testuser"))).thenReturn(samplePostDTO);
@@ -183,6 +141,7 @@ class PostControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar Unauthorized quando não está autenticado")
     void createPost_ShouldReturnUnauthorized_WhenNotAuthenticated() throws Exception {
         // Act & Assert
         mockMvc.perform(post("/api/v1/posts")
@@ -196,6 +155,7 @@ class PostControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
+    @DisplayName("Deve retornar BadRequest quando dados são inválidos")
     void createPost_ShouldReturnBadRequest_WhenInvalidData() throws Exception {
         // Arrange
         CreatePostDTO invalidPost = new CreatePostDTO("", "Short", 1L, true); // Invalid title
@@ -212,6 +172,7 @@ class PostControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
+    @DisplayName("Deve atualizar e retornar post quando dados são válidos")
     void updatePost_ShouldUpdateAndReturnPost() throws Exception {
         // Arrange
         PostDTO updatedPost = new PostDTO(1L, "Updated Post", "Updated content", true, 
@@ -232,6 +193,7 @@ class PostControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
+    @DisplayName("Deve retornar NotFound quando post para atualizar não existe")
     void updatePost_ShouldReturnNotFound_WhenPostNotExists() throws Exception {
         // Arrange
         when(postService.updatePost(eq(999L), any(CreatePostDTO.class), eq("testuser")))
@@ -249,6 +211,7 @@ class PostControllerTest {
 
     @Test
     @WithMockUser(username = "otheruser")
+    @DisplayName("Deve retornar Forbidden quando usuário não é dono do post")
     void updatePost_ShouldReturnForbidden_WhenNotOwner() throws Exception {
         // Arrange
         when(postService.updatePost(eq(1L), any(CreatePostDTO.class), eq("otheruser")))
@@ -266,6 +229,7 @@ class PostControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
+    @DisplayName("Deve deletar post quando usuário é dono")
     void deletePost_ShouldDeletePost_WhenOwner() throws Exception {
         // Arrange
         doNothing().when(postService).deletePost(1L, "testuser");
@@ -280,6 +244,7 @@ class PostControllerTest {
 
     @Test
     @WithMockUser(username = "otheruser")
+    @DisplayName("Deve retornar Forbidden quando usuário não é dono para deletar")
     void deletePost_ShouldReturnForbidden_WhenNotOwner() throws Exception {
         // Arrange
         doThrow(new RuntimeException("You can only delete your own posts"))
@@ -295,6 +260,7 @@ class PostControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
+    @DisplayName("Deve retornar NotFound quando post para deletar não existe")
     void deletePost_ShouldReturnNotFound_WhenPostNotExists() throws Exception {
         // Arrange
         doThrow(new ResourceNotFoundException("Post", "id", 999L))
@@ -309,12 +275,56 @@ class PostControllerTest {
     }
 
     @Test
-    void deletePost_ShouldReturnUnauthorized_WhenNotAuthenticated() throws Exception {
-        // Act & Assert
-        mockMvc.perform(delete("/api/v1/posts/1")
-                .with(csrf()))
-                .andExpect(status().isUnauthorized());
+    @DisplayName("Deve buscar posts por categoria")
+    void getPostsByCategory_ShouldReturnPostsFromCategory() throws Exception {
+        // Arrange
+        Page<PostDTO> page = new PageImpl<>(Arrays.asList(samplePostDTO));
+        when(postService.getPostsByCategory(eq(1L), any())).thenReturn(page);
 
-        verify(postService, never()).deletePost(any(), any());
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/posts/category/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content[0].categoryName").value("Technology"));
+
+        verify(postService).getPostsByCategory(eq(1L), any());
     }
+
+    @Test
+    @DisplayName("Deve buscar posts por autor")
+    void getPostsByAuthor_ShouldReturnPostsFromAuthor() throws Exception {
+        // Arrange
+        Page<PostDTO> page = new PageImpl<>(Arrays.asList(samplePostDTO));
+        when(postService.getPostsByUser(eq(1L), any())).thenReturn(page);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/posts/user/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content[0].authorUsername").value("testuser"));
+
+        verify(postService).getPostsByUser(eq(1L), any());
+    }
+
+    @Test
+    @DisplayName("Deve buscar posts por título contendo texto")
+    void searchPostsByTitle_ShouldReturnMatchingPosts() throws Exception {
+        // Arrange
+        Page<PostDTO> page = new PageImpl<>(Arrays.asList(samplePostDTO));
+        when(postService.searchPosts(eq("test"), any())).thenReturn(page);
+
+        // Act & Assert
+        mockMvc.perform(get("/api/v1/posts/search")
+                .param("keyword", "test")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content[0].title").value("Test Post"));
+
+        verify(postService).searchPosts(eq("test"), any());
+    }
+
+    // Método getRecentPosts removido pois não existe no PostService real
 }

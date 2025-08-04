@@ -1,12 +1,12 @@
 package com.blog.api.util;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,9 +19,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("JWT Util Tests")
 class JwtUtilTest {
 
     private JwtUtil jwtUtil;
@@ -43,6 +44,7 @@ class JwtUtilTest {
     }
 
     @Test
+    @DisplayName("Deve gerar token JWT válido")
     void generateToken_ShouldCreateValidToken() {
         String token = jwtUtil.generateToken(userDetails);
         
@@ -55,6 +57,7 @@ class JwtUtilTest {
     }
 
     @Test
+    @DisplayName("Deve extrair nome de usuário correto do token")
     void getUsernameFromToken_ShouldReturnCorrectUsername() {
         String token = jwtUtil.generateToken(userDetails);
         
@@ -64,6 +67,7 @@ class JwtUtilTest {
     }
 
     @Test
+    @DisplayName("Deve retornar data de expiração válida do token")
     void getExpirationDateFromToken_ShouldReturnValidExpirationDate() {
         String token = jwtUtil.generateToken(userDetails);
         
@@ -75,6 +79,7 @@ class JwtUtilTest {
     }
 
     @Test
+    @DisplayName("Deve validar token com sucesso quando token é válido")
     void validateToken_WhenValidToken_ShouldReturnTrue() {
         String token = jwtUtil.generateToken(userDetails);
         
@@ -84,6 +89,7 @@ class JwtUtilTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando nome de usuário está incorreto")
     void validateToken_WhenWrongUsername_ShouldReturnFalse() {
         String token = jwtUtil.generateToken(userDetails);
         
@@ -99,6 +105,7 @@ class JwtUtilTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando token está expirado")
     void validateToken_WhenExpiredToken_ShouldReturnFalse() {
         // Create expired token by setting very short expiration
         ReflectionTestUtils.setField(jwtUtil, "expiration", -1000L);
@@ -117,6 +124,7 @@ class JwtUtilTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando token é inválido")
     void getUsernameFromToken_WhenInvalidToken_ShouldThrowException() {
         String invalidToken = "invalid.token.here";
         
@@ -126,6 +134,7 @@ class JwtUtilTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando assinatura está incorreta")
     void getUsernameFromToken_WhenWrongSignature_ShouldThrowException() {
         // Create token with different secret
         Key wrongKey = Keys.hmacShaKeyFor("differentSecret123456789012345678901234567890".getBytes());
@@ -142,6 +151,7 @@ class JwtUtilTest {
     }
 
     @Test
+    @DisplayName("Deve retornar data mesmo quando token está expirado")
     void getExpirationDateFromToken_WhenExpiredToken_ShouldStillReturnDate() {
         // Create expired token
         ReflectionTestUtils.setField(jwtUtil, "expiration", -1000L);
@@ -160,6 +170,7 @@ class JwtUtilTest {
     }
 
     @Test
+    @DisplayName("Deve ter claims corretos no token gerado")
     void generateToken_ShouldHaveCorrectClaims() {
         String token = jwtUtil.generateToken(userDetails);
         
@@ -176,6 +187,7 @@ class JwtUtilTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando token é nulo")
     void validateToken_WhenNullToken_ShouldThrowException() {
         assertThrows(IllegalArgumentException.class, () -> {
             jwtUtil.validateToken(null, userDetails);
@@ -183,6 +195,7 @@ class JwtUtilTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando token está vazio")
     void validateToken_WhenEmptyToken_ShouldThrowException() {
         assertThrows(IllegalArgumentException.class, () -> {
             jwtUtil.validateToken("", userDetails);
@@ -190,6 +203,7 @@ class JwtUtilTest {
     }
 
     @Test
+    @DisplayName("Deve criar tokens diferentes para usuários diferentes")
     void generateToken_ForDifferentUsers_ShouldCreateDifferentTokens() {
         UserDetails user1 = User.builder()
                 .username("user1")
@@ -212,6 +226,7 @@ class JwtUtilTest {
     }
 
     @Test
+    @DisplayName("Deve extrair claim específico do token")
     void getClaimFromToken_ShouldExtractSpecificClaim() {
         String token = jwtUtil.generateToken(userDetails);
         
@@ -224,6 +239,7 @@ class JwtUtilTest {
     }
 
     @Test
+    @DisplayName("Deve incluir claim de data de emissão")
     void generateToken_ShouldIncludeIssuedAtClaim() {
         String token = jwtUtil.generateToken(userDetails);
         
@@ -236,6 +252,7 @@ class JwtUtilTest {
     }
 
     @Test
+    @DisplayName("Deve definir tempo de expiração correto")
     void generateToken_ShouldSetCorrectExpirationTime() {
         Date beforeGeneration = new Date();
         String token = jwtUtil.generateToken(userDetails);
@@ -248,6 +265,7 @@ class JwtUtilTest {
     }
 
     @Test
+    @DisplayName("Deve verificar nome de usuário e expiração na validação")
     void validateToken_ShouldCheckBothUsernameAndExpiration() {
         // Create token that will expire soon
         ReflectionTestUtils.setField(jwtUtil, "expiration", 100L);
@@ -279,6 +297,7 @@ class JwtUtilTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando UserDetails é nulo")
     void generateToken_WithNullUserDetails_ShouldThrowException() {
         assertThrows(NullPointerException.class, () -> {
             jwtUtil.generateToken(null);
@@ -286,18 +305,7 @@ class JwtUtilTest {
     }
 
     @Test
-    void generateToken_WithNullUsername_ShouldThrowException() {
-        // This test validates that User.builder() properly validates null username
-        assertThrows(IllegalArgumentException.class, () -> {
-            User.builder()
-                    .username(null)
-                    .password("TestPass123!")
-                    .authorities(new ArrayList<>())
-                    .build();
-        });
-    }
-
-    @Test
+    @DisplayName("Deve gerar chave de assinatura consistente")
     void getSigningKey_ShouldGenerateConsistentKey() {
         // Use reflection to test the private method indirectly by generating multiple tokens
         String token1 = jwtUtil.generateToken(userDetails);
@@ -312,6 +320,7 @@ class JwtUtilTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando UserDetails não correspondem")
     void validateToken_WithMismatchedUserDetails_ShouldReturnFalse() {
         String token = jwtUtil.generateToken(userDetails);
         

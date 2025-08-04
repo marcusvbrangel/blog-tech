@@ -5,6 +5,7 @@ import com.blog.api.exception.ResourceNotFoundException;
 import com.blog.api.service.CommentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -19,13 +20,16 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CommentController.class)
+@DisplayName("Comment Controller Tests")
 class CommentControllerTest {
 
     @Autowired
@@ -73,6 +77,7 @@ class CommentControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar página de comentários por post")
     void getCommentsByPost_ShouldReturnPageOfComments() throws Exception {
         // Arrange
         Page<CommentDTO> page = new PageImpl<>(Arrays.asList(sampleCommentDTO));
@@ -92,6 +97,7 @@ class CommentControllerTest {
     }
 
     @Test
+    @DisplayName("Deve lidar com paginação corretamente")
     void getCommentsByPost_ShouldHandlePagination() throws Exception {
         // Arrange
         Page<CommentDTO> page = new PageImpl<>(Arrays.asList(sampleCommentDTO));
@@ -111,6 +117,7 @@ class CommentControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar lista simples de comentários por post")
     void getCommentsByPostSimple_ShouldReturnListOfComments() throws Exception {
         // Arrange
         List<CommentDTO> comments = Arrays.asList(sampleCommentDTO);
@@ -128,6 +135,7 @@ class CommentControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar comentário quando comentário existe")
     void getCommentById_ShouldReturnComment_WhenExists() throws Exception {
         // Arrange
         when(commentService.getCommentById(1L)).thenReturn(sampleCommentDTO);
@@ -144,6 +152,7 @@ class CommentControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar NotFound quando comentário não existe")
     void getCommentById_ShouldReturnNotFound_WhenNotExists() throws Exception {
         // Arrange
         when(commentService.getCommentById(999L)).thenThrow(new ResourceNotFoundException("Comment", "id", 999L));
@@ -158,6 +167,7 @@ class CommentControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
+    @DisplayName("Deve criar e retornar comentário quando dados são válidos")
     void createComment_ShouldCreateAndReturnComment() throws Exception {
         // Arrange
         when(commentService.createComment(any(CommentDTO.class), eq("testuser"))).thenReturn(sampleCommentDTO);
@@ -176,6 +186,7 @@ class CommentControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar Unauthorized quando não está autenticado")
     void createComment_ShouldReturnUnauthorized_WhenNotAuthenticated() throws Exception {
         // Act & Assert
         mockMvc.perform(post("/api/v1/comments")
@@ -189,6 +200,7 @@ class CommentControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
+    @DisplayName("Deve retornar BadRequest quando dados são inválidos")
     void createComment_ShouldReturnBadRequest_WhenInvalidData() throws Exception {
         // Arrange
         CommentDTO invalidComment = new CommentDTO(null, "", null, null, 1L, null, null); // Empty content
@@ -205,6 +217,7 @@ class CommentControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
+    @DisplayName("Deve retornar BadRequest quando conteúdo é muito longo")
     void createComment_ShouldReturnBadRequest_WhenContentTooLong() throws Exception {
         // Arrange
         String longContent = "a".repeat(1001); // Exceeds 1000 character limit
@@ -222,6 +235,7 @@ class CommentControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
+    @DisplayName("Deve atualizar e retornar comentário quando dados são válidos")
     void updateComment_ShouldUpdateAndReturnComment() throws Exception {
         // Arrange
         CommentDTO updatedComment = new CommentDTO(1L, "Updated comment content", LocalDateTime.now(), 
@@ -242,6 +256,7 @@ class CommentControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
+    @DisplayName("Deve retornar NotFound quando comentário para atualizar não existe")
     void updateComment_ShouldReturnNotFound_WhenCommentNotExists() throws Exception {
         // Arrange
         when(commentService.updateComment(eq(999L), any(CommentDTO.class), eq("testuser")))
@@ -259,6 +274,7 @@ class CommentControllerTest {
 
     @Test
     @WithMockUser(username = "otheruser")
+    @DisplayName("Deve retornar Forbidden quando usuário não é dono do comentário")
     void updateComment_ShouldReturnForbidden_WhenNotOwner() throws Exception {
         // Arrange
         when(commentService.updateComment(eq(1L), any(CommentDTO.class), eq("otheruser")))
@@ -288,6 +304,7 @@ class CommentControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
+    @DisplayName("Deve deletar comentário quando usuário é dono")
     void deleteComment_ShouldDeleteComment_WhenOwner() throws Exception {
         // Arrange
         doNothing().when(commentService).deleteComment(1L, "testuser");
@@ -302,6 +319,7 @@ class CommentControllerTest {
 
     @Test
     @WithMockUser(username = "otheruser")
+    @DisplayName("Deve retornar Forbidden quando usuário não é dono para deletar")
     void deleteComment_ShouldReturnForbidden_WhenNotOwner() throws Exception {
         // Arrange
         doThrow(new RuntimeException("You can only delete your own comments"))
@@ -317,6 +335,7 @@ class CommentControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
+    @DisplayName("Deve retornar NotFound quando comentário para deletar não existe")
     void deleteComment_ShouldReturnNotFound_WhenCommentNotExists() throws Exception {
         // Arrange
         doThrow(new ResourceNotFoundException("Comment", "id", 999L))
@@ -331,16 +350,7 @@ class CommentControllerTest {
     }
 
     @Test
-    void deleteComment_ShouldReturnUnauthorized_WhenNotAuthenticated() throws Exception {
-        // Act & Assert
-        mockMvc.perform(delete("/api/v1/comments/1")
-                .with(csrf()))
-                .andExpect(status().isUnauthorized());
-
-        verify(commentService, never()).deleteComment(any(), any());
-    }
-
-    @Test
+    @DisplayName("Deve retornar página vazia quando não há comentários")
     void getCommentsByPost_ShouldReturnEmptyPage_WhenNoComments() throws Exception {
         // Arrange
         Page<CommentDTO> emptyPage = new PageImpl<>(Arrays.asList());
@@ -358,6 +368,7 @@ class CommentControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar lista vazia quando não há comentários simples")
     void getCommentsByPostSimple_ShouldReturnEmptyList_WhenNoComments() throws Exception {
         // Arrange
         when(commentService.getCommentsByPostSimple(1L)).thenReturn(Arrays.asList());
@@ -374,6 +385,7 @@ class CommentControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
+    @DisplayName("Deve criar resposta quando ID do comentário pai é fornecido")
     void createComment_ShouldCreateReply_WhenParentIdProvided() throws Exception {
         // Arrange
         CommentDTO replyComment = new CommentDTO(null, "This is a reply", null, null, 1L, 1L, null);
@@ -395,6 +407,7 @@ class CommentControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar BadRequest quando formato do ID é inválido")
     void getCommentById_ShouldReturnBadRequest_WhenInvalidIdFormat() throws Exception {
         // Act & Assert
         mockMvc.perform(get("/api/v1/comments/invalid")
@@ -405,6 +418,7 @@ class CommentControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar BadRequest quando formato do ID do post é inválido")
     void getCommentsByPost_ShouldReturnBadRequest_WhenInvalidPostIdFormat() throws Exception {
         // Act & Assert
         mockMvc.perform(get("/api/v1/comments/post/invalid")

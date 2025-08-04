@@ -5,6 +5,7 @@ import com.blog.api.entity.User;
 import com.blog.api.exception.ResourceNotFoundException;
 import com.blog.api.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,6 +25,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("User Service Tests")
 class UserServiceTest {
 
     @Mock
@@ -50,6 +52,7 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar uma página de UserDTOs quando buscar todos os usuários")
     void getAllUsers_ShouldReturnPageOfUserDTOs() {
         // Arrange
         Page<User> userPage = new PageImpl<>(Arrays.asList(testUser), pageable, 1);
@@ -67,6 +70,7 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar uma página vazia quando não há usuários")
     void getAllUsers_ShouldReturnEmptyPageWhenNoUsers() {
         // Arrange
         Page<User> emptyPage = new PageImpl<>(Arrays.asList(), pageable, 0);
@@ -83,6 +87,7 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar UserDTO quando buscar usuário por ID existente")
     void getUserById_ShouldReturnUserDTO_WhenUserExists() {
         // Arrange
         Long userId = 1L;
@@ -100,6 +105,7 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar ResourceNotFoundException quando buscar usuário por ID inexistente")
     void getUserById_ShouldThrowResourceNotFoundException_WhenUserNotExists() {
         // Arrange
         Long userId = 999L;
@@ -116,6 +122,7 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar UserDTO quando buscar usuário por nome de usuário existente")
     void getUserByUsername_ShouldReturnUserDTO_WhenUserExists() {
         // Arrange
         String username = "testuser";
@@ -132,6 +139,7 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar ResourceNotFoundException quando buscar usuário por nome inexistente")
     void getUserByUsername_ShouldThrowResourceNotFoundException_WhenUserNotExists() {
         // Arrange
         String username = "nonexistentuser";
@@ -147,7 +155,12 @@ class UserServiceTest {
         verify(userRepository).findByUsername(username);
     }
 
+    // Método getUserByEmail removido pois não existe no UserService real
+
+    // Método updateUser removido pois não existe no UserService real
+
     @Test
+    @DisplayName("Deve deletar usuário quando ele existe")
     void deleteUser_ShouldDeleteUser_WhenUserExists() {
         // Arrange
         Long userId = 1L;
@@ -162,6 +175,7 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar ResourceNotFoundException quando tentar deletar usuário inexistente")
     void deleteUser_ShouldThrowResourceNotFoundException_WhenUserNotExists() {
         // Arrange
         Long userId = 999L;
@@ -177,4 +191,7 @@ class UserServiceTest {
         verify(userRepository).findById(userId);
         verify(userRepository, never()).delete(any(User.class));
     }
+
+    // Métodos existsByUsername e existsByEmail removidos pois não existem no UserService real
+    // O UserService tem apenas: getAllUsers, getUserById, getUserByUsername, deleteUser
 }

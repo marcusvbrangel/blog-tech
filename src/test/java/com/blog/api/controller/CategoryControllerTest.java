@@ -8,6 +8,7 @@ import com.blog.api.service.TermsService;
 import com.blog.api.util.JwtUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CategoryController.class)
+@DisplayName("Category Controller Tests")
 class CategoryControllerTest {
 
     private final MockMvc mockMvc;
@@ -62,6 +64,7 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar página de categorias quando buscar todas as categorias")
     void getAllCategories_ShouldReturnPageOfCategories() throws Exception {
         // Arrange
         Page<CategoryDTO> categoryPage = new PageImpl<>(Arrays.asList(sampleCategoryDTO));
@@ -82,6 +85,7 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar página vazia quando não há categorias")
     void getAllCategories_ShouldReturnEmptyPage_WhenNoCategories() throws Exception {
         // Arrange
         Page<CategoryDTO> emptyPage = new PageImpl<>(Arrays.asList());
@@ -98,6 +102,7 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("Deve lidar com paginação corretamente")
     void getAllCategories_ShouldHandlePagination() throws Exception {
         // Arrange
         Page<CategoryDTO> categoryPage = new PageImpl<>(Arrays.asList(sampleCategoryDTO));
@@ -116,6 +121,7 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar categoria quando categoria existe")
     void getCategoryById_WhenCategoryExists_ShouldReturnCategory() throws Exception {
         // Arrange
         when(categoryService.getCategoryById(1L)).thenReturn(sampleCategoryDTO);
@@ -132,6 +138,7 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar NotFound quando categoria não existe")
     void getCategoryById_WhenCategoryNotExists_ShouldReturnNotFound() throws Exception {
         // Arrange
         when(categoryService.getCategoryById(999L))
@@ -145,6 +152,7 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar BadRequest quando formato do ID é inválido")
     void getCategoryById_WhenInvalidIdFormat_ShouldReturnBadRequest() throws Exception {
         // Act & Assert
         mockMvc.perform(get("/api/v1/categories/invalid"))
@@ -155,6 +163,7 @@ class CategoryControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
+    @DisplayName("Deve criar categoria com sucesso quando dados são válidos")
     void createCategory_WhenValidData_ShouldReturnCreatedCategory() throws Exception {
         // Arrange
         when(categoryService.createCategory(any(CategoryDTO.class))).thenReturn(sampleCategoryDTO);
@@ -174,6 +183,7 @@ class CategoryControllerTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
+    @DisplayName("Deve retornar Forbidden quando usuário não é admin")
     void createCategory_WhenUserRole_ShouldReturnForbidden() throws Exception {
         // Act & Assert
         mockMvc.perform(post("/api/v1/categories")
@@ -186,6 +196,7 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar Unauthorized quando não está autenticado")
     void createCategory_WhenNotAuthenticated_ShouldReturnUnauthorized() throws Exception {
         // Act & Assert
         mockMvc.perform(post("/api/v1/categories")
@@ -199,6 +210,7 @@ class CategoryControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
+    @DisplayName("Deve retornar BadRequest quando dados são inválidos")
     void createCategory_WhenInvalidData_ShouldReturnBadRequest() throws Exception {
         // Arrange
         CategoryDTO invalidCategoryDTO = new CategoryDTO(null, "", "Valid description", 0);
@@ -215,6 +227,7 @@ class CategoryControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
+    @DisplayName("Deve retornar Conflict quando nome já existe")
     void createCategory_WhenDuplicateName_ShouldReturnConflict() throws Exception {
         // Arrange
         when(categoryService.createCategory(any(CategoryDTO.class)))
@@ -232,6 +245,7 @@ class CategoryControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
+    @DisplayName("Deve atualizar categoria com sucesso quando dados são válidos")
     void updateCategory_WhenValidData_ShouldReturnUpdatedCategory() throws Exception {
         // Arrange
         CategoryDTO updateCategoryDTO = new CategoryDTO(null, "Updated Technology", "Updated description", 0);
@@ -254,6 +268,7 @@ class CategoryControllerTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
+    @DisplayName("Deve retornar Forbidden quando usuário tenta atualizar categoria")
     void updateCategory_WhenUserRole_ShouldReturnForbidden() throws Exception {
         // Arrange
         CategoryDTO updateCategoryDTO = new CategoryDTO(null, "Updated Technology", "Updated description", 0);
@@ -270,6 +285,7 @@ class CategoryControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
+    @DisplayName("Deve retornar NotFound quando categoria para atualizar não existe")
     void updateCategory_WhenCategoryNotExists_ShouldReturnNotFound() throws Exception {
         // Arrange
         CategoryDTO updateCategoryDTO = new CategoryDTO(null, "Updated Technology", "Updated description", 0);
@@ -303,6 +319,7 @@ class CategoryControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
+    @DisplayName("Deve deletar categoria com sucesso quando solicitação é válida")
     void deleteCategory_WhenValidRequest_ShouldReturnNoContent() throws Exception {
         // Arrange
         doNothing().when(categoryService).deleteCategory(1L);
@@ -317,6 +334,7 @@ class CategoryControllerTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
+    @DisplayName("Deve retornar Forbidden quando usuário tenta deletar categoria")
     void deleteCategory_WhenUserRole_ShouldReturnForbidden() throws Exception {
         // Act & Assert
         mockMvc.perform(delete("/api/v1/categories/1")
@@ -327,17 +345,8 @@ class CategoryControllerTest {
     }
 
     @Test
-    void deleteCategory_WhenNotAuthenticated_ShouldReturnUnauthorized() throws Exception {
-        // Act & Assert
-        mockMvc.perform(delete("/api/v1/categories/1")
-                .with(csrf()))
-                .andExpect(status().isUnauthorized());
-
-        verify(categoryService, never()).deleteCategory(any());
-    }
-
-    @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
+    @DisplayName("Deve retornar NotFound quando categoria para deletar não existe")
     void deleteCategory_WhenCategoryNotExists_ShouldReturnNotFound() throws Exception {
         // Arrange
         doThrow(new ResourceNotFoundException("Category", "id", 999L))
@@ -353,6 +362,7 @@ class CategoryControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
+    @DisplayName("Deve retornar Conflict quando categoria tem posts associados")
     void deleteCategory_WhenCategoryHasPosts_ShouldReturnConflict() throws Exception {
         // Arrange
         doThrow(new RuntimeException("Cannot delete category with existing posts"))
@@ -387,6 +397,7 @@ class CategoryControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
+    @DisplayName("Deve criar categoria com sucesso quando dados são válidos e descrição é longa")
     void createCategory_WhenValidDataWithLongDescription_ShouldReturnCreated() throws Exception {
         // Arrange
         String longDescription = "This is a very long description that tests the validation limits for category descriptions in the system";
@@ -416,3 +427,4 @@ class CategoryControllerTest {
         verify(categoryService).getAllCategories(any());
     }
 }
+

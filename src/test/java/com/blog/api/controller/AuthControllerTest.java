@@ -2,27 +2,29 @@ package com.blog.api.controller;
 
 import com.blog.api.dto.*;
 import com.blog.api.entity.User;
-import com.blog.api.exception.ResourceNotFoundException;
 import com.blog.api.service.AuthService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AuthController.class)
+@DisplayName("Auth Controller Tests")
 class AuthControllerTest {
 
     @Autowired
@@ -69,6 +71,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("Deve registrar usuário com sucesso quando dados são válidos")
     void register_WhenValidInput_ShouldReturnCreated() throws Exception {
         // Arrange
         when(authService.register(any(CreateUserDTO.class))).thenReturn(sampleUserDTO);
@@ -89,6 +92,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar BadRequest quando dados de registro são inválidos")
     void register_WhenInvalidData_ShouldReturnBadRequest() throws Exception {
         // Arrange
         CreateUserDTO invalidUser = new CreateUserDTO("", "invalid-email", "123", User.Role.USER);
@@ -104,6 +108,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar Conflict quando usuário já existe")
     void register_WhenUserAlreadyExists_ShouldReturnConflict() throws Exception {
         // Arrange
         when(authService.register(any(CreateUserDTO.class)))
@@ -120,6 +125,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("Deve fazer login com sucesso quando credenciais são válidas")
     void login_WhenValidCredentials_ShouldReturnJwtResponse() throws Exception {
         // Arrange
         when(authService.login(any(LoginRequest.class))).thenReturn(jwtResponse);
@@ -139,6 +145,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar Unauthorized quando credenciais são inválidas")
     void login_WhenInvalidCredentials_ShouldReturnUnauthorized() throws Exception {
         // Arrange
         when(authService.login(any(LoginRequest.class)))
@@ -155,6 +162,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar BadRequest quando dados de login são inválidos")
     void login_WhenInvalidData_ShouldReturnBadRequest() throws Exception {
         // Arrange
         LoginRequest invalidLogin = new LoginRequest("", "");
@@ -169,9 +177,8 @@ class AuthControllerTest {
         verify(authService, never()).login(any());
     }
 
-    // Email Verification Tests
-
     @Test
+    @DisplayName("Deve verificar email com sucesso quando token é válido")
     void verifyEmail_WhenValidToken_ShouldReturnSuccess() throws Exception {
         // Arrange
         String validToken = "valid-token-123";
@@ -189,6 +196,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar BadRequest quando token de verificação é inválido")
     void verifyEmail_WhenInvalidToken_ShouldReturnBadRequest() throws Exception {
         // Arrange
         String invalidToken = "invalid-token";
@@ -206,6 +214,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar BadRequest quando token de verificação está ausente")
     void verifyEmail_WhenMissingToken_ShouldReturnBadRequest() throws Exception {
         // Act & Assert
         mockMvc.perform(get("/api/v1/auth/verify-email"))
@@ -215,6 +224,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("Deve reenviar verificação de email com sucesso quando email é válido")
     void resendEmailVerification_WhenValidEmail_ShouldReturnSuccess() throws Exception {
         // Arrange
         EmailVerificationRequest request = new EmailVerificationRequest("test@example.com");
@@ -233,6 +243,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar BadRequest quando email para reenvio é inválido")
     void resendEmailVerification_WhenInvalidEmail_ShouldReturnBadRequest() throws Exception {
         // Arrange
         EmailVerificationRequest request = new EmailVerificationRequest("test@example.com");
@@ -250,9 +261,8 @@ class AuthControllerTest {
         verify(authService).resendEmailVerification("test@example.com");
     }
 
-    // Password Reset Tests
-
     @Test
+    @DisplayName("Deve processar solicitação de esqueci senha com sucesso quando email é válido")
     void forgotPassword_WhenValidEmail_ShouldReturnSuccess() throws Exception {
         // Arrange
         PasswordResetRequest request = new PasswordResetRequest("test@example.com");
@@ -271,6 +281,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar BadRequest quando limite de taxa para reset de senha é excedido")
     void forgotPassword_WhenRateLimitExceeded_ShouldReturnBadRequest() throws Exception {
         // Arrange
         PasswordResetRequest request = new PasswordResetRequest("test@example.com");
@@ -289,6 +300,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("Deve resetar senha com sucesso quando token é válido")
     void resetPassword_WhenValidToken_ShouldReturnSuccess() throws Exception {
         // Arrange
         PasswordResetConfirmRequest request = new PasswordResetConfirmRequest("valid-token", "NewPassword123!");
@@ -308,6 +320,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar BadRequest quando token de reset é inválido")
     void resetPassword_WhenInvalidToken_ShouldReturnBadRequest() throws Exception {
         // Arrange
         PasswordResetConfirmRequest request = new PasswordResetConfirmRequest("invalid-token", "NewPassword123!");
@@ -326,6 +339,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("Deve validar token de reset de senha com sucesso quando token é válido")
     void validatePasswordResetToken_WhenValidToken_ShouldReturnSuccess() throws Exception {
         // Arrange
         String validToken = "valid-token-123";
@@ -342,6 +356,7 @@ class AuthControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar BadRequest quando token de validação é inválido")
     void validatePasswordResetToken_WhenInvalidToken_ShouldReturnBadRequest() throws Exception {
         // Arrange
         String invalidToken = "invalid-token";

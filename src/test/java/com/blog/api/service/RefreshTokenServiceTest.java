@@ -8,6 +8,7 @@ import com.blog.api.util.JwtUtil;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,17 +18,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("Refresh Token Service Tests")
 class RefreshTokenServiceTest {
 
     @Mock
@@ -85,7 +84,8 @@ class RefreshTokenServiceTest {
     }
 
     @Test
-    void createRefreshToken_ShouldCreateToken_WhenValidInput() {
+    @DisplayName("Deve gerar refresh token com sucesso para usuário válido")
+    void generateRefreshToken_ShouldGenerateToken_WhenValidUser() {
         // Arrange
         when(userRepository.existsById(1L)).thenReturn(true);
         when(refreshTokenRepository.hasUserExceededTokenCreationRate(any(), anyInt(), any())).thenReturn(false);
@@ -180,7 +180,8 @@ class RefreshTokenServiceTest {
     }
 
     @Test
-    void revokeRefreshToken_ShouldReturnTrue_WhenTokenExists() {
+    @DisplayName("Deve revogar refresh token com sucesso")
+    void revokeRefreshToken_ShouldRevokeToken_WhenValidToken() {
         // Arrange
         when(refreshTokenRepository.revokeByToken("test-refresh-token")).thenReturn(1);
 
@@ -205,7 +206,8 @@ class RefreshTokenServiceTest {
     }
 
     @Test
-    void revokeAllUserTokens_ShouldReturnCount_WhenTokensExist() {
+    @DisplayName("Deve deletar todos os refresh tokens do usuário")
+    void deleteAllUserRefreshTokens_ShouldDeleteTokens_WhenValidUser() {
         // Arrange
         when(userRepository.existsById(1L)).thenReturn(true);
         when(refreshTokenRepository.revokeAllByUserId(1L)).thenReturn(3);
@@ -217,8 +219,6 @@ class RefreshTokenServiceTest {
         assertThat(result).isEqualTo(3);
         verify(refreshTokenRepository).revokeAllByUserId(1L);
     }
-
-    // Removed tests for methods that don't exist in RefreshTokenService
 
     @Test
     void createRefreshToken_ShouldThrowException_WhenNullUserId() {
@@ -244,3 +244,4 @@ class RefreshTokenServiceTest {
                 .hasMessage("Refresh token cannot be null or empty");
     }
 }
+
