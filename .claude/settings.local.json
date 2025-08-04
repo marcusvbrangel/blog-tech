@@ -43,7 +43,10 @@
       "Bash(rm:*)",
       "Bash(chmod:*)",
       "Bash(./fix-test-passwords.sh:*)",
-      "Bash(./mvnw clean compile -q)"
+      "Bash(./mvnw clean compile -q)",
+      "Bash(for i in {49..53})",
+      "Bash(do touch \"$i_US05_Envio_Automatico_Task$i.md\")",
+      "Bash(done)"
     ],
     "deny": []
   }
