@@ -617,5 +617,3 @@ Este projeto foi desenvolvido utilizando metodologia **AI-driven development** c
 **Metodologia**: AI-driven development com Claude Code  
 
 ---
-
-*Desenvolvido com ❤️ usando **AI-driven development** - Demonstrando o futuro do desenvolvimento de software*
