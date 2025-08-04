@@ -55,7 +55,7 @@ class VerificationTokenServiceTest {
         testUser.setId(1L);
         testUser.setUsername("testuser");
         testUser.setEmail("test@example.com");
-        testUser.setPassword("password");
+        testUser.setPassword("TestPass123!");
         testUser.setEmailVerified(false);
 
         // Create test token using JPA constructor for tests

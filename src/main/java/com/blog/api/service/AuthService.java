@@ -42,6 +42,12 @@ public class AuthService {
     @Autowired
     private VerificationTokenService verificationTokenService;
 
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
+    @Autowired
+    private AuditLogService auditLogService;
+
     @Value("${blog.security.email-verification.enabled:true}")
     private boolean emailVerificationEnabled;
 
@@ -88,6 +94,11 @@ public class AuthService {
 
     @Timed(value = "blog_api_user_login", description = "Time taken to login a user")
     public JwtResponse login(LoginRequest loginRequest) {
+        return login(loginRequest, null, null, null);
+    }
+
+    @Timed(value = "blog_api_user_login", description = "Time taken to login a user")
+    public JwtResponse login(LoginRequest loginRequest, String deviceInfo, String ipAddress, jakarta.servlet.http.HttpServletRequest request) {
         // Find user first to check email verification
         User user = userRepository.findByUsername(loginRequest.username())
                 .or(() -> userRepository.findByEmail(loginRequest.username()))
@@ -137,11 +148,39 @@ public class AuthService {
             UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequest.username());
             String token = jwtUtil.generateToken(userDetails);
 
-            return new JwtResponse(token, UserDTO.fromEntity(user));
+            // Create refresh token for the user
+            com.blog.api.entity.RefreshToken refreshTokenEntity = refreshTokenService.createRefreshToken(user.getId(), deviceInfo, ipAddress);
+            String refreshToken = refreshTokenEntity.getToken();
+
+            // Log successful login
+            auditLogService.logSuccess(
+                com.blog.api.entity.AuditLog.AuditAction.LOGIN,
+                user.getId(),
+                user.getUsername(),
+                request,
+                "USER",
+                user.getId(),
+                "Successful login with refresh token"
+            );
+
+            return new JwtResponse(token, UserDTO.fromEntity(user), refreshToken);
 
         } catch (Exception e) {
             // Increment failed login attempts
             incrementFailedLoginAttempts(user);
+            
+            // Log failed login
+            auditLogService.logFailure(
+                com.blog.api.entity.AuditLog.AuditAction.LOGIN,
+                user.getId(),
+                user.getUsername(),
+                request,
+                "USER",
+                user.getId(),
+                "Failed login attempt",
+                "Invalid credentials"
+            );
+            
             throw new BadRequestException("Invalid credentials");
         }
     }

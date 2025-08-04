@@ -56,7 +56,7 @@ class TermsServiceTest {
         testUser.setId(1L);
         testUser.setUsername("testuser");
         testUser.setEmail("test@example.com");
-        testUser.setPassword("password123");
+        testUser.setPassword("TestPass123!");
         testUser.setRole(User.Role.USER);
 
         // Create test acceptance

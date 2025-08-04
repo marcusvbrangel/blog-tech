@@ -3,6 +3,7 @@ package com.blog.api.controller;
 import com.blog.api.dto.*;
 import com.blog.api.entity.User;
 import com.blog.api.service.*;
+import com.blog.api.service.AuditLogService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -50,12 +52,18 @@ class SimpleControllerSuiteTest {
     // AuthController Tests
     @Mock
     private AuthService authService;
+
+    @Mock
+    private AuditLogService auditLogService;
     
     @InjectMocks
     private AuthController authController;
 
     @Mock
     private Authentication authentication;
+
+    @Mock
+    private HttpServletRequest mockRequest;
 
     private UserDTO sampleUserDTO;
     private CommentDTO sampleCommentDTO;
@@ -318,7 +326,7 @@ class SimpleControllerSuiteTest {
         when(authService.register(any(CreateUserDTO.class))).thenReturn(sampleUserDTO);
 
         // Act
-        ResponseEntity<UserDTO> response = authController.register(createUserDTO);
+        ResponseEntity<UserDTO> response = authController.register(createUserDTO, mockRequest);
 
         // Assert
         assertThat(response.getStatusCodeValue()).isEqualTo(201);
@@ -331,10 +339,10 @@ class SimpleControllerSuiteTest {
     @Test
     void authController_login_ShouldReturnJwtResponse() {
         // Arrange
-        when(authService.login(any(LoginRequest.class))).thenReturn(jwtResponse);
+        when(authService.login(any(LoginRequest.class), any(), any(), any())).thenReturn(jwtResponse);
 
         // Act
-        ResponseEntity<JwtResponse> response = authController.login(loginRequest);
+        ResponseEntity<JwtResponse> response = authController.login(loginRequest, mockRequest);
 
         // Assert
         assertThat(response.getStatusCodeValue()).isEqualTo(200);
@@ -342,7 +350,7 @@ class SimpleControllerSuiteTest {
         assertThat(response.getBody().token()).isEqualTo("jwt-token-123");
         assertThat(response.getBody().user().username()).isEqualTo("testuser");
         
-        verify(authService).login(any(LoginRequest.class));
+        verify(authService).login(any(LoginRequest.class), any(), any(), any());
     }
 
     @Test

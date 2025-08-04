@@ -3,6 +3,7 @@ package com.blog.api.controller;
 import com.blog.api.dto.*;
 import com.blog.api.entity.TermsAcceptance;
 import com.blog.api.entity.User;
+import com.blog.api.util.TestDataFactory;
 import com.blog.api.service.TermsService;
 import com.blog.api.service.UserService;
 import com.blog.api.config.JwtAuthenticationFilter;
@@ -70,12 +71,7 @@ class TermsControllerTest {
         );
 
         testAcceptance = TermsAcceptance.withCurrentTimestamp(
-                User.newInstance()
-                    .username("testuser")
-                    .email("test@example.com")
-                    .password("password123")
-                    .role(User.Role.USER)
-                    .build(),
+                TestDataFactory.createValidUserBuilder().build(),
                 "v1.0"
             )
             .ipAddress("192.168.1.1")

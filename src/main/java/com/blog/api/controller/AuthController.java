@@ -5,7 +5,9 @@ import com.blog.api.entity.RevokedToken;
 import com.blog.api.entity.User;
 import com.blog.api.repository.UserRepository;
 import com.blog.api.service.AuthService;
+import com.blog.api.service.AuditLogService;
 import com.blog.api.service.JwtBlacklistService;
+import com.blog.api.service.RefreshTokenService;
 import com.blog.api.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,29 +36,52 @@ public class AuthController {
 
     private final JwtBlacklistService jwtBlacklistService;
 
+    private final RefreshTokenService refreshTokenService;
+
     private final JwtUtil jwtUtil;
 
     private final UserRepository userRepository;
 
+    private final AuditLogService auditLogService;
+
     public AuthController(AuthService authService, JwtBlacklistService jwtBlacklistService,
-                          JwtUtil jwtUtil, UserRepository userRepository) {
+                          RefreshTokenService refreshTokenService, JwtUtil jwtUtil, UserRepository userRepository,
+                          AuditLogService auditLogService) {
         this.authService = authService;
         this.jwtBlacklistService = jwtBlacklistService;
+        this.refreshTokenService = refreshTokenService;
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
+        this.auditLogService = auditLogService;
     }
 
     @PostMapping("/register")
     @Operation(summary = "Register a new user")
-    public ResponseEntity<UserDTO> register(@Valid @RequestBody CreateUserDTO createUserDTO) {
+    public ResponseEntity<UserDTO> register(@Valid @RequestBody CreateUserDTO createUserDTO, HttpServletRequest request) {
         UserDTO user = authService.register(createUserDTO);
+        
+        // Log successful registration
+        auditLogService.logSuccess(
+            com.blog.api.entity.AuditLog.AuditAction.REGISTER,
+            user.id(),
+            user.username(),
+            request,
+            "USER",
+            user.id(),
+            "User registration completed"
+        );
+        
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
     @Operation(summary = "Login user")
-    public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
-        JwtResponse jwtResponse = authService.login(loginRequest);
+    public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+        // Extract device information from User-Agent header
+        String deviceInfo = request.getHeader("User-Agent");
+        String ipAddress = request.getRemoteAddr();
+        
+        JwtResponse jwtResponse = authService.login(loginRequest, deviceInfo, ipAddress, request);
         return ResponseEntity.ok(jwtResponse);
     }
 
@@ -256,6 +281,17 @@ public class AuthController {
                     // Revoke the token
                     jwtBlacklistService.revokeToken(jti, user.getId(), RevokedToken.RevokeReason.LOGOUT);
                     
+                    // Log successful logout
+                    auditLogService.logSuccess(
+                        com.blog.api.entity.AuditLog.AuditAction.LOGOUT,
+                        user.getId(),
+                        username,
+                        request,
+                        "USER",
+                        user.getId(),
+                        "Single device logout"
+                    );
+                    
                     logger.info("User logged out successfully: {} (JTI: {}) from IP: {}", 
                               username, jti, request.getRemoteAddr());
                 } else {
@@ -281,6 +317,163 @@ public class AuthController {
             // Even in case of unexpected errors, return success for security
             return ResponseEntity.ok(
                 VerificationResponse.success("Logout successful")
+            );
+        }
+    }
+
+    @PostMapping("/refresh")
+    @Operation(summary = "Refresh access token using refresh token")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Token refreshed successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid refresh token"),
+        @ApiResponse(responseCode = "401", description = "Refresh token expired or revoked"),
+        @ApiResponse(responseCode = "429", description = "Rate limit exceeded")
+    })
+    public ResponseEntity<?> refreshToken(
+            @Valid @RequestBody RefreshTokenRequest request,
+            HttpServletRequest httpRequest) {
+        
+        try {
+            logger.info("Refresh token request from IP: {}", httpRequest.getRemoteAddr());
+
+            // Refresh the access token
+            RefreshTokenService.RefreshResponse response = 
+                refreshTokenService.refreshAccessToken(request.refreshToken());
+
+            RefreshTokenResponse tokenResponse = new RefreshTokenResponse(
+                response.getAccessToken(), 
+                response.getRefreshToken()
+            );
+
+            // Log successful token refresh
+            auditLogService.logSuccess(
+                com.blog.api.entity.AuditLog.AuditAction.TOKEN_REFRESH,
+                response.getUserId(),
+                response.getUsername(),
+                httpRequest,
+                "TOKEN",
+                null,
+                "Access token refreshed successfully"
+            );
+
+            logger.info("Access token refreshed successfully from IP: {}", httpRequest.getRemoteAddr());
+            return ResponseEntity.ok(tokenResponse);
+
+        } catch (SecurityException e) {
+            logger.warn("Invalid refresh token attempt from IP: {}, error: {}", 
+                       httpRequest.getRemoteAddr(), e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(VerificationResponse.error("Invalid or expired refresh token"));
+        } catch (IllegalArgumentException e) {
+            logger.warn("Bad refresh token request from IP: {}, error: {}", 
+                       httpRequest.getRemoteAddr(), e.getMessage());
+            return ResponseEntity.badRequest()
+                .body(VerificationResponse.error("Invalid request: " + e.getMessage()));
+        } catch (Exception e) {
+            logger.error("Unexpected error during token refresh from IP: {}", 
+                        httpRequest.getRemoteAddr(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(VerificationResponse.error("Token refresh failed"));
+        }
+    }
+
+    @PostMapping("/revoke-refresh-token") 
+    @Operation(summary = "Revoke a specific refresh token")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Token revoked successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid request")
+    })
+    public ResponseEntity<VerificationResponse> revokeRefreshToken(
+            @Valid @RequestBody RefreshTokenRequest request,
+            HttpServletRequest httpRequest) {
+        
+        try {
+            logger.info("Refresh token revocation request from IP: {}", httpRequest.getRemoteAddr());
+
+            boolean revoked = refreshTokenService.revokeRefreshToken(request.refreshToken());
+            
+            if (revoked) {
+                logger.info("Refresh token revoked successfully from IP: {}", httpRequest.getRemoteAddr());
+                return ResponseEntity.ok(
+                    VerificationResponse.success("Refresh token revoked successfully")
+                );
+            } else {
+                logger.info("Refresh token not found for revocation from IP: {}", httpRequest.getRemoteAddr());
+                // Still return success for security (don't reveal token existence)
+                return ResponseEntity.ok(
+                    VerificationResponse.success("Refresh token revoked successfully")
+                );
+            }
+
+        } catch (Exception e) {
+            logger.error("Error during refresh token revocation from IP: {}", 
+                        httpRequest.getRemoteAddr(), e);
+            // Return success for security
+            return ResponseEntity.ok(
+                VerificationResponse.success("Refresh token revoked successfully")
+            );
+        }
+    }
+
+    @PostMapping("/logout-all-devices")
+    @Operation(summary = "Logout from all devices by revoking all refresh tokens")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Logged out from all devices"),
+        @ApiResponse(responseCode = "401", description = "Authentication required"),
+        @ApiResponse(responseCode = "400", description = "Invalid request")
+    })
+    public ResponseEntity<VerificationResponse> logoutAllDevices(
+            HttpServletRequest request) {
+        
+        try {
+            // Extract user information from JWT token
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(VerificationResponse.error("Authentication required"));
+            }
+
+            String token = authHeader.substring(7);
+            String username = jwtUtil.getUsernameFromToken(token);
+            
+            Optional<User> userOpt = userRepository.findByUsername(username);
+            if (userOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(VerificationResponse.error("User not found"));
+            }
+
+            User user = userOpt.get();
+            
+            // Revoke all refresh tokens for the user
+            int revokedCount = refreshTokenService.revokeAllUserTokens(user.getId());
+            
+            // Also revoke current access token
+            String jti = jwtUtil.getJtiFromToken(token);
+            jwtBlacklistService.revokeToken(jti, user.getId(), RevokedToken.RevokeReason.LOGOUT);
+
+            // Log logout from all devices
+            auditLogService.logSuccess(
+                com.blog.api.entity.AuditLog.AuditAction.LOGOUT_ALL_DEVICES,
+                user.getId(),
+                username,
+                request,
+                "USER",
+                user.getId(),
+                "Logout from all devices (" + revokedCount + " tokens revoked)"
+            );
+
+            logger.info("User {} logged out from all devices ({} refresh tokens revoked) from IP: {}", 
+                       username, revokedCount, request.getRemoteAddr());
+
+            return ResponseEntity.ok(
+                VerificationResponse.success("Logged out from all devices successfully")
+            );
+
+        } catch (Exception e) {
+            logger.error("Error during logout from all devices from IP: {}", request.getRemoteAddr(), e);
+            // Return success for security
+            return ResponseEntity.ok(
+                VerificationResponse.success("Logged out from all devices successfully")
             );
         }
     }

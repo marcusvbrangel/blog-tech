@@ -39,7 +39,7 @@ class JwtUtilBlacklistTest {
 
         // Create test user
         testUserDetails = User.withUsername("testuser")
-            .password("password")
+            .password("TestPass123!")
             .authorities("ROLE_USER")
             .build();
     }
@@ -153,7 +153,7 @@ class JwtUtilBlacklistTest {
         String jti = jwtUtil.getJtiFromToken(token);
         
         UserDetails differentUser = User.withUsername("differentuser")
-            .password("password")
+            .password("TestPass123!")
             .authorities("ROLE_USER")
             .build();
         

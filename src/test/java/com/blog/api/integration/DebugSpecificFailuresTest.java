@@ -53,7 +53,7 @@ class DebugSpecificFailuresTest {
         
         // Step 1: Register user
         CreateUserDTO createUserDTO = new CreateUserDTO(
-            "testuser", "testuser@example.com", "password123", User.Role.USER);
+            "testuser", "testuser@example.com", "TestPass123!", User.Role.USER);
 
         MvcResult registerResult = mockMvc.perform(post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -91,7 +91,7 @@ class DebugSpecificFailuresTest {
         System.out.println("User password hash after: " + verifiedUser.getPassword());
 
         // Step 3: Try to login
-        LoginRequest loginRequest = new LoginRequest("testuser@example.com", "password123");
+        LoginRequest loginRequest = new LoginRequest("testuser@example.com", "TestPass123!");
         System.out.println("Login request: " + objectMapper.writeValueAsString(loginRequest));
         
         MvcResult loginResult = mockMvc.perform(post("/api/v1/auth/login")

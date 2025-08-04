@@ -40,7 +40,10 @@
       "Bash(git commit:*)",
       "Bash(/snap/bin/gh:*)",
       "Bash(snap list:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(chmod:*)",
+      "Bash(./fix-test-passwords.sh:*)",
+      "Bash(./mvnw clean compile -q)"
     ],
     "deny": []
   }

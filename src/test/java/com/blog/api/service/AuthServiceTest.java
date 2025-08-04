@@ -191,7 +191,7 @@ class AuthServiceTest {
         // Arrange
         when(userRepository.findByUsername("nonexistent")).thenReturn(Optional.empty());
         when(userRepository.findByEmail("nonexistent")).thenReturn(Optional.empty());
-        LoginRequest invalidRequest = new LoginRequest("nonexistent", "password");
+        LoginRequest invalidRequest = new LoginRequest("nonexistent", "TestPass123!");
 
         // Act & Assert
         assertThatThrownBy(() -> authService.login(invalidRequest))

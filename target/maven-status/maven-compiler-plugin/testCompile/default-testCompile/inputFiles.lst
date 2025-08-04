@@ -8,6 +8,7 @@
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/service/JwtBlacklistServiceTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/service/TermsServiceTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/controller/SimpleIntegrationUserControllerTest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/service/TwoFactorAuthServiceTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/integration/PasswordPolicyIntegrationTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/dto/TermsComplianceResponseTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/service/EmailServiceTest.java
@@ -19,15 +20,19 @@
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/service/CustomUserDetailsServiceTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/service/CategoryServiceTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/controller/SimplePostControllerTest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/util/TestDataFactory.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/dto/CreateUserDTOPasswordPolicyTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/dto/TermsAcceptanceResponseTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/controller/PostControllerTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/dto/TermsAcceptanceRequestTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/service/UserServiceTest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/service/RefreshTokenServiceTest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/controller/AuthControllerIntegrationTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/controller/CommentControllerTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/entity/RevokedTokenTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/controller/SimpleControllerSuiteTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/controller/UserControllerTest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/service/AuditLogServiceTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/controller/FinalUserControllerTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/service/VerificationTokenServiceTest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/test/java/com/blog/api/util/JwtUtilTest.java

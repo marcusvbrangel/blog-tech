@@ -2,6 +2,7 @@ com/blog/api/repository/TermsAcceptanceRepositoryTest.class
 com/blog/api/controller/FinalUserControllerTest.class
 com/blog/api/service/AuthServiceEmailVerificationTest.class
 com/blog/api/entity/TermsAcceptanceTest.class
+com/blog/api/service/AuditLogServiceTest.class
 com/blog/api/repository/VerificationTokenRepositoryTest.class
 com/blog/api/dto/TermsComplianceResponseTest.class
 com/blog/api/controller/UserControllerTest.class
@@ -11,6 +12,7 @@ com/blog/api/dto/JsonSerializationTest.class
 com/blog/api/controller/PostControllerTest.class
 com/blog/api/service/VerificationTokenServiceTest.class
 com/blog/api/integration/DebugSpecificFailuresTest.class
+com/blog/api/controller/AuthControllerIntegrationTest.class
 com/blog/api/controller/AuthControllerTest.class
 com/blog/api/config/TestSecurityConfig.class
 com/blog/api/service/UserServiceTest.class
@@ -34,10 +36,12 @@ com/blog/api/service/PostServiceTest.class
 com/blog/api/util/PasswordPolicyValidatorTest.class
 com/blog/api/controller/SimpleIntegrationUserControllerTest.class
 com/blog/api/service/TermsServiceTest.class
+com/blog/api/util/TestDataFactory.class
 com/blog/api/controller/SimpleControllerSuiteTest.class
 com/blog/api/service/CategoryServiceTest.class
 com/blog/api/entity/BuilderPatternsTest.class
 com/blog/api/entity/RevokedTokenTest.class
+com/blog/api/service/RefreshTokenServiceTest.class
 com/blog/api/controller/CategoryControllerTest.class
 com/blog/api/controller/AuthControllerEmailVerificationTest.class
 com/blog/api/integration/PasswordPolicyIntegrationTest.class
@@ -47,3 +51,4 @@ com/blog/api/controller/LogoutControllerTestSimple.class
 com/blog/api/util/JwtUtilTest.class
 com/blog/api/controller/TermsControllerTest.class
 com/blog/api/dto/PasswordResetConfirmRequestPasswordPolicyTest.class
+com/blog/api/service/TwoFactorAuthServiceTest.class

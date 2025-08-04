@@ -38,14 +38,14 @@ class TermsAcceptanceRepositoryTest {
         testUser1 = new User();
         testUser1.setUsername("testuser1");
         testUser1.setEmail("test1@example.com");
-        testUser1.setPassword("password123");
+        testUser1.setPassword("TestPass123!");
         testUser1.setRole(User.Role.USER);
         testUser1 = entityManager.persistAndFlush(testUser1);
 
         testUser2 = new User();
         testUser2.setUsername("testuser2");
         testUser2.setEmail("test2@example.com");
-        testUser2.setPassword("password123");
+        testUser2.setPassword("TestPass123!");
         testUser2.setRole(User.Role.USER);
         testUser2 = entityManager.persistAndFlush(testUser2);
 

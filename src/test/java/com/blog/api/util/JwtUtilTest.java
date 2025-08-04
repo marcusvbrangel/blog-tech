@@ -37,7 +37,7 @@ class JwtUtilTest {
         
         userDetails = User.builder()
                 .username("testuser")
-                .password("password")
+                .password("TestPass123!")
                 .authorities(new ArrayList<>())
                 .build();
     }
@@ -89,7 +89,7 @@ class JwtUtilTest {
         
         UserDetails differentUser = User.builder()
                 .username("differentuser")
-                .password("password")
+                .password("TestPass123!")
                 .authorities(new ArrayList<>())
                 .build();
         
@@ -193,13 +193,13 @@ class JwtUtilTest {
     void generateToken_ForDifferentUsers_ShouldCreateDifferentTokens() {
         UserDetails user1 = User.builder()
                 .username("user1")
-                .password("password")
+                .password("TestPass123!")
                 .authorities(new ArrayList<>())
                 .build();
         
         UserDetails user2 = User.builder()
                 .username("user2")
-                .password("password")
+                .password("TestPass123!")
                 .authorities(new ArrayList<>())
                 .build();
         
@@ -291,7 +291,7 @@ class JwtUtilTest {
         assertThrows(IllegalArgumentException.class, () -> {
             User.builder()
                     .username(null)
-                    .password("password")
+                    .password("TestPass123!")
                     .authorities(new ArrayList<>())
                     .build();
         });
