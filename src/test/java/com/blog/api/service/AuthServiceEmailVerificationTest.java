@@ -76,6 +76,7 @@ class AuthServiceEmailVerificationTest {
     }
 
     @Test
+    @DisplayName("Deve registrar usuário e enviar email de verificação quando verificação está habilitada")
     void register_WithEmailVerificationEnabled_SendsVerificationEmail() {
         // Given
         CreateUserDTO createUserDTO = new CreateUserDTO("testuser", "test@example.com", "TestP@ssw0rd1", User.Role.USER);
@@ -101,6 +102,7 @@ class AuthServiceEmailVerificationTest {
     }
 
     @Test
+    @DisplayName("Deve registrar usuário com email verificado quando verificação está desabilitada")
     void register_WithEmailVerificationDisabled_SetsEmailAsVerified() {
         // Given
         ReflectionTestUtils.setField(authService, "emailVerificationEnabled", false);
@@ -127,6 +129,7 @@ class AuthServiceEmailVerificationTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando fazer login com email não verificado")
     void login_WithUnverifiedEmail_ThrowsException() {
         // Given
         LoginRequest loginRequest = new LoginRequest("testuser", "TestP@ssw0rd1");
@@ -143,6 +146,7 @@ class AuthServiceEmailVerificationTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando fazer login com conta bloqueada")
     void login_WithLockedAccount_ThrowsException() {
         // Given
         LoginRequest loginRequest = new LoginRequest("testuser", "TestP@ssw0rd1");
@@ -161,6 +165,7 @@ class AuthServiceEmailVerificationTest {
     }
 
     @Test
+    @DisplayName("Deve desbloquear conta e prosseguir com login quando bloqueio expirou")
     void login_WithExpiredLock_UnlocksAccountAndProceedsWithLogin() {
         // Given
         LoginRequest loginRequest = new LoginRequest("testuser", "TestP@ssw0rd1");
@@ -241,6 +246,7 @@ class AuthServiceEmailVerificationTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando verificar email com verificação desabilitada")
     void verifyEmail_WithEmailVerificationDisabled_ThrowsException() {
         // Given
         ReflectionTestUtils.setField(authService, "emailVerificationEnabled", false);
@@ -303,6 +309,7 @@ class AuthServiceEmailVerificationTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando reenviar verificação com verificação desabilitada")
     void resendEmailVerification_WithEmailVerificationDisabled_ThrowsException() {
         // Given
         ReflectionTestUtils.setField(authService, "emailVerificationEnabled", false);
@@ -370,6 +377,7 @@ class AuthServiceEmailVerificationTest {
     }
 
     @Test
+    @DisplayName("Deve incrementar tentativas falhadas quando autenticação falha")
     void login_FailedAuthentication_IncrementsFailedAttempts() {
         // Given
         LoginRequest loginRequest = new LoginRequest("testuser", "wrongpassword");
@@ -387,6 +395,7 @@ class AuthServiceEmailVerificationTest {
     }
 
     @Test
+    @DisplayName("Deve bloquear conta quando cinco tentativas falhadas")
     void login_FiveFailedAttempts_LocksAccount() {
         // Given
         LoginRequest loginRequest = new LoginRequest("testuser", "wrongpassword");

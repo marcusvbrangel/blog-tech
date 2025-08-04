@@ -95,7 +95,7 @@ class TermsControllerTest {
     }
 
     @Test
-    @DisplayName("Should return current terms info for anonymous users")
+    @DisplayName("Deve retornar informações dos termos atuais quando usuário anônimo")
     void getCurrentTermsInfo_ShouldReturnTermsInfo_WhenAnonymousUser() throws Exception {
         // Given
         when(termsService.getCurrentTermsVersion()).thenReturn("1.0");
@@ -114,7 +114,7 @@ class TermsControllerTest {
 
     @Test
     @WithMockUser(username = "testuser", roles = "USER")
-    @DisplayName("Should return user terms status for authenticated users")
+    @DisplayName("Deve retornar status dos termos do usuário quando autenticado")
     void getUserTermsStatus_ShouldReturnUserStatus_WhenAuthenticated() throws Exception {
         // Given
         when(userService.getUserByUsername("testuser")).thenReturn(sampleUserDTO);
@@ -136,7 +136,7 @@ class TermsControllerTest {
 
     @Test
     @WithMockUser(username = "testuser", roles = "USER")
-    @DisplayName("Should accept terms successfully when valid request")
+    @DisplayName("Deve aceitar termos com sucesso quando requisição é válida")
     void acceptTerms_ShouldAcceptTerms_WhenValidRequest() throws Exception {
         // Given
         when(termsService.getCurrentTermsVersion()).thenReturn("1.0");
@@ -159,7 +159,7 @@ class TermsControllerTest {
 
     @Test
     @WithMockUser(username = "testuser", roles = "USER")
-    @DisplayName("Should return bad request when invalid acceptance request")
+    @DisplayName("Deve retornar bad request quando requisição de aceitação é inválida")
     void acceptTerms_ShouldReturnBadRequest_WhenInvalidRequest() throws Exception {
         // Given
         TermsAcceptanceRequest invalidRequest = new TermsAcceptanceRequest(
@@ -184,7 +184,7 @@ class TermsControllerTest {
 
     @Test
     @WithMockUser(username = "testuser", roles = "USER")
-    @DisplayName("Should return user terms history")
+    @DisplayName("Deve retornar histórico de termos do usuário quando autenticado")
     void getUserTermsHistory_ShouldReturnHistory_WhenAuthenticated() throws Exception {
         // Given
         List<TermsAcceptance> history = Arrays.asList(sampleAcceptance);
@@ -204,7 +204,7 @@ class TermsControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    @DisplayName("Should return terms statistics for admin")
+    @DisplayName("Deve retornar estatísticas dos termos quando usuário é admin")
     void getTermsStatistics_ShouldReturnStatistics_WhenAdmin() throws Exception {
         // Given
         TermsService.AcceptanceStatistics stats = new TermsService.AcceptanceStatistics(
@@ -232,7 +232,7 @@ class TermsControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    @DisplayName("Should return non-compliant users for admin")
+    @DisplayName("Deve retornar usuários não conformes quando usuário é admin")
     void getNonCompliantUsers_ShouldReturnUsers_WhenAdmin() throws Exception {
         // Given
         User testUser = User.of("user2", "user2@example.com", "TestPass123!")
@@ -255,7 +255,7 @@ class TermsControllerTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    @DisplayName("Should return forbidden when non-admin tries to access admin endpoints")
+    @DisplayName("Deve retornar forbidden quando usuário não-admin tenta acessar endpoints de admin")
     void getTermsStatistics_ShouldReturnForbidden_WhenNotAdmin() throws Exception {
         // When & Then
         mockMvc.perform(get("/api/v1/terms/admin/statistics"))
@@ -265,7 +265,7 @@ class TermsControllerTest {
     }
 
     @Test
-    @DisplayName("Should return unauthorized when not authenticated for protected endpoints")
+    @DisplayName("Deve retornar unauthorized quando não está autenticado para endpoints protegidos")
     void acceptTerms_ShouldReturnUnauthorized_WhenNotAuthenticated() throws Exception {
         // When & Then
         mockMvc.perform(post("/api/v1/terms/accept")
@@ -279,7 +279,7 @@ class TermsControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = "ADMIN")
-    @DisplayName("Should initiate cleanup for admin")
+    @DisplayName("Deve iniciar limpeza quando usuário é admin")
     void cleanupOldRecords_ShouldInitiateCleanup_WhenAdmin() throws Exception {
         // Given
         when(termsService.cleanupOldAcceptances()).thenReturn(25);

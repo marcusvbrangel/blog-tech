@@ -342,6 +342,7 @@ class AuthControllerEmailVerificationTest {
 
     // Test for request validation
     @Test
+    @DisplayName("Deve retornar BadRequest quando request está vazio para reenvio de verificação")
     void resendEmailVerification_EmptyRequest_ReturnsBadRequest() throws Exception {
         // When & Then
         mockMvc.perform(post("/api/v1/auth/resend-verification")
@@ -353,6 +354,7 @@ class AuthControllerEmailVerificationTest {
     }
 
     @Test
+    @DisplayName("Deve retornar BadRequest quando request está vazio para esqueci minha senha")
     void forgotPassword_EmptyRequest_ReturnsBadRequest() throws Exception {
         // When & Then
         mockMvc.perform(post("/api/v1/auth/forgot-password")
@@ -364,6 +366,7 @@ class AuthControllerEmailVerificationTest {
     }
 
     @Test
+    @DisplayName("Deve retornar BadRequest quando request está vazio para reset de senha")
     void resetPassword_EmptyRequest_ReturnsBadRequest() throws Exception {
         // When & Then
         mockMvc.perform(post("/api/v1/auth/reset-password")

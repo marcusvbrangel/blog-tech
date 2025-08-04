@@ -69,6 +69,7 @@ class TermsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar versão configurada dos termos")
     void getCurrentTermsVersion_ShouldReturnConfiguredVersion() {
         // When
         String result = termsService.getCurrentTermsVersion();
@@ -78,6 +79,7 @@ class TermsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar true quando usuário não tem aceitação de termos")
     void userNeedsToAcceptTerms_WithUserIdWhoHasNoAcceptance_ShouldReturnTrue() {
         // Given
         User userWithoutTerms = User.of("testuser", "test@example.com", "TestPass123!")
@@ -96,6 +98,7 @@ class TermsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar true quando usuário tem versão antiga dos termos")
     void userNeedsToAcceptTerms_WithUserIdWhoHasOldVersion_ShouldReturnTrue() {
         // Given
         User userWithOldTerms = User.of("testuser", "test@example.com", "TestPass123!")
@@ -114,6 +117,7 @@ class TermsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando usuário tem versão atual dos termos")
     void userNeedsToAcceptTerms_WithUserIdWhoHasCurrentVersion_ShouldReturnFalse() {
         // Given
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
@@ -126,6 +130,7 @@ class TermsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve funcionar corretamente com entidade de usuário")
     void userNeedsToAcceptTerms_WithUserEntity_ShouldWorkCorrectly() {
         // Test with user who needs to accept
         User userWithoutTerms = User.of("testuser", "test@example.com", "TestPass123!")
@@ -142,6 +147,7 @@ class TermsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve criar registro de aceitação quando aceitar termos com ID do usuário")
     void acceptTerms_WithUserId_ShouldCreateAcceptanceRecord() {
         // Given
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
@@ -161,6 +167,7 @@ class TermsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve criar registro de aceitação quando aceitar termos com entidade do usuário")
     void acceptTerms_WithUserEntity_ShouldCreateAcceptanceRecord() {
         // Given
         when(termsAcceptanceRepository.existsByUserAndTermsVersion(testUser, "v1.0")).thenReturn(false);
@@ -179,6 +186,7 @@ class TermsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar aceitação existente quando já foi aceito")
     void acceptTerms_WhenAlreadyAccepted_ShouldReturnExistingAcceptance() {
         // Given
         when(termsAcceptanceRepository.existsByUserAndTermsVersion(testUser, "v1.0")).thenReturn(true);
@@ -194,6 +202,7 @@ class TermsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar histórico de aceitações do usuário")
     void getUserTermsHistory_ShouldReturnUserAcceptances() {
         // Given
         List<TermsAcceptance> expectedHistory = Arrays.asList(testAcceptance);
@@ -209,6 +218,7 @@ class TermsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar aceitação mais recente do usuário")
     void getUserLatestAcceptance_ShouldReturnLatestAcceptance() {
         // Given
         when(termsAcceptanceRepository.findLatestByUserId(1L))
@@ -223,6 +233,7 @@ class TermsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar aceitações para versão específica")
     void getAcceptancesForVersion_ShouldReturnAcceptancesForSpecificVersion() {
         // Given
         List<TermsAcceptance> expectedAcceptances = Arrays.asList(testAcceptance);
@@ -237,6 +248,7 @@ class TermsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar usuários sem aceitação dos termos mais recentes")
     void getUsersWithoutLatestTerms_ShouldReturnUsersWithoutLatestTerms() {
         // Given
         List<User> expectedUsers = Arrays.asList(testUser);
@@ -251,6 +263,7 @@ class TermsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar usuários paginados sem aceitação dos termos mais recentes")
     void getUsersWithoutLatestTerms_WithPageable_ShouldReturnPagedUsers() {
         // Given
         Page<User> expectedPage = new PageImpl<>(Arrays.asList(testUser));
@@ -266,6 +279,7 @@ class TermsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar valor de aceitação obrigatória")
     void isTermsAcceptanceRequired_ShouldReturnForceAcceptanceValue() {
         // When
         boolean result = termsService.isTermsAcceptanceRequired();
@@ -275,6 +289,7 @@ class TermsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar ResourceNotFoundException quando usuário não é encontrado")
     void acceptTerms_WhenUserNotFound_ShouldThrowResourceNotFoundException() {
         // Given
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
@@ -286,6 +301,7 @@ class TermsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar ResourceNotFoundException quando usuário não é encontrado para histórico")
     void getUserTermsHistory_WhenUserNotFound_ShouldThrowResourceNotFoundException() {
         // Given
         when(userRepository.findById(999L)).thenReturn(Optional.empty());

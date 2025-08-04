@@ -95,6 +95,7 @@ class AuditLogServiceTest {
     }
 
     @Test
+    @DisplayName("Deve criar log de auditoria com resultado de falha quando log failure")
     void logFailure_ShouldCreateAuditLog_WithFailureResult() {
         // Arrange
         ArgumentCaptor<AuditLog> auditLogCaptor = ArgumentCaptor.forClass(AuditLog.class);
@@ -130,6 +131,7 @@ class AuditLogServiceTest {
     }
 
     @Test
+    @DisplayName("Deve criar log de auditoria com resultado bloqueado quando violação de segurança")
     void logSecurityViolation_ShouldCreateAuditLog_WithBlockedResult() {
         // Arrange
         ArgumentCaptor<AuditLog> auditLogCaptor = ArgumentCaptor.forClass(AuditLog.class);
@@ -162,6 +164,7 @@ class AuditLogServiceTest {
     }
 
     @Test
+    @DisplayName("Deve criar log de auditoria com ação de rate limit quando limite excedido")
     void logRateLimitExceeded_ShouldCreateAuditLog_WithRateLimitAction() {
         // Arrange
         ArgumentCaptor<AuditLog> auditLogCaptor = ArgumentCaptor.forClass(AuditLog.class);
@@ -194,6 +197,7 @@ class AuditLogServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar resultados paginados quando buscar logs por usuário")
     void getAuditLogsByUser_ShouldReturnPagedResults() {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
@@ -216,6 +220,7 @@ class AuditLogServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar resultados paginados quando buscar logs por ação")
     void getAuditLogsByAction_ShouldReturnPagedResults() {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
@@ -238,6 +243,7 @@ class AuditLogServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar resultados paginados quando buscar logs por endereço IP")
     void getAuditLogsByIpAddress_ShouldReturnPagedResults() {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
@@ -260,6 +266,7 @@ class AuditLogServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar tentativas de login falhadas quando buscar tentativas")
     void getFailedLoginAttempts_ShouldReturnFailedAttempts() {
         // Arrange
         LocalDateTime since = LocalDateTime.now().minusHours(1);
@@ -279,6 +286,7 @@ class AuditLogServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar contagem quando contar tentativas de login falhadas por IP")
     void countFailedLoginAttemptsByIp_ShouldReturnCount() {
         // Arrange
         String ipAddress = "192.168.1.1";
@@ -295,6 +303,7 @@ class AuditLogServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar resultados paginados quando buscar violações de segurança")
     void getSecurityViolations_ShouldReturnPagedResults() {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
@@ -316,6 +325,7 @@ class AuditLogServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar atividade recente quando buscar atividade por usuário")
     void getRecentActivityByUser_ShouldReturnRecentActivity() {
         // Arrange
         LocalDateTime since = LocalDateTime.now().minusHours(24);
@@ -335,6 +345,7 @@ class AuditLogServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar resultados paginados quando buscar ações de admin")
     void getAdminActions_ShouldReturnPagedResults() {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
@@ -356,6 +367,7 @@ class AuditLogServiceTest {
     }
 
     @Test
+    @DisplayName("Deve extrair primeiro IP quando processar header X-Forwarded-For")
     void handleXForwardedForHeader_ShouldExtractFirstIP() {
         // Arrange
         when(httpServletRequest.getHeader("X-Forwarded-For")).thenReturn("192.168.1.1, 10.0.0.1");
@@ -387,6 +399,7 @@ class AuditLogServiceTest {
     }
 
     @Test
+    @DisplayName("Deve truncar para tamanho máximo quando User-Agent é muito longo")
     void handleLongUserAgent_ShouldTruncateToMaxLength() {
         // Arrange
         String longUserAgent = "A".repeat(600); // Longer than 500 char limit

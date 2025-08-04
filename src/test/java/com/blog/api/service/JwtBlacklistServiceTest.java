@@ -358,6 +358,7 @@ class JwtBlacklistServiceTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve retornar false quando ID do usuário é nulo para limite de taxa")
     void isRateLimitExceeded_WhenUserIdIsNull_ShouldReturnFalse() {
         // Given
         Long userId = null;
@@ -370,6 +371,7 @@ class JwtBlacklistServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando limite de taxa não foi excedido")
     void isRateLimitExceeded_WhenLimitNotExceeded_ShouldReturnFalse() {
         // Given
         Long userId = 1L;
@@ -383,6 +385,7 @@ class JwtBlacklistServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar true quando limite de taxa foi excedido")
     void isRateLimitExceeded_WhenLimitExceeded_ShouldReturnTrue() {
         // Given
         Long userId = 1L;
@@ -400,6 +403,7 @@ class JwtBlacklistServiceTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve retornar contagem correta de revogações do usuário")
     void getUserRevocationCount_ShouldReturnCorrectCount() {
         // Given
         Long userId = 1L;
@@ -417,6 +421,7 @@ class JwtBlacklistServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar contagem correta por razão de revogação")
     void getRevocationCountByReason_ShouldReturnCorrectCount() {
         // Given
         RevokedToken.RevokeReason reason = RevokedToken.RevokeReason.LOGOUT;
@@ -434,6 +439,7 @@ class JwtBlacklistServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar tokens revogados recentes")
     void getRecentRevocations_ShouldReturnRecentTokens() {
         // Given
         int minutes = 30;
@@ -473,6 +479,7 @@ class JwtBlacklistServiceTest {
     }
 
     @Test
+    @DisplayName("Não deve deletar tokens quando limpeza está desabilitada")
     void cleanupExpiredTokens_WhenCleanupDisabled_ShouldNotDeleteTokens() {
         // Given
         ReflectionTestUtils.setField(jwtBlacklistService, "cleanupEnabled", false);
@@ -485,6 +492,7 @@ class JwtBlacklistServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lidar graciosamente com erro de banco de dados na limpeza")
     void cleanupExpiredTokens_WhenDatabaseError_ShouldHandleGracefully() {
         // Given
         when(revokedTokenRepository.deleteByExpiresAtBefore(any(LocalDateTime.class)))
@@ -499,6 +507,7 @@ class JwtBlacklistServiceTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve atualizar métricas quando monitoramento está habilitado")
     void updateActiveTokensMetrics_WhenMonitoringEnabled_ShouldUpdateMetrics() {
         // Given
         long activeCount = 25L;
@@ -513,6 +522,7 @@ class JwtBlacklistServiceTest {
     }
 
     @Test
+    @DisplayName("Não deve atualizar métricas quando monitoramento está desabilitado")
     void updateActiveTokensMetrics_WhenMonitoringDisabled_ShouldNotUpdateMetrics() {
         // Given
         ReflectionTestUtils.setField(jwtBlacklistService, "monitoringEnabled", false);
@@ -525,6 +535,7 @@ class JwtBlacklistServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lidar graciosamente com erro de banco de dados nas métricas")
     void updateActiveTokensMetrics_WhenDatabaseError_ShouldHandleGracefully() {
         // Given
         when(revokedTokenRepository.countActiveRevokedTokens(any(LocalDateTime.class)))
@@ -539,6 +550,7 @@ class JwtBlacklistServiceTest {
     // =====================================================================
 
     @Test
+    @DisplayName("Deve funcionar corretamente no fluxo de integração de revogar e verificar")
     void revokeAndCheck_IntegrationFlow_ShouldWorkCorrectly() {
         // Given
         String jti = "integration-test-jti";

@@ -303,6 +303,7 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar Unauthorized quando não está autenticado para atualização")
     void updateCategory_WhenNotAuthenticated_ShouldReturnUnauthorized() throws Exception {
         // Arrange
         CategoryDTO updateCategoryDTO = new CategoryDTO(null, "Updated Technology", "Updated description", 0);
@@ -378,6 +379,7 @@ class CategoryControllerTest {
 
     // Test endpoints specific to this controller
     @Test
+    @DisplayName("Deve retornar contagem de categorias no endpoint de teste")
     void testCategories_ShouldReturnCategoryCount() throws Exception {
         // This tests the /test endpoint - implementation depends on actual controller
         mockMvc.perform(get("/api/v1/categories/test"))
@@ -385,6 +387,7 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar DTO de teste no endpoint de teste DTO")
     void testCategoryDTO_ShouldReturnTestDTO() throws Exception {
         // This tests the /test-dto endpoint - implementation depends on actual controller  
         mockMvc.perform(get("/api/v1/categories/test-dto"))
@@ -415,6 +418,7 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar InternalServerError quando serviço lança exceção")
     void getAllCategories_WhenServiceThrowsException_ShouldReturnInternalServerError() throws Exception {
         // Arrange
         when(categoryService.getAllCategories(any()))

@@ -291,6 +291,7 @@ class CommentControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar Unauthorized quando não está autenticado para atualização")
     void updateComment_ShouldReturnUnauthorized_WhenNotAuthenticated() throws Exception {
         // Act & Assert
         mockMvc.perform(put("/api/v1/comments/1")

@@ -305,6 +305,7 @@ class CustomUserDetailsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar UsernameNotFoundException quando usuário não é encontrado")
     void loadUserByUsername_ShouldThrowUsernameNotFoundException_WhenUserNotFound() {
         // Arrange
         String username = "nonexistentuser";
@@ -321,6 +322,7 @@ class CustomUserDetailsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve tentar busca por email quando busca por nome de usuário falha")
     void loadUserByUsername_ShouldTryEmailSearch_WhenUsernameSearchFails() {
         // Arrange
         String identifier = "user@example.com";
@@ -339,6 +341,7 @@ class CustomUserDetailsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lidar com entrada nula")
     void loadUserByUsername_ShouldHandleNullInput() {
         // Arrange
         String nullUsername = null;
@@ -355,6 +358,7 @@ class CustomUserDetailsServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lidar com entrada vazia")
     void loadUserByUsername_ShouldHandleEmptyInput() {
         // Arrange
         String emptyUsername = "";

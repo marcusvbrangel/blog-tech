@@ -72,6 +72,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve criar configuração quando usuário existe")
     void setupTwoFactorAuth_ShouldCreateConfiguration_WhenUserExists() {
         // Arrange
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
@@ -92,6 +93,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando usuário não é encontrado")
     void setupTwoFactorAuth_ShouldThrowException_WhenUserNotFound() {
         // Arrange
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
@@ -103,6 +105,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando 2FA já está habilitado")
     void setupTwoFactorAuth_ShouldThrowException_WhenAlreadyEnabled() {
         // Arrange
         TwoFactorAuth enabledAuth = TwoFactorAuth.builder()
@@ -121,6 +124,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve habilitar 2FA quando código é válido")
     void enableTwoFactorAuth_ShouldEnableAuth_WhenValidCode() {
         // Arrange
         when(twoFactorAuthRepository.findByUserId(1L)).thenReturn(Optional.of(testTwoFactorAuth));
@@ -138,6 +142,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando código é inválido")
     void enableTwoFactorAuth_ShouldReturnFalse_WhenInvalidCode() {
         // Arrange
         when(twoFactorAuthRepository.findByUserId(1L)).thenReturn(Optional.of(testTwoFactorAuth));
@@ -151,6 +156,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando 2FA não foi configurado")
     void enableTwoFactorAuth_ShouldThrowException_WhenNotSetup() {
         // Arrange
         when(twoFactorAuthRepository.findByUserId(1L)).thenReturn(Optional.empty());
@@ -162,6 +168,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando tentar habilitar 2FA já habilitado")
     void enableTwoFactorAuth_ShouldThrowException_WhenAlreadyEnabled() {
         // Arrange
         TwoFactorAuth enabledAuth = TwoFactorAuth.builder()
@@ -179,6 +186,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve desabilitar 2FA quando código é válido")
     void disableTwoFactorAuth_ShouldDisableAuth_WhenValidCode() {
         // Arrange
         TwoFactorAuth enabledAuth = TwoFactorAuth.builder()
@@ -202,6 +210,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve desabilitar 2FA quando código de backup é válido")
     void disableTwoFactorAuth_ShouldDisableAuth_WhenValidBackupCode() {
         // Arrange
         TwoFactorAuth enabledAuth = TwoFactorAuth.builder()
@@ -224,6 +233,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar true quando usuário não tem 2FA")
     void verifyTwoFactorCode_ShouldReturnTrue_WhenUserHasNo2FA() {
         // Arrange
         when(twoFactorAuthRepository.findByUserId(1L)).thenReturn(Optional.empty());
@@ -236,6 +246,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar true quando usuário tem 2FA desabilitado")
     void verifyTwoFactorCode_ShouldReturnTrue_WhenUserHas2FADisabled() {
         // Arrange
         when(twoFactorAuthRepository.findByUserId(1L)).thenReturn(Optional.of(testTwoFactorAuth));
@@ -248,6 +259,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar true quando TOTP é válido")
     void verifyTwoFactorCode_ShouldReturnTrue_WhenValidTOTP() {
         // Arrange
         TwoFactorAuth enabledAuth = TwoFactorAuth.builder()
@@ -271,6 +283,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar true quando código de backup é válido")
     void verifyTwoFactorCode_ShouldReturnTrue_WhenValidBackupCode() {
         // Arrange
         TwoFactorAuth enabledAuth = TwoFactorAuth.builder()
@@ -293,6 +306,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando código é inválido")
     void verifyTwoFactorCode_ShouldReturnFalse_WhenInvalidCode() {
         // Arrange
         TwoFactorAuth enabledAuth = TwoFactorAuth.builder()
@@ -313,6 +327,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando código de backup já foi usado")
     void verifyTwoFactorCode_ShouldReturnFalse_WhenBackupCodeAlreadyUsed() {
         // Arrange
         TwoFactorAuth enabledAuth = TwoFactorAuth.builder()
@@ -333,6 +348,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar true quando 2FA está habilitado")
     void isTwoFactorEnabled_ShouldReturnTrue_WhenEnabled() {
         // Arrange
         when(twoFactorAuthRepository.isEnabledByUserId(1L)).thenReturn(Optional.of(true));
@@ -345,6 +361,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando 2FA está desabilitado")
     void isTwoFactorEnabled_ShouldReturnFalse_WhenDisabled() {
         // Arrange
         when(twoFactorAuthRepository.isEnabledByUserId(1L)).thenReturn(Optional.of(false));
@@ -357,6 +374,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando 2FA não está configurado")
     void isTwoFactorEnabled_ShouldReturnFalse_WhenNotConfigured() {
         // Arrange
         when(twoFactorAuthRepository.isEnabledByUserId(1L)).thenReturn(Optional.empty());
@@ -369,6 +387,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar status quando 2FA está configurado")
     void getTwoFactorStatus_ShouldReturnStatus_WhenConfigured() {
         // Arrange
         TwoFactorAuth enabledAuth = TwoFactorAuth.builder()
@@ -396,6 +415,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar status não configurado quando não foi configurado")
     void getTwoFactorStatus_ShouldReturnUnconfiguredStatus_WhenNotSetup() {
         // Arrange
         when(twoFactorAuthRepository.findByUserId(1L)).thenReturn(Optional.empty());
@@ -413,6 +433,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve gerar novos códigos de backup quando código é válido")
     void regenerateBackupCodes_ShouldGenerateNewCodes_WhenValidCode() {
         // Arrange
         TwoFactorAuth enabledAuth = TwoFactorAuth.builder()
@@ -448,6 +469,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando código é inválido para regenerar backup")
     void regenerateBackupCodes_ShouldThrowException_WhenInvalidCode() {
         // Arrange
         TwoFactorAuth enabledAuth = TwoFactorAuth.builder()
@@ -465,6 +487,7 @@ class TwoFactorAuthServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando 2FA não está habilitado para regenerar backup")
     void regenerateBackupCodes_ShouldThrowException_WhenNotEnabled() {
         // Arrange
         when(twoFactorAuthRepository.findByUserId(1L)).thenReturn(Optional.of(testTwoFactorAuth));

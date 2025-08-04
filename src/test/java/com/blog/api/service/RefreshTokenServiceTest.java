@@ -102,6 +102,7 @@ class RefreshTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando usuário não é encontrado")
     void createRefreshToken_ShouldThrowException_WhenUserNotFound() {
         // Arrange
         when(userRepository.existsById(1L)).thenReturn(false);
@@ -113,6 +114,7 @@ class RefreshTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando limite de taxa é excedido")
     void createRefreshToken_ShouldThrowException_WhenRateLimitExceeded() {
         // Arrange
         when(userRepository.existsById(1L)).thenReturn(true);
@@ -125,6 +127,7 @@ class RefreshTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar novo token quando refresh token é válido")
     void refreshAccessToken_ShouldReturnNewToken_WhenValidRefreshToken() {
         // Arrange
         UserDetails userDetails = mock(UserDetails.class);
@@ -157,6 +160,7 @@ class RefreshTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando token não é encontrado")
     void refreshAccessToken_ShouldThrowException_WhenTokenNotFound() {
         // Arrange
         when(refreshTokenRepository.findActiveByToken("invalid-token")).thenReturn(Optional.empty());
@@ -168,6 +172,7 @@ class RefreshTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando usuário não é encontrado para refresh")
     void refreshAccessToken_ShouldThrowException_WhenUserNotFound() {
         // Arrange
         when(refreshTokenRepository.findActiveByToken("test-refresh-token")).thenReturn(Optional.of(testRefreshToken));
@@ -194,6 +199,7 @@ class RefreshTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar false quando token não é encontrado para revogação")
     void revokeRefreshToken_ShouldReturnFalse_WhenTokenNotFound() {
         // Arrange
         when(refreshTokenRepository.revokeByToken("invalid-token")).thenReturn(0);
@@ -221,6 +227,7 @@ class RefreshTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando ID do usuário é nulo")
     void createRefreshToken_ShouldThrowException_WhenNullUserId() {
         // Act & Assert
         assertThatThrownBy(() -> refreshTokenService.createRefreshToken(null, "Device", "IP"))
@@ -229,6 +236,7 @@ class RefreshTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando token é nulo")
     void refreshAccessToken_ShouldThrowException_WhenNullToken() {
         // Act & Assert
         assertThatThrownBy(() -> refreshTokenService.refreshAccessToken(null))
@@ -237,6 +245,7 @@ class RefreshTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando token é vazio")
     void refreshAccessToken_ShouldThrowException_WhenEmptyToken() {
         // Act & Assert
         assertThatThrownBy(() -> refreshTokenService.refreshAccessToken(""))

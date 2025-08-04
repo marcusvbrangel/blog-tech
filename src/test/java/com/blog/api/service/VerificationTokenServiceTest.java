@@ -86,6 +86,7 @@ class VerificationTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando email já está verificado")
     void generateAndSendEmailVerification_AlreadyVerified_ThrowsException() {
         // Given
         testUser.setEmailVerified(true);
@@ -99,6 +100,7 @@ class VerificationTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando limite de taxa é excedido")
     void generateAndSendEmailVerification_RateLimited_ThrowsException() {
         // Given
         when(tokenRepository.countTokensCreatedSince(eq(testUser), eq(VerificationToken.TokenType.EMAIL_VERIFICATION), any()))
@@ -133,6 +135,7 @@ class VerificationTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Deve retornar silenciosamente quando usuário não é encontrado para reset")
     void generateAndSendPasswordReset_UserNotFound_SilentReturn() {
         // Given
         String email = "nonexistent@example.com";
@@ -189,6 +192,7 @@ class VerificationTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando token de email expirou")
     void verifyEmailToken_TokenExpired_ThrowsException() {
         // Given
         String tokenValue = "expired-token";
@@ -206,6 +210,7 @@ class VerificationTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lançar exceção quando token de email já foi usado")
     void verifyEmailToken_TokenAlreadyUsed_ThrowsException() {
         // Given
         String tokenValue = "used-token";
@@ -242,6 +247,7 @@ class VerificationTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Deve marcar token de reset de senha como usado")
     void markPasswordResetTokenAsUsed_Success() {
         // Given
         String tokenValue = "reset-token-123";
@@ -276,6 +282,7 @@ class VerificationTokenServiceTest {
     }
 
     @Test
+    @DisplayName("Deve limpar tokens antigos já usados")
     void cleanupOldUsedTokens_Success() {
         // Given
         when(tokenRepository.deleteUsedTokensOlderThan(any(LocalDateTime.class))).thenReturn(10);

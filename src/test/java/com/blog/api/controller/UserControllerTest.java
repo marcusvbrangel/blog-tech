@@ -86,6 +86,7 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar unauthorized quando não está autenticado")
     void getAllUsers_ShouldReturnUnauthorized_WhenNotAuthenticated() throws Exception {
         // Act & Assert
         mockMvc.perform(get("/api/v1/users")
@@ -162,6 +163,7 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar unauthorized quando não está autenticado para busca por username")
     void getUserByUsername_ShouldReturnUnauthorized_WhenNotAuthenticated() throws Exception {
         // Act & Assert
         mockMvc.perform(get("/api/v1/users/username/testuser")
@@ -173,6 +175,7 @@ class UserControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
+    @DisplayName("Deve deletar usuário quando é admin")
     void deleteUser_ShouldDeleteUser_WhenAdmin() throws Exception {
         // Arrange
         doNothing().when(userService).deleteUser(1L);
@@ -187,6 +190,7 @@ class UserControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
+    @DisplayName("Deve retornar NotFound quando usuário a deletar não existe")
     void deleteUser_ShouldReturnNotFound_WhenUserNotExists() throws Exception {
         // Arrange
         doThrow(new ResourceNotFoundException("User", "id", 999L))
@@ -202,6 +206,7 @@ class UserControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
+    @DisplayName("Deve retornar forbidden quando não é admin")
     void deleteUser_ShouldReturnForbidden_WhenNotAdmin() throws Exception {
         // Act & Assert
         mockMvc.perform(delete("/api/v1/users/1")
@@ -212,6 +217,7 @@ class UserControllerTest {
     }
 
     @Test
+    @DisplayName("Deve retornar unauthorized quando não está autenticado para deletar")
     void deleteUser_ShouldReturnUnauthorized_WhenNotAuthenticated() throws Exception {
         // Act & Assert
         mockMvc.perform(delete("/api/v1/users/1")
@@ -264,6 +270,7 @@ class UserControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Deve lidar com formatos de ID válidos")
     void getUserById_ShouldHandleValidIdFormats() throws Exception {
         // Arrange
         when(userService.getUserById(123L)).thenReturn(sampleUserDTO);
@@ -279,6 +286,7 @@ class UserControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Deve retornar bad request quando formato de ID é inválido")
     void getUserById_ShouldReturnBadRequest_WhenInvalidIdFormat() throws Exception {
         // Act & Assert
         mockMvc.perform(get("/api/v1/users/invalid")
@@ -290,6 +298,7 @@ class UserControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Deve lidar com caracteres especiais no nome de usuário")
     void getUserByUsername_ShouldHandleSpecialCharactersInUsername() throws Exception {
         // Arrange
         String specialUsername = "test.user-123";

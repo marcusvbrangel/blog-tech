@@ -136,6 +136,7 @@ class WorkingUserControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Deve retornar NotFound quando buscar usuário por ID inexistente")
     void getUserById_ShouldReturnNotFound_WhenNotExists() throws Exception {
         // Arrange
         when(userService.getUserById(999L))
@@ -151,6 +152,7 @@ class WorkingUserControllerTest {
 
     @Test
     @WithMockUser
+    @DisplayName("Deve retornar NotFound quando buscar usuário por nome inexistente")
     void getUserByUsername_ShouldReturnNotFound_WhenNotExists() throws Exception {
         // Arrange
         when(userService.getUserByUsername("nonexistent"))
@@ -166,6 +168,7 @@ class WorkingUserControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN") 
+    @DisplayName("Deve retornar página vazia quando não há usuários")
     void getAllUsers_ShouldReturnEmptyPage_WhenNoUsers() throws Exception {
         // Arrange
         Page<UserDTO> emptyPage = new PageImpl<>(Arrays.asList());
@@ -185,6 +188,7 @@ class WorkingUserControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
+    @DisplayName("Deve lidar com paginação corretamente")
     void getAllUsers_ShouldHandlePagination() throws Exception {
         // Arrange
         Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO));
