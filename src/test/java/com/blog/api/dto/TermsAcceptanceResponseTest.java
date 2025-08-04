@@ -2,6 +2,7 @@ package com.blog.api.dto;
 
 import com.blog.api.entity.TermsAcceptance;
 import com.blog.api.entity.User;
+import com.blog.api.util.TestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,11 +17,7 @@ class TermsAcceptanceResponseTest {
 
     @BeforeEach
     void setUp() {
-        testUser = User.newInstance()
-            .username("testuser")
-            .email("test@example.com")
-            .password("password123")
-            .role(User.Role.USER)
+        testUser = TestDataFactory.createValidUserBuilder()
             .build();
         testUser.setId(1L);
 

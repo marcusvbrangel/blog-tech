@@ -17,8 +17,11 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Categories", description = "Category management operations")
 public class CategoryController {
 
-    @Autowired
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
+
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
     @GetMapping("/test")
     @Operation(summary = "Test endpoint - simple list")

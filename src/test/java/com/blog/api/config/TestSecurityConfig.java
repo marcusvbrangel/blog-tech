@@ -70,7 +70,7 @@ public class TestSecurityConfig {
         // Create a default UserDetails for tests
         UserDetails mockUserDetails = org.springframework.security.core.userdetails.User.builder()
                 .username("testuser")
-                .password("password")
+                .password("TestPass123!")
                 .authorities("ROLE_USER")
                 .build();
         

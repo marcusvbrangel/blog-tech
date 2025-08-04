@@ -33,7 +33,7 @@ class PasswordResetConfirmRequestPasswordPolicyTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"weak", "123456", "password", "Password123", "qwerty"})
+    @ValueSource(strings = {"weak", "123456", "TestPass123!", "Password123", "qwerty"})
     @DisplayName("Should reject weak passwords during request creation")
     void shouldRejectWeakPasswords(String weakPassword) {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {

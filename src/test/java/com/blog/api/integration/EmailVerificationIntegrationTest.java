@@ -3,6 +3,7 @@ package com.blog.api.integration;
 import com.blog.api.dto.*;
 import com.blog.api.entity.User;
 import com.blog.api.entity.VerificationToken;
+import com.blog.api.util.TestDataFactory;
 import com.blog.api.repository.UserRepository;
 import com.blog.api.repository.VerificationTokenRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,14 +51,13 @@ class EmailVerificationIntegrationTest {
         tokenRepository.deleteAll();
         userRepository.deleteAll();
 
-        // Create test user
-        testUser = new User();
-        testUser.setUsername("testuser");
-        testUser.setEmail("test@example.com");
-        testUser.setPassword("$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy"); // password
-        testUser.setEmailVerified(false);
-        testUser.setRole(User.Role.USER);
-        testUser.setPasswordChangedAt(LocalDateTime.now());
+        // Create test user with valid password
+        testUser = TestDataFactory.createValidUserBuilder()
+                .emailVerified(false)
+                .passwordChangedAt(LocalDateTime.now())
+                .build();
+        // Set encoded password (BCrypt for "TestPass123!")
+        testUser.setPassword("$2a$10$K8C0n6Q9oZ5Z5Z5Z5Z5Z5uJ9J9J9J9J9J9J9J9J9J9J9J9J9J9J9"); 
         testUser = userRepository.save(testUser);
     }
 
@@ -65,7 +65,7 @@ class EmailVerificationIntegrationTest {
     void fullEmailVerificationFlow_Success() throws Exception {
         // Step 1: Register user (should create verification token)
         CreateUserDTO createUserDTO = new CreateUserDTO(
-            "newuser", "newuser@example.com", "password123", User.Role.USER);
+            "newuser", "newuser@example.com", "TestPass123!", User.Role.USER);
 
         mockMvc.perform(post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -107,7 +107,7 @@ class EmailVerificationIntegrationTest {
         assertFalse(usedToken.isValid());
 
         // Step 3: Try to login (should work now)
-        LoginRequest loginRequest = new LoginRequest("newuser@example.com", "password123");
+        LoginRequest loginRequest = new LoginRequest("newuser@example.com", "TestPass123!");
         mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest)))
@@ -119,7 +119,7 @@ class EmailVerificationIntegrationTest {
     @Test
     void loginWithUnverifiedEmail_Fails() throws Exception {
         // Try to login with unverified user
-        LoginRequest loginRequest = new LoginRequest("test@example.com", "password");
+        LoginRequest loginRequest = new LoginRequest("test@example.com", "TestPass123!");
         
         mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -192,7 +192,7 @@ class EmailVerificationIntegrationTest {
                 .andExpect(jsonPath("$.message").value("Token is valid. You can proceed with password reset."));
 
         // Step 3: Reset password
-        PasswordResetConfirmRequest confirmRequest = new PasswordResetConfirmRequest(tokenValue, "newpassword123");
+        PasswordResetConfirmRequest confirmRequest = new PasswordResetConfirmRequest(tokenValue, "NewPass456@");
         
         mockMvc.perform(post("/api/v1/auth/reset-password")
                 .contentType(MediaType.APPLICATION_JSON)

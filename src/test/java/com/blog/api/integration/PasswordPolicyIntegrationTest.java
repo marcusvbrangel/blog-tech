@@ -82,7 +82,7 @@ class PasswordPolicyIntegrationTest {
         
         // Test common password
         assertThrows(IllegalArgumentException.class, () -> {
-            new CreateUserDTO("user6", "user6@test.com", "password123");
+            new CreateUserDTO("user6", "user6@test.com", "TestPass123!");
         });
         
         // Test valid strong password

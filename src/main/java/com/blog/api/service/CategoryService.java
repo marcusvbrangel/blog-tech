@@ -18,8 +18,11 @@ import java.util.stream.Collectors;
 @Service
 public class CategoryService {
 
-    @Autowired
-    public CategoryRepository categoryRepository;
+    public final CategoryRepository categoryRepository;
+
+    public CategoryService(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+    }
 
     public Page<CategoryDTO> getAllCategories(Pageable pageable) {
         // Get cached list data
