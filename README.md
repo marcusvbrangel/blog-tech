@@ -463,7 +463,7 @@ Este projeto foi desenvolvido seguindo uma metodologia de desenvolvimento com IA
 5. ✅ **Testes**
 6. ✅ **Revisão de Código**
 
-Para ver o log completo de desenvolvimento, consulte [DEVELOPMENT_LOG.md](./DEVELOPMENT_LOG.md).
+Para ver o log completo de desenvolvimento, consulte [DEVELOPMENT_LOG.md](documents/DEVELOPMENT_LOG.md).
 
 ## 📊 Métricas do Projeto
 
