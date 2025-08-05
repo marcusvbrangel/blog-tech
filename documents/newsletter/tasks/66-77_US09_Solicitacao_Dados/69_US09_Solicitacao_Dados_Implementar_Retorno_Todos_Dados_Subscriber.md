@@ -98,16 +98,40 @@ public class PersonalDataAggregatorService {
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação completa
-2. Validar funcionalidade principal
-3. Verificar integrações e dependências
-4. Confirmar performance e segurança
+1. **Validar agregação completa de dados:**
+   - Testar coleta de dados de subscriber ativo com histórico completo
+   - Verificar inclusão de dados de todas as tabelas relacionadas
+   - Validar que nenhum dado pessoal é omitido na agregação
+
+2. **Testar completude e integridade:**
+   - Comparar dados agregados com dados originais no banco
+   - Verificar consistência entre diferentes fontes de dados
+   - Validar ordenação cronológica de históricos
+
+3. **Testar cenários edge cases:**
+   - Subscriber sem histórico de consentimento
+   - Subscriber sem emails enviados
+   - Subscriber com dados parciais ou corrompidos
+   - Subscriber inativo com status especiais
+
+4. **Verificar performance e otimização:**
+   - Testar performance com datasets grandes (1000+ registros)
+   - Verificar eficiência das queries e joins
+   - Validar que tempo de resposta é < 500ms
+
+5. **Validar conformidade LGPD:**
+   - Confirmar que todos os dados pessoais são incluídos
+   - Verificar completude para fins de portabilidade
+   - Testar que apenas dados do subscriber solicitante são retornados
 
 ### **Critérios de Sucesso:**
-- [ ] Funcionalidade implementada e funcional
-- [ ] Todos os testes passando
-- [ ] Performance dentro dos SLAs
-- [ ] Documentação completa e atualizada
+- [ ] 100% dos dados pessoais são agregados corretamente
+- [ ] Performance < 500ms para datasets típicos
+- [ ] Integridade de dados: agregação vs banco 100% consistente
+- [ ] Edge cases tratados sem erros ou dados perdidos
+- [ ] Logs de auditoria registram todas as operações
+- [ ] Conformidade LGPD: completude total para portabilidade
+- [ ] Testes de integração cobrem cenários reais de uso
 
 ## ✅ Definition of Done
 

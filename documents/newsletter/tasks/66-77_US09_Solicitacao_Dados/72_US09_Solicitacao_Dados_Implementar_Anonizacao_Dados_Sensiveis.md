@@ -98,16 +98,39 @@ public class DataAnonymizationService {
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação completa
-2. Validar funcionalidade principal
-3. Verificar integrações e dependências
-4. Confirmar performance e segurança
+1. **Validar algoritmos de anonimização:**
+   - Testar identificação automática de dados sensíveis: IPs, tokens, IDs
+   - Verificar mascaramento seguro: IPs (192.168.x.xxx), user agents parciais
+   - Validar hash criptográfico SHA-256 determinístico e seguro
+
+2. **Testar irreversibilidade:**
+   - Verificar que dados anonimizados não podem ser revertidos
+   - Testar resistência a ataques de de-anonimização
+   - Validar que mesmo input produz mesmo output anonimizado
+
+3. **Verificar preservação de utilidade:**
+   - Testar que dados necessários para LGPD são preservados
+   - Verificar que anonimização mantém utilidade para portabilidade
+   - Validar que estrutura de dados permanece útil para auditoria
+
+4. **Testar regras configurables:**
+   - Verificar aplicação de regras por tipo de dado e contexto
+   - Testar diferentes níveis de anonimização por categoria
+   - Validar flexibilidade de configuração sem comprometer segurança
+
+5. **Validar compliance e segurança:**
+   - Testar conformidade com LGPD Article 12 (anonimização adequada)
+   - Verificar logs de auditoria de todas as operações
+   - Validar performance: anonimização em < 100ms
 
 ### **Critérios de Sucesso:**
-- [ ] Funcionalidade implementada e funcional
-- [ ] Todos os testes passando
-- [ ] Performance dentro dos SLAs
-- [ ] Documentação completa e atualizada
+- [ ] Identificação de dados sensíveis 100% precisa
+- [ ] Algoritmos de mascaramento e hash seguros e irreversíveis
+- [ ] Preservação de utilidade para conformidade LGPD
+- [ ] Regras configuradas aplicadas corretamente por contexto
+- [ ] Performance < 100ms para datasets típicos
+- [ ] Logs de auditoria completos para compliance
+- [ ] Resistência comprovada a tentativas de reverter anonimização
 
 ## ✅ Definition of Done
 

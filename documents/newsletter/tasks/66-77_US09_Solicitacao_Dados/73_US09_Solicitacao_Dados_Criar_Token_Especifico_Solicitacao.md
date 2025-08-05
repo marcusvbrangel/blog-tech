@@ -103,16 +103,40 @@ public record SecureDataRequestToken(
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação completa
-2. Validar funcionalidade principal
-3. Verificar integrações e dependências
-4. Confirmar performance e segurança
+1. **Validar geração segura de tokens:**
+   - Testar geração de tokens JWT com criptografia RS256
+   - Verificar entropy adequada (256 bits) para resistência a ataques
+   - Validar assinatura criptográfica e integridade do token
+
+2. **Testar segurança de uso único:**
+   - Verificar blacklist automática após utilização
+   - Testar que tokens utilizados não podem ser reutilizados
+   - Validar gestão adequada do ciclo de vida no Redis
+
+3. **Verificar expiração e rate limiting:**
+   - Testar expiração automática em 1 hora
+   - Verificar rate limiting: 1 token válido por subscriber por hora
+   - Validar que tokens expirados são rejeitados automaticamente
+
+4. **Testar resistência a ataques:**
+   - Verificar proteção contra ataques de brute force
+   - Testar resistência a ataques de replay
+   - Validar proteção contra timing attacks
+
+5. **Validar entrega segura:**
+   - Testar entrega via email com link temporário seguro
+   - Verificar criptografia do conteúdo do email
+   - Validar logs de segurança para geração e tentativas maliciosas
 
 ### **Critérios de Sucesso:**
-- [ ] Funcionalidade implementada e funcional
-- [ ] Todos os testes passando
-- [ ] Performance dentro dos SLAs
-- [ ] Documentação completa e atualizada
+- [ ] Tokens JWT RS256 com entropy adequada (256 bits)
+- [ ] Uso único garantido: blacklist funciona corretamente
+- [ ] Expiração em 1 hora sem possibilidade de renovação
+- [ ] Rate limiting eficaz: 1 token por subscriber por hora
+- [ ] Resistência comprovada a ataques de security testing
+- [ ] Entrega segura via email com criptografia adequada
+- [ ] Performance < 100ms para geração de token
+- [ ] Logs de segurança completos para auditoria e detecção
 
 ## ✅ Definition of Done
 

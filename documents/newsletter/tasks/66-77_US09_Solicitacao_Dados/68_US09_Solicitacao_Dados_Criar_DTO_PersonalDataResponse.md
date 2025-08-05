@@ -96,16 +96,34 @@ public record PersonalDataResponse(
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação completa
-2. Validar funcionalidade principal
-3. Verificar integrações e dependências
-4. Confirmar performance e segurança
+1. **Validar estrutura do DTO:**
+   - Criar instâncias do PersonalDataResponse com diferentes combinações de dados
+   - Verificar que todos os campos obrigatórios são validados corretamente
+   - Testar serialização/deserialização JSON preservando tipos e estruturas
+
+2. **Testar serialização e mapeamento:**
+   - Validar que datas são serializadas em formato ISO 8601
+   - Verificar que campos nulos são tratados adequadamente
+   - Testar mapeamento de objetos complexos (listas, sub-DTOs)
+
+3. **Verificar compatibilidade de dados:**
+   - Testar integração com dados vindos de diferentes entidades
+   - Validar que o DTO suporta todos os tipos de dados pessoais
+   - Verificar compatibilidade com formato LGPD de portabilidade
+
+4. **Validar documentação Swagger:**
+   - Confirmar que anotações @Schema geram documentação clara
+   - Verificar exemplos e descrições estão adequados
+   - Testar geração de OpenAPI specs completas
 
 ### **Critérios de Sucesso:**
-- [ ] Funcionalidade implementada e funcional
-- [ ] Todos os testes passando
-- [ ] Performance dentro dos SLAs
-- [ ] Documentação completa e atualizada
+- [ ] DTO compila sem erros e warnings
+- [ ] Serialização JSON mantém estrutura e tipos corretos
+- [ ] Validações de campos obrigatórios funcionam adequadamente
+- [ ] Documentação Swagger é clara e completa
+- [ ] Formato compatível com requisitos de portabilidade LGPD
+- [ ] Testes unitários cobrem todos os cenários de uso
+- [ ] Performance de serialização < 50ms para datasets típicos
 
 ## ✅ Definition of Done
 

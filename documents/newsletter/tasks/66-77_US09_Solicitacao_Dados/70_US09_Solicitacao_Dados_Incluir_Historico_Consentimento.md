@@ -94,16 +94,39 @@ public record ConsentHistoryData(
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação completa
-2. Validar funcionalidade principal
-3. Verificar integrações e dependências
-4. Confirmar performance e segurança
+1. **Validar inclusão de histórico completo:**
+   - Testar coleta de todos os registros de consentimento: inicial, revisões, revogações
+   - Verificar inclusão de timestamps precisos com timezone correto
+   - Validar que versões de termos aceitos são preservadas
+
+2. **Testar ordenação cronológica:**
+   - Verificar que consentimentos são ordenados por data/hora
+   - Testar facilidade de auditoria com timeline clara
+   - Validar que consentimentos mais recentes aparecem primeiro
+
+3. **Verificar contexto detalhado:**
+   - Testar captura de IP, user agent e origem da ação
+   - Verificar classificação correta: web, email, API
+   - Validar inclusão de metadados técnicos completos
+
+4. **Testar status e categorias:**
+   - Verificar identificação correta de status: ativo, revogado, expirado
+   - Testar categorização: newsletter, marketing, analytics
+   - Validar tratamento de consentimentos herdados ou migrados
+
+5. **Validar compliance LGPD:**
+   - Confirmar rastreabilidade completa de todos os consentimentos
+   - Testar conformidade com requisitos de portabilidade
+   - Verificar que nenhum consentimento é omitido do histórico
 
 ### **Critérios de Sucesso:**
-- [ ] Funcionalidade implementada e funcional
-- [ ] Todos os testes passando
-- [ ] Performance dentro dos SLAs
-- [ ] Documentação completa e atualizada
+- [ ] Histórico completo: 100% dos consentimentos incluídos
+- [ ] Ordenação cronológica correta para auditoria
+- [ ] Contexto detalhado: IP, user agent, origem preservados
+- [ ] Versões de termos corretas associadas a cada consentimento
+- [ ] Status e categorias classificados adequadamente
+- [ ] Performance < 200ms para históricos longos
+- [ ] Conformidade LGPD: rastreabilidade total garantida
 
 ## ✅ Definition of Done
 

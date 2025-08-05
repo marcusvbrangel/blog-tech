@@ -105,16 +105,40 @@ public record RateLimitResult(
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação completa
-2. Validar funcionalidade principal
-3. Verificar integrações e dependências
-4. Confirmar performance e segurança
+1. **Validar limites de rate limiting:**
+   - Testar limite de 3 solicitações por hora por usuário
+   - Verificar limite de 10 solicitações por dia por usuário
+   - Validar que contadores são baseados em email do subscriber, não IP
+
+2. **Testar janelas deslizantes e contadores:**
+   - Verificar contagem precisa usando janelas deslizantes no Redis
+   - Testar reset automático de contadores após janela de tempo
+   - Validar consistência de contadores entre instâncias distribuídas
+
+3. **Verificar respostas HTTP e headers:**
+   - Testar respostas HTTP 429 com headers informativos
+   - Verificar inclusão de Retry-After e Rate-Limit-* headers
+   - Validar mensagens de erro claras sobre limites e timing
+
+4. **Testar throttling inteligente:**
+   - Verificar delay progressivo para usuários abusivos
+   - Testar escalation de medidas anti-abuso
+   - Validar que throttling não afeta usuários legítimos
+
+5. **Validar alertas e auditoria:**
+   - Testar logs de auditoria para violações e padrões suspeitos
+   - Verificar alertas automáticos para administradores
+   - Validar detecção de padrões de abuso severo
 
 ### **Critérios de Sucesso:**
-- [ ] Funcionalidade implementada e funcional
-- [ ] Todos os testes passando
-- [ ] Performance dentro dos SLAs
-- [ ] Documentação completa e atualizada
+- [ ] Limites por hora (3) e por dia (10) funcionam precisamente
+- [ ] Janelas deslizantes garantem contagem exata no tempo
+- [ ] Respostas HTTP 429 com headers informativos corretos
+- [ ] Throttling progressivo eficaz contra abusos
+- [ ] Consistência de contadores com Redis distribuído
+- [ ] Overhead de performance < 10ms por request
+- [ ] Alertas funcionam para casos de abuso severo
+- [ ] Logs de auditoria completos para monitoramento
 
 ## ✅ Definition of Done
 

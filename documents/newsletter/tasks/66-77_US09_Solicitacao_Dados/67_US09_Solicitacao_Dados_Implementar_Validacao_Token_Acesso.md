@@ -94,16 +94,21 @@ public class DataRequestTokenValidator {
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação completa
-2. Validar funcionalidade principal
-3. Verificar integrações e dependências
-4. Confirmar performance e segurança
+1. Gerar token JWT com DataRequestTokenService
+2. Validar token usando DataRequestTokenValidator
+3. Testar expiração de token após 1 hora
+4. Verificar invalidação imediata após uso único
+5. Testar performance de validação via Redis cache (< 10ms)
+6. Simular tentativas de token malicioso ou alterado
+7. Verificar logs de auditoria para todas as validações
 
 ### **Critérios de Sucesso:**
-- [ ] Funcionalidade implementada e funcional
-- [ ] Todos os testes passando
-- [ ] Performance dentro dos SLAs
-- [ ] Documentação completa e atualizada
+- [ ] Tokens válidos são aceitos e invalidados após uso
+- [ ] Tokens expirados/inválidos rejeitados com 401 Unauthorized
+- [ ] Performance de validação < 10ms via Redis cache
+- [ ] Tokens maliciosos detectados e logados como suspeitos
+- [ ] Cache Redis sincronizado com estado real do token
+- [ ] Logs de auditoria completos para compliance LGPD
 
 ## ✅ Definition of Done
 

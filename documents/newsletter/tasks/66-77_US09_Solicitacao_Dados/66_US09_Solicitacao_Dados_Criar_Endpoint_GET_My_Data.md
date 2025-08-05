@@ -90,16 +90,20 @@ public ResponseEntity<PersonalDataResponse> getMyPersonalData(
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação completa
-2. Validar funcionalidade principal
-3. Verificar integrações e dependências
-4. Confirmar performance e segurança
+1. Gerar token de solicitação de dados via POST /api/newsletter/request-data-token
+2. Executar GET /api/newsletter/my-data com header X-Data-Request-Token
+3. Verificar estrutura JSON do PersonalDataResponse retornado
+4. Testar rate limiting fazendo 4 requests em sequência (4º deve falhar)
+5. Validar logs de auditoria registrados no banco de dados
+6. Testar cenários de erro (token inválido, expirado, malformado)
 
 ### **Critérios de Sucesso:**
-- [ ] Funcionalidade implementada e funcional
-- [ ] Todos os testes passando
-- [ ] Performance dentro dos SLAs
-- [ ] Documentação completa e atualizada
+- [ ] Endpoint retorna dados completos em estrutura JSON válida
+- [ ] Rate limiting funciona (máximo 3 requests/hora por usuário)
+- [ ] Tokens inválidos retornam 401 com mensagem apropriada
+- [ ] Performance < 200ms para datasets típicos (< 1000 registros)
+- [ ] Logs de auditoria registrados com timestamp, IP e user-agent
+- [ ] Conformidade LGPD: dados estruturados para portabilidade
 
 ## ✅ Definition of Done
 

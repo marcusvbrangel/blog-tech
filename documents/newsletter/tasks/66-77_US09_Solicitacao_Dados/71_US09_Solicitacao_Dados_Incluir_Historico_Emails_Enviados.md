@@ -96,16 +96,39 @@ public record EmailHistoryData(
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação completa
-2. Validar funcionalidade principal
-3. Verificar integrações e dependências
-4. Confirmar performance e segurança
+1. **Validar coleta de histórico completo:**
+   - Testar inclusão de todos os emails enviados com timestamps precisos
+   - Verificar metadados: assunto, tipo, template utilizado
+   - Validar categorização: newsletter, confirmação, marketing, transacional
+
+2. **Testar dados de tracking e entrega:**
+   - Verificar inclusão de dados de abertura, cliques, tempo de leitura
+   - Testar status de entrega: enviado, entregue, bounce, falha, spam
+   - Validar tratamento de emails sem dados de tracking
+
+3. **Verificar contexto de envio:**
+   - Testar identificação de contexto: manual, automático, triggered
+   - Verificar dados técnicos: IP de envio, servidor, tentativas
+   - Validar inclusão de campaign ID e template ID
+
+4. **Testar sanitização de conteúdo:**
+   - Verificar remoção de dados sensíveis de terceiros
+   - Testar preservação de dados relevantes para portabilidade
+   - Validar conformidade com privacidade de conteúdo
+
+5. **Validar performance e integridade:**
+   - Testar performance com históricos extensos (1000+ emails)
+   - Verificar integridade: emails vs registros de auditoria
+   - Validar ordenação cronológica para auditoria
 
 ### **Critérios de Sucesso:**
-- [ ] Funcionalidade implementada e funcional
-- [ ] Todos os testes passando
-- [ ] Performance dentro dos SLAs
-- [ ] Documentação completa e atualizada
+- [ ] Histórico completo: 100% dos emails incluídos
+- [ ] Dados de tracking e entrega capturados adequadamente
+- [ ] Sanitização preserva privacidade sem perder utilidade
+- [ ] Categorização e contexto de envio corretos
+- [ ] Performance < 300ms para históricos grandes
+- [ ] Ordenação cronológica facilita auditoria
+- [ ] Formato compatível com requisitos de portabilidade LGPD
 
 ## ✅ Definition of Done
 
