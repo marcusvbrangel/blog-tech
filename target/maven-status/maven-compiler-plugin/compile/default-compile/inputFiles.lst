@@ -4,6 +4,8 @@
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/repository/TwoFactorAuthRepository.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/repository/UserRepository.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/service/CustomUserDetailsService.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/entity/SubscriptionStatus.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/service/NewsletterService.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/BlogApiApplication.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/entity/RevokedToken.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/service/TermsService.java
@@ -11,14 +13,18 @@
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/config/SwaggerConfig.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/service/VerificationTokenService.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/config/TermsComplianceFilter.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/repository/NewsletterSubscriberRepository.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/NewsletterSubscriptionRequest.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/VerificationResponse.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/CommentDTO.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/EmailVerificationRequest.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/controller/NewsletterController.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/config/SchedulingConfig.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/CreateUserDTO.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/service/EmailService.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/service/AuditLogService.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/JwtResponse.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/entity/NewsletterSubscriber.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/entity/Category.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/PostDTO.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/repository/TermsAcceptanceRepository.java
@@ -31,6 +37,7 @@
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/controller/UserController.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/entity/VerificationToken.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/repository/RevokedTokenRepository.java
+/home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/NewsletterSubscriptionResponse.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/RefreshTokenResponse.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/config/RedisConfig.java
 /home/base/Documentos/desenvolvimento/claude-estudo/first-project/src/main/java/com/blog/api/dto/TermsComplianceResponse.java

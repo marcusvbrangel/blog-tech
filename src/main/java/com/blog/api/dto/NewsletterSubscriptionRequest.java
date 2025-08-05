@@ -1,5 +1,6 @@
 package com.blog.api.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,22 +20,62 @@ import jakarta.validation.constraints.Size;
  * @version 1.0
  * @since 2025-08-05
  */
+@Schema(
+    name = "NewsletterSubscriptionRequest",
+    description = "Request to subscribe to newsletter with LGPD compliance",
+    example = """
+    {
+        "email": "user@example.com",
+        "consentToReceiveEmails": true,
+        "privacyPolicyVersion": "1.0"
+    }
+    """
+)
 public record NewsletterSubscriptionRequest(
+    @Schema(
+        description = "Email address of the subscriber",
+        example = "user@example.com",
+        required = true,
+        maxLength = 255
+    )
     @NotBlank(message = "Email is required")
     @Email(message = "Email must be valid")
     @Size(max = 255, message = "Email must not exceed 255 characters")
     String email,
 
+    @Schema(
+        description = "Explicit consent to receive newsletter emails (LGPD compliance requirement)",
+        example = "true",
+        required = true
+    )
     @NotNull(message = "Consent to receive emails is required for LGPD compliance")
     Boolean consentToReceiveEmails,
 
+    @Schema(
+        description = "Version of privacy policy accepted by the user",
+        example = "1.0",
+        required = true,
+        maxLength = 20
+    )
     @NotBlank(message = "Privacy policy version is required for LGPD compliance")
     @Size(max = 20, message = "Privacy policy version must not exceed 20 characters")
     String privacyPolicyVersion,
 
+    @Schema(
+        description = "IP address captured for audit purposes (automatically filled by server)",
+        example = "192.168.1.1",
+        maxLength = 45,
+        accessMode = Schema.AccessMode.READ_ONLY
+    )
     @Size(max = 45, message = "IP address must not exceed 45 characters")
     String ipAddress,
 
+    @Schema(
+        description = "User-Agent header captured for audit purposes (automatically filled by server)",
+        example = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        maxLength = 500,
+        accessMode = Schema.AccessMode.READ_ONLY
+    )
     @Size(max = 500, message = "User-Agent must not exceed 500 characters")
     String userAgent
 ) {

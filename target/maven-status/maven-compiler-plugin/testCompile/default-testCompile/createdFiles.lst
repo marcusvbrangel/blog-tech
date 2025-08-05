@@ -20,6 +20,7 @@ com/blog/api/dto/TermsStatisticsDTOTest.class
 com/blog/api/controller/CommentControllerTest.class
 com/blog/api/controller/WorkingPostControllerIntegrationTest.class
 com/blog/api/dto/TermsInfoDTOTest.class
+com/blog/api/controller/NewsletterControllerTest.class
 com/blog/api/dto/CreateUserDTOPasswordPolicyTest.class
 com/blog/api/controller/FixedUserControllerTest.class
 com/blog/api/controller/FixedSimpleIntegrationUserControllerTest.class
@@ -42,6 +43,7 @@ com/blog/api/service/RefreshTokenServiceTest.class
 com/blog/api/controller/CategoryControllerTest.class
 com/blog/api/controller/AuthControllerEmailVerificationTest.class
 com/blog/api/integration/PasswordPolicyIntegrationTest.class
+com/blog/api/service/NewsletterServiceTest.class
 com/blog/api/dto/TermsAcceptanceRequestTest.class
 com/blog/api/controller/WorkingUserControllerTest.class
 com/blog/api/controller/LogoutControllerTestSimple.class

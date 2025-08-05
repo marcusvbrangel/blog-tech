@@ -2,6 +2,7 @@ package com.blog.api.dto;
 
 import com.blog.api.entity.NewsletterSubscriber;
 import com.blog.api.entity.SubscriptionStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
 
@@ -19,11 +20,49 @@ import java.time.LocalDateTime;
  * @version 1.0
  * @since 2025-08-05
  */
+@Schema(
+    name = "NewsletterSubscriptionResponse",
+    description = "Response from newsletter subscription request",
+    example = """
+    {
+        "id": 1,
+        "email": "user@example.com",
+        "status": "PENDING",
+        "createdAt": "2025-08-05T10:30:00",
+        "message": "Subscription successful! Please check your email to confirm your subscription."
+    }
+    """
+)
 public record NewsletterSubscriptionResponse(
+    @Schema(
+        description = "Unique identifier of the subscription",
+        example = "1"
+    )
     Long id,
+    
+    @Schema(
+        description = "Email address of the subscriber",
+        example = "user@example.com"
+    )
     String email,
+    
+    @Schema(
+        description = "Current status of the subscription",
+        example = "PENDING",
+        allowableValues = {"PENDING", "CONFIRMED", "UNSUBSCRIBED", "DELETED"}
+    )
     SubscriptionStatus status,
+    
+    @Schema(
+        description = "Timestamp when the subscription was created or last updated",
+        example = "2025-08-05T10:30:00"
+    )
     LocalDateTime createdAt,
+    
+    @Schema(
+        description = "Human-readable message describing the result of the subscription request",
+        example = "Subscription successful! Please check your email to confirm your subscription."
+    )
     String message
 ) {
     /**

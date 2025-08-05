@@ -26,7 +26,9 @@ com/blog/api/config/SecurityConfig.class
 com/blog/api/repository/TwoFactorAuthRepository.class
 com/blog/api/service/RefreshTokenService.class
 com/blog/api/entity/VerificationToken$Builder.class
+com/blog/api/dto/NewsletterSubscriptionResponse.class
 com/blog/api/entity/Post.class
+com/blog/api/dto/NewsletterSubscriptionRequest.class
 com/blog/api/entity/TermsAcceptance$Builder.class
 com/blog/api/entity/RefreshToken.class
 com/blog/api/entity/RevokedToken.class
@@ -45,6 +47,7 @@ com/blog/api/exception/GlobalExceptionHandler$ValidationErrorResponse.class
 com/blog/api/entity/User$Role.class
 com/blog/api/repository/PostRepository.class
 com/blog/api/entity/RevokedToken$RevokeReason.class
+com/blog/api/entity/SubscriptionStatus.class
 com/blog/api/dto/PostDTO.class
 com/blog/api/service/VerificationTokenService.class
 com/blog/api/exception/GlobalExceptionHandler$ErrorResponse.class
@@ -57,6 +60,7 @@ com/blog/api/util/PasswordPolicyValidator.class
 com/blog/api/entity/TwoFactorAuth.class
 com/blog/api/config/MonitoringConfig.class
 com/blog/api/dto/TermsComplianceResponse.class
+com/blog/api/service/NewsletterService.class
 com/blog/api/service/EmailService.class
 com/blog/api/service/CategoryService.class
 com/blog/api/controller/AuthController.class
@@ -67,16 +71,22 @@ com/blog/api/entity/Category.class
 com/blog/api/service/TwoFactorAuthService.class
 com/blog/api/exception/GlobalExceptionHandler.class
 com/blog/api/service/CustomUserDetailsService.class
+com/blog/api/service/NewsletterService$1.class
 com/blog/api/config/RedisConfig.class
 com/blog/api/entity/Post$Builder.class
 com/blog/api/service/TermsService$MonthlyStatistics.class
+com/blog/api/entity/NewsletterSubscriber$Builder.class
 com/blog/api/service/AuditLogService.class
+com/blog/api/controller/NewsletterController$1.class
 com/blog/api/entity/User.class
+com/blog/api/dto/NewsletterSubscriptionResponse$1.class
+com/blog/api/controller/NewsletterController.class
 com/blog/api/repository/UserRepository.class
 com/blog/api/BlogApiApplication.class
 com/blog/api/repository/VerificationTokenRepository.class
 com/blog/api/repository/AuditLogRepository.class
 com/blog/api/entity/Comment$Builder.class
+com/blog/api/repository/NewsletterSubscriberRepository.class
 com/blog/api/dto/TermsInfoDTO.class
 com/blog/api/config/SchedulingConfig.class
 com/blog/api/config/TermsComplianceFilter.class
@@ -92,6 +102,7 @@ com/blog/api/repository/RevokedTokenRepository.class
 com/blog/api/service/CommentService.class
 com/blog/api/dto/UserDTO.class
 com/blog/api/entity/User$Builder.class
+com/blog/api/entity/NewsletterSubscriber.class
 com/blog/api/service/AuthService.class
 com/blog/api/service/VerificationTokenService$TokenStatistics.class
 com/blog/api/repository/CommentRepository.class
