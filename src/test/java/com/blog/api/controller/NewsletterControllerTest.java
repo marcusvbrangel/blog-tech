@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -31,7 +32,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @version 1.0
  * @since 2025-08-05
  */
-@WebMvcTest(NewsletterController.class)
+@WebMvcTest(controllers = NewsletterController.class, 
+           excludeAutoConfiguration = {SecurityAutoConfiguration.class})
 @DisplayName("NewsletterController Tests")
 class NewsletterControllerTest {
 
@@ -128,7 +130,7 @@ class NewsletterControllerTest {
         mockMvc.perform(post("/api/v1/newsletter/subscribe")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(invalidRequest)))
-                .andExpected(status().isBadRequest());
+                .andExpect(status().isBadRequest());
 
         verify(newsletterService, never()).subscribe(any());
     }
