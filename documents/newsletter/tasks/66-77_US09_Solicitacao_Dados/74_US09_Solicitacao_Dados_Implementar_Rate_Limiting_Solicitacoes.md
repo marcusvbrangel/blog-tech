@@ -14,40 +14,54 @@ Implementar rate limiting para prevenir abuso de solicitações.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
-- [ ] Testes e documentação
+- [ ] DataRequestRateLimiter - Limitador principal para solicitações
+- [ ] RequestCounterService - Contador de solicitações por usuário
+- [ ] RateLimitInterceptor - Interceptor para endpoints de dados
+- [ ] RequestThrottleManager - Gerenciador de throttling inteligente
+- [ ] RateLimitViolationHandler - Tratamento de violações
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências técnicas
+- **Com Redis:** Armazenamento distribuído de contadores e timestamps
+- **Com Spring AOP:** Interceptação de requests para endpoints de dados
+- **Com SecurityContext:** Identificação segura do usuário solicitante
+- **Com AuditLogService:** Logs de violações e tentativas de abuso
+- **Com AlertService:** Notificações para administradores em casos de abuso
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando adequadamente
-- [ ] **AC4:** Testes passando com cobertura adequada
-- [ ] **AC5:** Documentação atualizada e completa
+- [ ] **AC1:** Limite de 3 solicitações de dados por hora por usuário
+- [ ] **AC2:** Limite de 10 solicitações de dados por dia por usuário
+- [ ] **AC3:** Rate limiting baseado em email do subscriber (não IP)
+- [ ] **AC4:** Janelas deslizantes para contagem precisa de solicitações
+- [ ] **AC5:** Respostas HTTP 429 com headers informativos (Retry-After, Rate-Limit-*)
+- [ ] **AC6:** Mensagens de erro claras sobre limites e quando tentar novamente
+- [ ] **AC7:** Throttling inteligente: delay progressivo para usuários abusivos
+- [ ] **AC8:** Logs de auditoria para violações e padrões suspeitos
+- [ ] **AC9:** Alertas automáticos para administradores em casos de abuso severo
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro e exceções
-- [ ] Teste de validações e regras de negócio
-- [ ] Teste de integração com componentes
+- [ ] Teste de contagem correta de solicitações por janela de tempo
+- [ ] Teste de limite por hora (3) e por dia (10)
+- [ ] Teste de reset automático de contadores após janela
+- [ ] Teste de respostas HTTP 429 com headers corretos
+- [ ] Teste de throttling progressivo para usuários abusivos
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end da funcionalidade
-- [ ] Teste de performance e carga
-- [ ] Teste de segurança e compliance
+- [ ] Teste de carga: múltiplos usuários simultaneamente
+- [ ] Teste de distribuição com Redis: consistência entre instâncias
+- [ ] Teste de recuperação: comportamento após restart do sistema
+- [ ] Teste de alertas: notificações para admins em abusos
+- [ ] Teste de performance: overhead < 10ms por request
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade core
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações específicas
+- [ ] **src/main/java/com/blog/api/newsletter/ratelimit/DataRequestRateLimiter.java** - Limitador principal
+- [ ] **src/main/java/com/blog/api/newsletter/service/RequestCounterService.java** - Contador
+- [ ] **src/main/java/com/blog/api/newsletter/interceptor/RateLimitInterceptor.java** - Interceptor
+- [ ] **src/main/java/com/blog/api/newsletter/throttle/RequestThrottleManager.java** - Throttling
+- [ ] **src/main/java/com/blog/api/newsletter/handler/RateLimitViolationHandler.java** - Violações
+- [ ] **src/main/java/com/blog/api/newsletter/config/RateLimitConfig.java** - Configurações
+- [ ] **src/test/java/com/blog/api/newsletter/ratelimit/DataRequestRateLimiterTest.java** - Testes
 
 ## 📚 Documentação para IA
 
@@ -57,11 +71,36 @@ Implementar rate limiting para prevenir abuso de solicitações.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Implementar rate limiting para prevenir abuso de solicitações. - Implementar seguindo rigorosamente os padrões arquiteturais estabelecidos no projeto.
+Desenvolver sistema robusto de rate limiting para proteção contra abuso de solicitações de dados pessoais. Sistema deve usar janelas deslizantes, contadores distribuídos no Redis e throttling inteligente com alertas para administradores.
+
+### **Arquitetura do Rate Limiting:**
+```java
+@Component
+public class DataRequestRateLimiter {
+    
+    @Autowired private RequestCounterService counterService;
+    
+    public RateLimitResult checkLimit(String subscriberEmail) {
+        // 1. Verificar contador por hora (limite: 3)
+        // 2. Verificar contador por dia (limite: 10)
+        // 3. Aplicar throttling se necessário
+        // 4. Registrar violações se houver
+        // 5. Retornar resultado com headers HTTP
+    }
+}
+
+public record RateLimitResult(
+    boolean allowed,
+    long remainingRequests,
+    Duration retryAfter,
+    Map<String, String> headers
+) {}
+```
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar existente no projeto
-- **Referência 2:** Padrões a seguir e reutilizar
+- **RedisService:** Padrões de uso do Redis para contadores
+- **AOP Interceptors:** Estrutura de interceptação de requests
+- **SecurityService:** Identificação e autenticação de usuários
 
 ## 🔍 Validação e Testes
 

@@ -14,40 +14,52 @@ Incluir histórico completo de consentimento nos dados retornados.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
-- [ ] Testes e documentação
+- [ ] ConsentHistoryCollectorService - Coletor de histórico de consentimentos
+- [ ] ConsentVersionTracker - Rastreamento de versões de termos
+- [ ] ConsentTimelineBuilder - Construção de linha do tempo
+- [ ] ConsentDataFormatter - Formatador para portabilidade LGPD
+- [ ] ConsentComplianceValidator - Validador de completude
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências técnicas
+- **Com ConsentRepository:** Acesso a todos os registros de consentimento
+- **Com ConsentVersionRepository:** Histórico de versões de termos e políticas
+- **Com AuditLogRepository:** Logs detalhados de mudanças de consentimento
+- **Com PersonalDataResponse:** Integração no DTO principal de dados pessoais
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando adequadamente
-- [ ] **AC4:** Testes passando com cobertura adequada
-- [ ] **AC5:** Documentação atualizada e completa
+- [ ] **AC1:** Inclusão de todos os registros de consentimento: inicial, revisões, revogações
+- [ ] **AC2:** Timestamps precisos: data/hora de cada consentimento com timezone
+- [ ] **AC3:** Versões completas: texto dos termos aceitos em cada momento
+- [ ] **AC4:** Contexto detalhado: IP, user agent, origem da ação (web, email, API)
+- [ ] **AC5:** Status de cada consentimento: ativo, revogado, expirado, substituído
+- [ ] **AC6:** Categorias de consentimento: newsletter, marketing, analytics, etc.
+- [ ] **AC7:** Ordenação cronológica para fácil auditoria
+- [ ] **AC8:** Conformidade LGPD: rastreabilidade completa de consentimentos
+- [ ] **AC9:** Indicação de consentimentos herdados ou migrados
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro e exceções
-- [ ] Teste de validações e regras de negócio
-- [ ] Teste de integração com componentes
+- [ ] Teste de coleta de histórico completo para subscriber com múltiplos consentimentos
+- [ ] Teste de ordenação cronológica de consentimentos
+- [ ] Teste de inclusão de versões de termos corretas
+- [ ] Teste de tratamento de consentimentos revogados
+- [ ] Teste de formatação para portabilidade LGPD
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end da funcionalidade
-- [ ] Teste de performance e carga
-- [ ] Teste de segurança e compliance
+- [ ] Teste de integridade: consentimentos vs registros de auditoria
+- [ ] Teste de performance com históricos longos (100+ consentimentos)
+- [ ] Teste de completude: nenhum consentimento omitido
+- [ ] Teste de compliance LGPD: rastreabilidade total
+- [ ] Teste de edge cases: consentimentos corrompidos ou incompletos
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade core
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações específicas
+- [ ] **src/main/java/com/blog/api/newsletter/service/ConsentHistoryCollectorService.java** - Coletor principal
+- [ ] **src/main/java/com/blog/api/newsletter/tracker/ConsentVersionTracker.java** - Rastreador de versões
+- [ ] **src/main/java/com/blog/api/newsletter/builder/ConsentTimelineBuilder.java** - Construtor de timeline
+- [ ] **src/main/java/com/blog/api/newsletter/formatter/ConsentDataFormatter.java** - Formatador
+- [ ] **src/main/java/com/blog/api/newsletter/dto/ConsentHistoryData.java** - DTO específico
+- [ ] **src/test/java/com/blog/api/newsletter/service/ConsentHistoryCollectorServiceTest.java** - Testes unitários
 
 ## 📚 Documentação para IA
 
@@ -57,11 +69,27 @@ Incluir histórico completo de consentimento nos dados retornados.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Incluir histórico completo de consentimento nos dados retornados. - Implementar seguindo rigorosamente os padrões arquiteturais estabelecidos no projeto.
+Desenvolver sistema abrangente de coleta e formatação do histórico completo de consentimentos para conformidade total com LGPD. Deve incluir todos os consentimentos, revisões, revogações com contexto detalhado, versões de termos e rastreabilidade completa.
+
+### **Estrutura do Histórico:**
+```java
+public record ConsentHistoryData(
+    LocalDateTime timestamp,
+    ConsentAction action, // GRANTED, REVISED, REVOKED
+    ConsentType type,     // NEWSLETTER, MARKETING, ANALYTICS
+    String termsVersion,
+    String termsContent,
+    ConsentContext context, // IP, USER_AGENT, SOURCE
+    ConsentStatus status    // ACTIVE, REVOKED, EXPIRED
+) {
+    // Dados organizados cronologicamente para auditoria
+}
+```
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar existente no projeto
-- **Referência 2:** Padrões a seguir e reutilizar
+- **ConsentService:** Lógica de gerenciamento de consentimentos
+- **AuditLogService:** Padrões de rastreamento e logs detalhados
+- **ConsentRepository:** Consultas de histórico e versionamento
 
 ## 🔍 Validação e Testes
 

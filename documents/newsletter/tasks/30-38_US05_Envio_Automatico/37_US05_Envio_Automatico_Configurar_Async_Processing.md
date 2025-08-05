@@ -9,44 +9,59 @@
 - **Sprint:** Sprint 2
 
 ## 🎯 Objetivo
-Configurar processamento assíncrono com @Async para performance.
+Configurar infraestrutura de processamento assíncrono otimizada com @Async, thread pools customizados e monitoramento para garantir performance máxima no envio de newsletters sem impactar a responsividade da aplicação.
 
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
+- [ ] Classe AsyncConfig com @EnableAsync
+- [ ] ThreadPoolTaskExecutor customizado para newsletter
+- [ ] Configuração de pool size dinâmico baseado na carga
+- [ ] Exception handler para métodos @Async
+- [ ] Monitoramento de threads e queue size
+- [ ] Configuração de timeout para tarefas assíncronas
+- [ ] Métricas de performance com Micrometer
+- [ ] Graceful shutdown para threads ativas
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências
+- **Com Spring @Async:** Habilitação e configuração global
+- **Com NewsletterEventListener:** Métodos assíncronos
+- **Com NewsletterService:** Processamento paralelo de envios
+- **Com ThreadPoolTaskExecutor:** Pool de threads otimizado
+- **Com Spring Boot Actuator:** Métricas de thread pools
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando
-- [ ] **AC4:** Testes passando
-- [ ] **AC5:** Documentação atualizada
+- [ ] **AC1:** @EnableAsync configurado com executor personalizado
+- [ ] **AC2:** Pool de threads configurável (core: 5, max: 20, queue: 100)
+- [ ] **AC3:** Métodos @Async não bloqueiam thread principal
+- [ ] **AC4:** Exception handling adequado para falhas assíncronas
+- [ ] **AC5:** Métricas de thread pool expostas via Actuator
+- [ ] **AC6:** Timeout configurado para evitar threads infinitas
+- [ ] **AC7:** Graceful shutdown não perde tarefas em andamento
+- [ ] **AC8:** Performance 10x melhor que processamento síncrono
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro
-- [ ] Teste de validações
-- [ ] Teste de integrações
+- [ ] Teste de configuração do AsyncConfig
+- [ ] Teste de thread pool properties
+- [ ] Teste de exception handler para @Async
+- [ ] Teste de timeout em métodos assíncronos
+- [ ] Mock de ThreadPoolTaskExecutor
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end
-- [ ] Teste de performance
-- [ ] Teste de segurança
+- [ ] Teste de processamento assíncrono real
+- [ ] Teste de performance com alta concorrência
+- [ ] Teste de comportamento sob stress (thread starvation)
+- [ ] Teste de graceful shutdown com tarefas ativas
+- [ ] Teste de métricas via Actuator endpoints
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações necessárias
+- [ ] **src/main/java/com/blog/api/config/AsyncConfig.java:** Configuração principal
+- [ ] **src/main/java/com/blog/api/newsletter/listener/NewsletterEventListener.java:** Anotações @Async
+- [ ] **src/main/java/com/blog/api/newsletter/service/NewsletterService.java:** Métodos assíncronos
+- [ ] **src/main/resources/application.yml:** Properties de thread pool
+- [ ] **src/test/java/com/blog/api/config/AsyncConfigTest.java:** Testes de configuração
 
 ## 📚 Documentação para IA
 
@@ -56,19 +71,22 @@ Configurar processamento assíncrono com @Async para performance.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Configurar processamento assíncrono com @Async para performance. - Seguir rigorosamente os padrões estabelecidos no projeto.
+@Configuration @EnableAsync com getAsyncExecutor() retornando ThreadPoolTaskExecutor configurado. Usar @Async("newsletterExecutor") nos métodos. Implementar AsyncUncaughtExceptionHandler. Configurar via @ConfigurationProperties.
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar no projeto
-- **Referência 2:** Padrões a seguir
+- **Referência 1:** Outras configurações Spring no projeto
+- **Referência 2:** Spring Boot Async documentation
+- **Referência 3:** ThreadPoolTaskExecutor best practices
 
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação
-2. Validar funcionalidade
-3. Verificar integrações
-4. Confirmar performance
+1. Publicar post e verificar processamento assíncrono
+2. Monitorar thread pool via JConsole/VisualVM
+3. Medir tempo de resposta com/sem @Async
+4. Verificar métricas no Actuator (/actuator/metrics)
+5. Testar comportamento com alta carga
+6. Validar graceful shutdown
 
 ### **Critérios de Sucesso:**
 - [ ] Funcionalidade implementada
@@ -139,7 +157,7 @@ Configurar processamento assíncrono com @Async para performance. - Seguir rigor
 *[Lista de impedimentos, se houver]*
 
 ### **Next Steps:**
-*[Próxima tarefa da sequência]*
+*[Tarefa 38: Implementar testes de integração completos com eventos]*
 
 ---
 

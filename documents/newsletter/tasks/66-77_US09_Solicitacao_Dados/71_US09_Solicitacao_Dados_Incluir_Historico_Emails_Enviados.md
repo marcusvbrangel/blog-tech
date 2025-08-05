@@ -14,40 +14,53 @@ Incluir histórico de emails enviados nos dados pessoais.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
-- [ ] Testes e documentação
+- [ ] EmailHistoryCollectorService - Coletor de histórico de emails
+- [ ] EmailTrackingDataCollector - Coleta dados de tracking (aberturas, cliques)
+- [ ] EmailContentSanitizer - Sanitação de conteúdo para LGPD
+- [ ] EmailDeliveryStatusCollector - Status de entrega e falhas
+- [ ] EmailTimelineBuilder - Construção cronológica de envios
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências técnicas
+- **Com EmailAuditRepository:** Todos os registros de emails enviados
+- **Com EmailTrackingRepository:** Dados de abertura, cliques e interações
+- **Com EmailDeliveryRepository:** Status de entrega, bounces, falhas
+- **Com EmailTemplateRepository:** Metadados dos templates utilizados
+- **Com PersonalDataResponse:** Integração no DTO principal
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando adequadamente
-- [ ] **AC4:** Testes passando com cobertura adequada
-- [ ] **AC5:** Documentação atualizada e completa
+- [ ] **AC1:** Histórico completo de emails enviados com timestamps precisos
+- [ ] **AC2:** Metadados de cada email: assunto, tipo, template utilizado
+- [ ] **AC3:** Status de entrega: enviado, entregue, bounce, falha, spam
+- [ ] **AC4:** Dados de tracking: aberturas, cliques, tempo de leitura (se disponível)
+- [ ] **AC5:** Categorização: newsletter, confirmação, marketing, transacional
+- [ ] **AC6:** Contexto de envio: manual, automático, triggered por evento
+- [ ] **AC7:** Dados técnicos: IP de envio, servidor, tentativas de reenvio
+- [ ] **AC8:** Sanitação de conteúdo: remoção de dados sensíveis de terceiros
+- [ ] **AC9:** Ordenação cronológica para auditoria e portabilidade
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro e exceções
-- [ ] Teste de validações e regras de negócio
-- [ ] Teste de integração com componentes
+- [ ] Teste de coleta de histórico completo para subscriber ativo
+- [ ] Teste de inclusão de dados de tracking e delivery status
+- [ ] Teste de sanitação de conteúdo sensível
+- [ ] Teste de categorização e ordenação cronológica
+- [ ] Teste de tratamento de emails sem tracking data
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end da funcionalidade
-- [ ] Teste de performance e carga
-- [ ] Teste de segurança e compliance
+- [ ] Teste de performance com históricos extensos (1000+ emails)
+- [ ] Teste de integridade: emails enviados vs registros de auditoria
+- [ ] Teste de completude: nenhum email omitido do histórico
+- [ ] Teste de privacidade: dados sensíveis adequadamente sanitizados
+- [ ] Teste de portabilidade: formato adequado para export/import
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade core
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações específicas
+- [ ] **src/main/java/com/blog/api/newsletter/service/EmailHistoryCollectorService.java** - Coletor principal
+- [ ] **src/main/java/com/blog/api/newsletter/collector/EmailTrackingDataCollector.java** - Dados de tracking
+- [ ] **src/main/java/com/blog/api/newsletter/sanitizer/EmailContentSanitizer.java** - Sanitação
+- [ ] **src/main/java/com/blog/api/newsletter/collector/EmailDeliveryStatusCollector.java** - Status entrega
+- [ ] **src/main/java/com/blog/api/newsletter/dto/EmailHistoryData.java** - DTO específico
+- [ ] **src/test/java/com/blog/api/newsletter/service/EmailHistoryCollectorServiceTest.java** - Testes unitários
 
 ## 📚 Documentação para IA
 
@@ -57,11 +70,28 @@ Incluir histórico de emails enviados nos dados pessoais.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Incluir histórico de emails enviados nos dados pessoais. - Implementar seguindo rigorosamente os padrões arquiteturais estabelecidos no projeto.
+Desenvolver sistema completo de coleta e organização do histórico de emails enviados ao usuário. Deve incluir metadados completos, dados de tracking, status de entrega e sanitação adequada para conformidade LGPD.
+
+### **Estrutura do Histórico:**
+```java
+public record EmailHistoryData(
+    LocalDateTime sentAt,
+    String subject,
+    EmailType type,          // NEWSLETTER, CONFIRMATION, MARKETING
+    EmailStatus deliveryStatus, // SENT, DELIVERED, BOUNCED, FAILED
+    TrackingData tracking,   // Opens, clicks, read time
+    String templateId,
+    String campaignId,
+    DeliveryContext context  // IP, server, attempts
+) {
+    // Dados sanitizados e organizados cronologicamente
+}
+```
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar existente no projeto
-- **Referência 2:** Padrões a seguir e reutilizar
+- **EmailService:** Lógica de envio e tracking de emails
+- **EmailAuditService:** Padrões de auditoria e logging
+- **BulkEmailService:** Gerenciamento de grandes volumes de emails
 
 ## 🔍 Validação e Testes
 

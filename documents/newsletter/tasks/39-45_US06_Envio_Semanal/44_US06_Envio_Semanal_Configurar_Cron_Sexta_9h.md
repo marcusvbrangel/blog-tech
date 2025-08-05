@@ -14,36 +14,48 @@ Configurar cron expression para execução às sextas 9h.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
+- [ ] Cron expression configurada para sextas-feiras às 9h (0 0 9 * * FRI)
+- [ ] Método @Scheduled no NewsletterScheduledService
+- [ ] Configuração de timezone (UTC vs local)
+- [ ] Tratamento de feriados e exception handling
+- [ ] Logs detalhados de execução agendada
+- [ ] Configuração externalizada em properties
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências
+- **Com Spring Scheduler:** Anotação @Scheduled configurada
+- **Com NewsletterService:** Chamada para sendWeeklyDigest()
+- **Com sistema de logs:** Auditoria de execuções agendadas
+- **Com monitoramento:** Métricas de job execution
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando
-- [ ] **AC4:** Testes passando
-- [ ] **AC5:** Documentação atualizada
+- [ ] **AC1:** Job executa exatamente às sextas-feiras às 09:00 UTC
+- [ ] **AC2:** Cron expression configurada: "0 0 9 * * FRI"
+- [ ] **AC3:** Timezone configurado corretamente (UTC)
+- [ ] **AC4:** Não executa em feriados configurados
+- [ ] **AC5:** Logs registram início, progresso e conclusão
+- [ ] **AC6:** Tratamento de erros não impede próximas execuções
+- [ ] **AC7:** Configuração externalizada em application.properties
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro
-- [ ] Teste de validações
+- [ ] Teste de validação da cron expression
+- [ ] Teste de timezone configuration
+- [ ] Teste de holiday exclusion logic
+- [ ] Teste de error handling durante execução
+- [ ] Teste de logs de auditoria
+- [ ] Mock do NewsletterService.sendWeeklyDigest()
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end
-- [ ] Teste de performance
+- [ ] Teste de agendamento real (com cron curto para teste)
+- [ ] Teste de execução completa do job
+- [ ] Validação de métricas coletadas
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade
-- [ ] **Arquivo de teste:** Testes unitários e integração
+- [ ] **src/main/java/com/blog/api/newsletter/service/NewsletterScheduledService.java:** Método @Scheduled
+- [ ] **src/main/resources/application.properties:** Configurações de cron e timezone
+- [ ] **src/main/java/com/blog/api/newsletter/config/HolidayConfig.java:** Configuração de feriados
+- [ ] **src/test/java/com/blog/api/newsletter/service/NewsletterScheduledServiceTest.java:** Testes unitários
 
 ## 📚 Documentação para IA
 
@@ -53,22 +65,49 @@ Configurar cron expression para execução às sextas 9h.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Configurar cron expression para execução às sextas 9h. - Seguir rigorosamente os padrões estabelecidos no projeto.
+1. Criar NewsletterScheduledService com método:
+   ```java
+   @Scheduled(cron = "${newsletter.weekly-digest.cron:0 0 9 * * FRI}")
+   @SchedulerLock(name = "weeklyDigestJob", lockAtMostFor = "2h")
+   public void sendWeeklyDigestJob() {
+       // Lógica de execução
+   }
+   ```
+2. Configurar application.properties:
+   ```
+   newsletter.weekly-digest.cron=0 0 9 * * FRI
+   newsletter.weekly-digest.timezone=UTC
+   newsletter.weekly-digest.holidays=2025-01-01,2025-12-25
+   ```
+3. Implementar verificação de feriados
+4. Adicionar logs estruturados com MDC
+5. Implementar distributed locking para múltiplas instâncias
+6. Configurar métricas de execução
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar no projeto
+- **Referência 1:** Outros jobs @Scheduled no projeto para padrões
+- **Referência 2:** Configurações de timezone em outras partes do sistema
 
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação
-2. Validar funcionalidade
-3. Verificar integrações
+1. Configurar cron para execução em 1 minuto para teste
+2. Verificar logs de execução no horário agendado
+3. Testar timezone UTC vs local time
+4. Simular feriado e verificar que job não executa
+5. Testar tratamento de erros (falha no NewsletterService)
+6. Verificar que múltiplas instâncias não executam simultaneamente
+7. Validar métricas coletadas (duração, sucesso/falha)
+8. Testar recovery após falha
 
 ### **Critérios de Sucesso:**
-- [ ] Funcionalidade implementada
-- [ ] Testes passando
-- [ ] Performance adequada
+- [ ] Job executa precisamente no horário configurado
+- [ ] Timezone UTC respeitado independente do servidor
+- [ ] Feriados são respeitados (job não executa)
+- [ ] Distributed locking previne execução dupla
+- [ ] Logs estruturados com todas as informações necessárias
+- [ ] Métricas de execução funcionais
+- [ ] Recovery automático após falhas
 
 ## ✅ Definition of Done
 

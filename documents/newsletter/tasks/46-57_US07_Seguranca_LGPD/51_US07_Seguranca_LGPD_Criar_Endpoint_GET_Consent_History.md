@@ -14,36 +14,53 @@ Criar endpoint GET /api/newsletter/consent-history para admins.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
+- [ ] Endpoint GET /api/admin/newsletter/consent-history (admin only)
+- [ ] Sistema de autenticação e autorização para admins
+- [ ] Filtros: email, periodo, tipo de consentimento, ação
+- [ ] Paginação para grandes volumes de dados
+- [ ] Export para CSV/PDF para relatórios
+- [ ] Cache com TTL para performance
+- [ ] DTO especializado para resposta de auditoria
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências
+- **Com Spring Security:** Autorização de admin (ROLE_ADMIN)
+- **Com NewsletterConsentLogRepository:** Consultas de auditoria
+- **Com AdminController:** Endpoints administrativos
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando
-- [ ] **AC4:** Testes passando
-- [ ] **AC5:** Documentação atualizada
+- [ ] **AC1:** Endpoint GET /api/admin/newsletter/consent-history protegido por ROLE_ADMIN
+- [ ] **AC2:** Filtros: email, startDate, endDate, consentType, action
+- [ ] **AC3:** Paginação: page, size, sort (padrão: timestamp desc)
+- [ ] **AC4:** Response com dados descriptografados para visualização admin
+- [ ] **AC5:** Export para CSV: /api/admin/newsletter/consent-history/export
+- [ ] **AC6:** Cache Redis com TTL de 5 minutos
+- [ ] **AC7:** Rate limiting: 60 requests/min para admins
+- [ ] **AC8:** Logs de acesso administrativo para auditoria
+- [ ] **AC9:** Mask de dados sensíveis em logs (IP parcial)
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro
-- [ ] Teste de validações
+- [ ] Teste de autorização (acesso negado para não-admin)
+- [ ] Teste de filtros de consulta
+- [ ] Teste de paginação
+- [ ] Teste de ordenação por timestamp
+- [ ] Teste de cache (hit/miss)
+- [ ] Teste de export CSV
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end
-- [ ] Teste de performance
+- [ ] Teste end-to-end com autenticação admin
+- [ ] Teste de performance com grande volume
+- [ ] Teste de segurança (tentativas de acesso não autorizado)
+- [ ] Teste de export de relatórios
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade
-- [ ] **Arquivo de teste:** Testes unitários e integração
+- [ ] **src/main/java/com/blog/api/admin/controller/AdminNewsletterController.java** - Endpoint admin
+- [ ] **src/main/java/com/blog/api/newsletter/dto/ConsentHistoryResponse.java** - DTO de resposta
+- [ ] **src/main/java/com/blog/api/newsletter/dto/ConsentHistoryFilter.java** - DTO de filtros
+- [ ] **src/main/java/com/blog/api/newsletter/service/ConsentAuditService.java** - Lógica de auditoria
+- [ ] **src/main/java/com/blog/api/security/AdminSecurityConfig.java** - Configuração de segurança
+- [ ] **src/test/java/com/blog/api/admin/controller/AdminNewsletterControllerTest.java** - Testes
 
 ## 📚 Documentação para IA
 
@@ -53,17 +70,128 @@ Criar endpoint GET /api/newsletter/consent-history para admins.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Criar endpoint GET /api/newsletter/consent-history para admins. - Seguir rigorosamente os padrões estabelecidos no projeto.
 
-### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar no projeto
+**AdminNewsletterController.java:**
+```java
+@RestController
+@RequestMapping("/api/admin/newsletter")
+@PreAuthorize("hasRole('ADMIN')")
+@RateLimited(maxRequests = 60, windowMinutes = 1)
+public class AdminNewsletterController {
+    
+    @GetMapping("/consent-history")
+    @Cacheable(value = "consent-history", keyGenerator = "customKeyGenerator")
+    public ResponseEntity<Page<ConsentHistoryResponse>> getConsentHistory(
+        @Valid ConsentHistoryFilter filter,
+        Pageable pageable,
+        HttpServletRequest request) {
+        
+        // Log de acesso administrativo
+        auditLogger.logAdminAccess("CONSENT_HISTORY_ACCESS", 
+            getCurrentUser(), maskIpAddress(getClientIpAddress(request)));
+        
+        Page<ConsentHistoryResponse> history = consentAuditService
+            .getConsentHistory(filter, pageable);
+        
+        return ResponseEntity.ok(history);
+    }
+    
+    @GetMapping("/consent-history/export")
+    public ResponseEntity<Resource> exportConsentHistory(
+        @Valid ConsentHistoryFilter filter,
+        @RequestParam(defaultValue = "csv") String format,
+        HttpServletRequest request) {
+        
+        auditLogger.logAdminAccess("CONSENT_HISTORY_EXPORT", 
+            getCurrentUser(), maskIpAddress(getClientIpAddress(request)));
+        
+        ByteArrayResource resource = consentAuditService
+            .exportConsentHistory(filter, format);
+        
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, 
+                    "attachment; filename=consent-history." + format)
+            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+            .body(resource);
+    }
+}
+```
+
+**ConsentHistoryResponse.java:**
+```java
+public record ConsentHistoryResponse(
+    Long id,
+    String email,
+    ConsentType consentType,
+    ConsentAction action,
+    LocalDateTime timestamp,
+    String ipAddress,
+    String userAgent,
+    LegalBasis legalBasis,
+    String reason,
+    String previousValue,
+    String newValue
+) {}
+```
+
+**ConsentHistoryFilter.java:**
+```java
+public record ConsentHistoryFilter(
+    @Email String email,
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+    ConsentType consentType,
+    ConsentAction action,
+    LegalBasis legalBasis
+) {}
+```
+
+**ConsentAuditService.java:**
+```java
+@Service
+@Transactional(readOnly = true)
+public class ConsentAuditService {
+    
+    public Page<ConsentHistoryResponse> getConsentHistory(
+        ConsentHistoryFilter filter, Pageable pageable) {
+        
+        // Construir consulta dinâmica baseada nos filtros
+        Page<NewsletterConsentLog> logs = consentLogRepository
+            .findWithFilters(filter, pageable);
+        
+        return logs.map(this::toResponse);
+    }
+    
+    public ByteArrayResource exportConsentHistory(
+        ConsentHistoryFilter filter, String format) {
+        
+        List<NewsletterConsentLog> logs = consentLogRepository
+            .findAllWithFilters(filter);
+        
+        return switch (format.toLowerCase()) {
+            case "csv" -> generateCsvReport(logs);
+            case "pdf" -> generatePdfReport(logs);
+            default -> throw new IllegalArgumentException("Formato não suportado: " + format);
+        };
+    }
+}
+```
+
+### **Referências de Código:**
+- **AdminController:** Padrões de endpoints administrativos
+- **PostController:** Paginação e filtros
 
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação
-2. Validar funcionalidade
-3. Verificar integrações
+1. Autenticar como admin: `POST /api/auth/login` com credenciais admin
+2. Testar acesso: `GET /api/admin/newsletter/consent-history`
+3. Testar filtros: `GET /api/admin/newsletter/consent-history?email=test@test.com&startDate=2025-01-01T00:00:00`
+4. Testar paginação: `GET /api/admin/newsletter/consent-history?page=0&size=10&sort=timestamp,desc`
+5. Testar export: `GET /api/admin/newsletter/consent-history/export?format=csv`
+6. Testar acesso não autorizado (sem ROLE_ADMIN)
+7. Verificar cache Redis: `KEYS consent-history:*`
+8. Verificar logs de auditoria admin
 
 ### **Critérios de Sucesso:**
 - [ ] Funcionalidade implementada

@@ -14,40 +14,50 @@ Criar DTO PersonalDataResponse para retorno de dados pessoais.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
-- [ ] Testes e documentação
+- [ ] PersonalDataResponse DTO principal
+- [ ] ConsentHistoryData - Histórico completo de consentimentos
+- [ ] EmailHistoryData - Histórico de emails enviados
+- [ ] SubscriptionData - Dados de inscrição e status
+- [ ] DataRequestMetadata - Metadados da solicitação
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências técnicas
+- **Com NewsletterSubscriber:** Dados principais de inscrição
+- **Com ConsentRecord:** Histórico detalhado de consentimentos
+- **Com EmailAuditLog:** Registros de emails enviados ao usuário
+- **Com DataAnonymizationService:** Anonimização de dados sensíveis quando necessário
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando adequadamente
-- [ ] **AC4:** Testes passando com cobertura adequada
-- [ ] **AC5:** Documentação atualizada e completa
+- [ ] **AC1:** DTO estruturado em Java Record com validação completa
+- [ ] **AC2:** Inclusão de todos os dados pessoais: email, nome, data de inscrição, status
+- [ ] **AC3:** Histórico completo de consentimentos com timestamps e versões
+- [ ] **AC4:** Histórico de emails enviados com datas, assuntos e status de entrega
+- [ ] **AC5:** Metadados da solicitação: timestamp, IP, user agent, motivo
+- [ ] **AC6:** Formato JSON estruturado para portabilidade de dados
+- [ ] **AC7:** Anotações para documentação Swagger detalhada
+- [ ] **AC8:** Conformidade com LGPD para estrutura de dados exportáveis
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro e exceções
-- [ ] Teste de validações e regras de negócio
-- [ ] Teste de integração com componentes
+- [ ] Teste de construção do DTO com todos os campos obrigatórios
+- [ ] Teste de serialização JSON com estrutura correta
+- [ ] Teste de validação de campos nulos e vazios
+- [ ] Teste de formato de datas em ISO 8601
+- [ ] Teste de anotações Swagger e documentação
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end da funcionalidade
-- [ ] Teste de performance e carga
-- [ ] Teste de segurança e compliance
+- [ ] Teste de agregação completa de dados de múltiplas entidades
+- [ ] Teste de performance na construção de DTOs complexos
+- [ ] Teste de portabilidade: export e import de dados
+- [ ] Teste de compliance: verificação de completude dos dados LGPD
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade core
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações específicas
+- [ ] **src/main/java/com/blog/api/newsletter/dto/PersonalDataResponse.java** - DTO principal
+- [ ] **src/main/java/com/blog/api/newsletter/dto/ConsentHistoryData.java** - Sub-DTO de consentimentos
+- [ ] **src/main/java/com/blog/api/newsletter/dto/EmailHistoryData.java** - Sub-DTO de emails
+- [ ] **src/main/java/com/blog/api/newsletter/dto/SubscriptionData.java** - Sub-DTO de inscrição
+- [ ] **src/main/java/com/blog/api/newsletter/dto/DataRequestMetadata.java** - Metadados
+- [ ] **src/test/java/com/blog/api/newsletter/dto/PersonalDataResponseTest.java** - Testes unitários
 
 ## 📚 Documentação para IA
 
@@ -57,11 +67,31 @@ Criar DTO PersonalDataResponse para retorno de dados pessoais.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Criar DTO PersonalDataResponse para retorno de dados pessoais. - Implementar seguindo rigorosamente os padrões arquiteturais estabelecidos no projeto.
+Desenvolver DTO completo utilizando Java Records para estruturar todos os dados pessoais do usuário em formato portável e compatível com LGPD. Deve incluir dados de inscrição, histórico de consentimentos, emails enviados e metadados da solicitação.
+
+### **Estrutura do DTO:**
+```java
+public record PersonalDataResponse(
+    @Schema(description = "Dados de inscrição do usuário")
+    SubscriptionData subscription,
+    
+    @Schema(description = "Histórico completo de consentimentos")
+    List<ConsentHistoryData> consentHistory,
+    
+    @Schema(description = "Histórico de emails enviados")
+    List<EmailHistoryData> emailHistory,
+    
+    @Schema(description = "Metadados da solicitação de dados")
+    DataRequestMetadata requestMetadata
+) {
+    // Validações e builders conforme necessidade
+}
+```
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar existente no projeto
-- **Referência 2:** Padrões a seguir e reutilizar
+- **NewsletterSubscriptionRequest:** Padrões de DTOs com Java Records
+- **AdminSubscriberResponse:** Estrutura de resposta com múltiplos dados
+- **ConsentUpdateRequest:** Anotações Swagger e validações
 
 ## 🔍 Validação e Testes
 

@@ -14,40 +14,51 @@ Capturar IP e User-Agent no momento do consentimento para auditoria.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
-- [ ] Testes e documentação
+- [ ] Entidade ConsentLog para armazenar dados de auditoria
+- [ ] Service para captura automática de IP e User-Agent
+- [ ] Repository para persistência dos logs de consentimento
+- [ ] Interceptor/Aspect para captura automática nos endpoints
+- [ ] DTOs para transferência de dados de audit trail
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências técnicas
+- **Com newsletter.service:** Integrar com NewsletterService para capturar eventos de subscribe/unsubscribe
+- **Com HttpServletRequest:** Extrair informações de IP e User-Agent das requisições
+- **Com Spring Security:** Capturar informações do usuário autenticado (se aplicável)
+- **Com database:** Persistir logs no PostgreSQL com índices otimizados
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando adequadamente
-- [ ] **AC4:** Testes passando com cobertura adequada
-- [ ] **AC5:** Documentação atualizada e completa
+- [ ] **AC1:** Capturar IP real do cliente (considerando proxies X-Forwarded-For)
+- [ ] **AC2:** Capturar User-Agent completo do navegador/aplicação
+- [ ] **AC3:** Persistir timestamp preciso (com timezone) da ação de consentimento
+- [ ] **AC4:** Associar logs aos dados do subscriber (email como chave)
+- [ ] **AC5:** Implementar captura para subscribe, unsubscribe e confirm actions
+- [ ] **AC6:** Garantir que nenhuma ação de consentimento ocorra sem logging
+- [ ] **AC7:** Validar integridade e não-repúdio dos dados capturados
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro e exceções
-- [ ] Teste de validações e regras de negócio
-- [ ] Teste de integração com componentes
+- [ ] Teste de extração de IP com e sem proxy (X-Forwarded-For)
+- [ ] Teste de captura de User-Agent com diferentes navegadores
+- [ ] Teste de persistência do ConsentLog no repository
+- [ ] Teste de validação de dados obrigatórios (IP, User-Agent, timestamp)
+- [ ] Teste de tratamento de valores nulos ou inválidos
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end da funcionalidade
-- [ ] Teste de performance e carga
-- [ ] Teste de segurança e compliance
+- [ ] Teste de captura automática durante subscribe via API
+- [ ] Teste de captura durante unsubscribe via link/API
+- [ ] Teste de captura durante confirmação de email
+- [ ] Teste de performance com múltiplas requisições simultâneas
+- [ ] Teste de integridade referencial com subscriber data
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade core
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações específicas
+- [ ] **src/main/java/com/blog/api/domain/newsletter/entity/ConsentLog.java** - Entidade JPA para logs
+- [ ] **src/main/java/com/blog/api/domain/newsletter/repository/ConsentLogRepository.java** - Repository interface
+- [ ] **src/main/java/com/blog/api/domain/newsletter/service/ConsentAuditService.java** - Service para audit
+- [ ] **src/main/java/com/blog/api/infrastructure/web/interceptor/ConsentAuditInterceptor.java** - Interceptor
+- [ ] **src/main/java/com/blog/api/application/newsletter/dto/ConsentLogDto.java** - DTO para transferência
+- [ ] **src/main/resources/db/migration/V008__create_consent_log_table.sql** - Migration SQL
+- [ ] **src/test/java/com/blog/api/domain/newsletter/service/ConsentAuditServiceTest.java** - Testes unitários
 
 ## 📚 Documentação para IA
 
@@ -57,11 +68,13 @@ Capturar IP e User-Agent no momento do consentimento para auditoria.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Capturar IP e User-Agent no momento do consentimento para auditoria. - Implementar seguindo rigorosamente os padrões arquiteturais estabelecidos no projeto.
+Implementar sistema de captura automática de dados de auditoria (IP, User-Agent, timestamp) para todas as ações de consentimento do newsletter, garantindo conformidade com LGPD e criando trilha de auditoria completa e íntegra.
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar existente no projeto
-- **Referência 2:** Padrões a seguir e reutilizar
+- **Newsletter Service:** Utilizar padrões de service existentes para integração
+- **JPA Entities:** Seguir padrões de mapeamento de entidades já estabelecidos
+- **Web Interceptors:** Reutilizar padrões de interceptação de requisições HTTP
+- **Repository Pattern:** Aplicar mesmo padrão de repositories existentes
 
 ## 🔍 Validação e Testes
 

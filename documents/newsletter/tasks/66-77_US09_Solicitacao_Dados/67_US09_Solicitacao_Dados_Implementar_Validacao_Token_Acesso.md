@@ -14,40 +14,51 @@ Implementar validação robusta de token de acesso aos dados.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
-- [ ] Testes e documentação
+- [ ] DataRequestTokenValidator - Validador principal de tokens
+- [ ] Token expiration e revogação automática
+- [ ] Criptografia segura de tokens com JWT
+- [ ] Cache Redis para validação rápida
+- [ ] Rate limiting baseado em tokens
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências técnicas
+- **Com Redis:** Cache de tokens válidos e blacklist de tokens revogados
+- **Com JWT Library:** Geração e validação criptográfica de tokens
+- **Com NewsletterSubscriber:** Associação segura token-usuário
+- **Com AuditLogService:** Log de todas as tentativas de validação
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando adequadamente
-- [ ] **AC4:** Testes passando com cobertura adequada
-- [ ] **AC5:** Documentação atualizada e completa
+- [ ] **AC1:** Tokens JWT gerados com criptografia RS256 e expiração de 1 hora
+- [ ] **AC2:** Validação robusta: assinatura, expiração, revogação e associação de usuário
+- [ ] **AC3:** Cache Redis otimizado para respostas < 50ms
+- [ ] **AC4:** Blacklist automática de tokens após uso ou expiração
+- [ ] **AC5:** Rate limiting: 1 token válido por vez por usuário
+- [ ] **AC6:** Logs de segurança para tentativas de acesso com tokens inválidos
+- [ ] **AC7:** Resistência a ataques: replay, brute force e timing
+- [ ] **AC8:** Conexão segura com dados pessoais apenas com token válido
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro e exceções
-- [ ] Teste de validações e regras de negócio
-- [ ] Teste de integração com componentes
+- [ ] Teste de validação de token válido com assinatura correta
+- [ ] Teste de rejeição de token expirado
+- [ ] Teste de rejeição de token com assinatura inválida
+- [ ] Teste de blacklist de tokens já utilizados
+- [ ] Teste de associação token-usuário e autorização
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end da funcionalidade
-- [ ] Teste de performance e carga
-- [ ] Teste de segurança e compliance
+- [ ] Teste de performance: validação de token em < 50ms
+- [ ] Teste de segurança: resistência a ataques de replay
+- [ ] Teste de segurança: tentativas de brute force em tokens
+- [ ] Teste de integração com Redis para cache e blacklist
+- [ ] Teste de logs de auditoria em tentativas maliciosas
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade core
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações específicas
+- [ ] **src/main/java/com/blog/api/newsletter/security/DataRequestTokenValidator.java** - Validador principal
+- [ ] **src/main/java/com/blog/api/newsletter/service/DataRequestTokenService.java** - Serviço de gerenciamento
+- [ ] **src/main/java/com/blog/api/newsletter/config/JwtSecurityConfig.java** - Configuração JWT
+- [ ] **src/main/java/com/blog/api/newsletter/config/RedisTokenCacheConfig.java** - Cache Redis
+- [ ] **src/test/java/com/blog/api/newsletter/security/DataRequestTokenValidatorTest.java** - Testes unitários
+- [ ] **src/test/java/com/blog/api/newsletter/security/TokenSecurityIntegrationTest.java** - Testes de segurança
 
 ## 📚 Documentação para IA
 
@@ -57,11 +68,28 @@ Implementar validação robusta de token de acesso aos dados.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Implementar validação robusta de token de acesso aos dados. - Implementar seguindo rigorosamente os padrões arquiteturais estabelecidos no projeto.
+Desenvolver sistema robusto de validação de tokens JWT específicos para solicitação de dados pessoais. Sistema deve garantir segurança máxima com criptografia RS256, cache Redis para performance, blacklist automática e resistência a ataques comuns.
+
+### **Estrutura do Validador:**
+```java
+@Component
+public class DataRequestTokenValidator {
+    
+    public TokenValidationResult validateToken(String token) {
+        // 1. Validar estrutura JWT
+        // 2. Verificar assinatura RS256
+        // 3. Checar expiração (1 hora)
+        // 4. Consultar blacklist no Redis
+        // 5. Validar associação com usuário
+        // 6. Registrar log de auditoria
+    }
+}
+```
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar existente no projeto
-- **Referência 2:** Padrões a seguir e reutilizar
+- **ConfirmationTokenService:** Padrões de geração e validação de tokens
+- **RedisEmailCacheService:** Integração com Redis para cache
+- **AuditLogService:** Estrutura de logs de segurança
 
 ## 🔍 Validação e Testes
 

@@ -14,36 +14,48 @@ Criar query para buscar posts dos últimos 7 dias.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
+- [ ] Método findPostsFromLastSevenDays() no PostRepository
+- [ ] Query JPA com critério de data (publishedAt >= hoje - 7 dias)
+- [ ] Ordenação por data de publicação (mais recentes primeiro)
+- [ ] Filtro apenas posts com status PUBLISHED
+- [ ] Otimização de performance com índices
+- [ ] Cache Redis para consultas frequentes
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências
+- **Com PostRepository:** Extensão do repositório existente
+- **Com sistema de cache:** Cache Redis para otimização de performance
+- **Com JPA/Hibernate:** Query nativa ou JPQL otimizada
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando
-- [ ] **AC4:** Testes passando
-- [ ] **AC5:** Documentação atualizada
+- [ ] **AC1:** Query retorna apenas posts com publishedAt nos últimos 7 dias
+- [ ] **AC2:** Filtra apenas posts com status PUBLISHED
+- [ ] **AC3:** Resultados ordenados por publishedAt DESC (mais recentes primeiro)
+- [ ] **AC4:** Performance adequada mesmo com milhares de posts (< 100ms)
+- [ ] **AC5:** Cache Redis implementado com TTL de 1 hora
+- [ ] **AC6:** Query funciona corretamente com timezone UTC
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro
-- [ ] Teste de validações
+- [ ] Teste com posts dentro do período de 7 dias
+- [ ] Teste com posts fora do período (8+ dias atrás)
+- [ ] Teste com posts status DRAFT (não deve retornar)
+- [ ] Teste de ordenação por data
+- [ ] Teste com zero posts no período
+- [ ] Teste de timezone (UTC vs local)
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end
-- [ ] Teste de performance
+- [ ] Teste com banco real e dados de massa
+- [ ] Teste de performance com 10k+ posts
+- [ ] Teste de cache Redis (hit/miss)
+- [ ] Teste de queries SQL geradas pelo JPA
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade
-- [ ] **Arquivo de teste:** Testes unitários e integração
+- [ ] **src/main/java/com/blog/api/post/repository/PostRepository.java:** Adicionar método findPostsFromLastSevenDays()
+- [ ] **src/main/java/com/blog/api/post/service/PostService.java:** Método de negócio para busca
+- [ ] **src/main/resources/application.properties:** Configurações de cache
+- [ ] **src/test/java/com/blog/api/post/repository/PostRepositoryTest.java:** Testes da query
+- [ ] **src/test/java/com/blog/api/post/service/PostServiceTest.java:** Testes do service
 
 ## 📚 Documentação para IA
 
@@ -53,22 +65,41 @@ Criar query para buscar posts dos últimos 7 dias.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Criar query para buscar posts dos últimos 7 dias. - Seguir rigorosamente os padrões estabelecidos no projeto.
+1. Implementar query JPA no PostRepository:
+   ```java
+   @Query("SELECT p FROM Post p WHERE p.publishedAt >= :startDate AND p.status = 'PUBLISHED' ORDER BY p.publishedAt DESC")
+   List<Post> findPostsFromLastSevenDays(@Param("startDate") LocalDateTime startDate);
+   ```
+2. Adicionar método no PostService que:
+   - Calcula data de 7 dias atrás (LocalDateTime.now().minusDays(7))
+   - Chama o repositório com a data calculada
+   - Implementa cache Redis com chave "posts:last7days"
+   - Adiciona logs de performance
+3. Criar índice composto no banco: (publishedAt, status)
+4. Implementar cache com TTL de 1 hora
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar no projeto
+- **Referência 1:** PostRepository queries existentes para padrões de JPA
+- **Referência 2:** PostService methods para cache e logging patterns
 
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação
-2. Validar funcionalidade
-3. Verificar integrações
+1. Criar posts de teste com datas variadas (hoje, 3 dias, 5 dias, 10 dias atrás)
+2. Criar posts DRAFT e PUBLISHED no período
+3. Executar findPostsFromLastSevenDays() e validar resultados
+4. Verificar ordenação (mais recentes primeiro)
+5. Testar cache Redis (primeira chamada: miss, segunda: hit)
+6. Medir performance com dados de massa (1000+ posts)
+7. Validar índice SQL com EXPLAIN PLAN
 
 ### **Critérios de Sucesso:**
-- [ ] Funcionalidade implementada
-- [ ] Testes passando
-- [ ] Performance adequada
+- [ ] Query retorna exatamente posts dos últimos 7 dias
+- [ ] Apenas posts PUBLISHED são retornados
+- [ ] Ordenação correta por data decrescente
+- [ ] Performance < 100ms mesmo com 10k+ posts
+- [ ] Cache funcionando corretamente (hit rate > 80%)
+- [ ] Índice sendo utilizado pelo query planner
 
 ## ✅ Definition of Done
 

@@ -9,44 +9,60 @@
 - **Sprint:** Sprint 2
 
 ## 🎯 Objetivo
-Implementar testes de integração completos com eventos.
+Implementar suite completa de testes de integração end-to-end para validar todo o fluxo de eventos: publicação de post → PostPublishedEvent → NewsletterEventListener → envio de emails, garantindo robustez e confiabilidade do sistema.
 
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
+- [ ] Classe NewsletterEventIntegrationTest com @SpringBootTest
+- [ ] Testes end-to-end do fluxo completo de eventos
+- [ ] Testes de performance com grandes volumes
+- [ ] Testes de concorrência e race conditions
+- [ ] Testes de resiliência (falhas e recovery)
+- [ ] Testes de rollback transacional
+- [ ] Mocks inteligentes para SMTP (TestContainers MailHog)
+- [ ] Validação de métricas e logs
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências
+- **Com Spring Boot Test:** @SpringBootTest, @TestConfiguration
+- **Com TestContainers:** PostgreSQL, Redis, MailHog para testes reais
+- **Com PostService:** Trigger do fluxo via publicação
+- **Com EmailService:** Verificação de envios realizados
+- **Com Testcontainers-junit-jupiter:** Lifecycle de containers
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando
-- [ ] **AC4:** Testes passando
-- [ ] **AC5:** Documentação atualizada
+- [ ] **AC1:** Teste end-to-end: publishPost() → emails enviados
+- [ ] **AC2:** Verificação que apenas subscribers CONFIRMED recebem
+- [ ] **AC3:** Teste de processamento assíncrono (não bloqueia)
+- [ ] **AC4:** Validação de template renderizado corretamente
+- [ ] **AC5:** Teste de performance com 1000+ subscribers
+- [ ] **AC6:** Teste de falha parcial não interrompe outros envios
+- [ ] **AC7:** Teste de retry em falhas temporárias
+- [ ] **AC8:** Validação de métricas e logs gerados
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro
-- [ ] Teste de validações
-- [ ] Teste de integrações
+- [ ] Teste de EventListener recebe evento corretamente
+- [ ] Teste de renderização de template com dados mock
+- [ ] Teste de filtragem de subscribers por status
+- [ ] Teste de rate limiting em ação
+- [ ] Teste de exception handling
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end
-- [ ] Teste de performance
-- [ ] Teste de segurança
+- [ ] Teste full-stack com banco PostgreSQL real
+- [ ] Teste com MailHog para capturar emails enviados
+- [ ] Teste de concorrência com múltiplos posts simultâneos
+- [ ] Teste de performance e métricas sob carga
+- [ ] Teste de recovery após falha do Redis/SMTP
+- [ ] Teste de graceful shutdown com tarefas pendentes
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações necessárias
+- [ ] **src/test/java/com/blog/api/newsletter/integration/NewsletterEventIntegrationTest.java:** Testes principais
+- [ ] **src/test/java/com/blog/api/newsletter/integration/NewsletterPerformanceTest.java:** Testes performance
+- [ ] **src/test/resources/application-test.yml:** Configurações de teste
+- [ ] **src/test/java/com/blog/api/config/IntegrationTestConfig.java:** Configuração de teste
+- [ ] **docker-compose-test.yml:** Serviços para testes (MailHog, PostgreSQL, Redis)
 
 ## 📚 Documentação para IA
 
@@ -56,19 +72,22 @@ Implementar testes de integração completos com eventos.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Implementar testes de integração completos com eventos. - Seguir rigorosamente os padrões estabelecidos no projeto.
+Usar @SpringBootTest @Testcontainers para ambiente real. @EventListener de teste para capturar eventos. MailHog para verificar emails. @Transactional(propagation=NOT_SUPPORTED) para testes assíncronos. Awaitility para asserts temporais.
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar no projeto
-- **Referência 2:** Padrões a seguir
+- **Referência 1:** Outros testes de integração do projeto
+- **Referência 2:** Spring Boot Test documentation
+- **Referência 3:** Testcontainers examples, Awaitility patterns
 
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação
-2. Validar funcionalidade
-3. Verificar integrações
-4. Confirmar performance
+1. Executar testes via Maven/Gradle com perfil de integração
+2. Verificar containers Docker são iniciados automaticamente
+3. Validar que emails são capturados no MailHog
+4. Verificar logs e métricas nos testes
+5. Executar testes de performance isoladamente
+6. Validar limpeza de recursos após testes
 
 ### **Critérios de Sucesso:**
 - [ ] Funcionalidade implementada
@@ -139,7 +158,7 @@ Implementar testes de integração completos com eventos. - Seguir rigorosamente
 *[Lista de impedimentos, se houver]*
 
 ### **Next Steps:**
-*[Próxima tarefa da sequência]*
+*[US05 Envio Automático completo - próxima US06 ou refactoring se necessário]*
 
 ---
 

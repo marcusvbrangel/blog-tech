@@ -14,40 +14,54 @@ Implementar API para consulta de logs restrita a admins.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
-- [ ] Testes e documentação
+- [ ] ConsentLogController com endpoints administrativos
+- [ ] ConsentLogAdminService para lógica de negócio
+- [ ] DTOs específicos para consultas administrativas
+- [ ] Configuração de autorização Spring Security (@PreAuthorize)
+- [ ] Paginação e filtragem otimizada para grandes volumes
+- [ ] Endpoints para diferentes tipos de consulta (por email, data, action type)
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências técnicas
+- **Com Spring Security:** Controle de acesso baseado em roles (ADMIN)
+- **Com ConsentLogRepository:** Queries otimizadas com índices
+- **Com Pageable:** Implementação de paginação Spring Data
+- **Com Redis Cache:** Cache para consultas frequentes de administradores
+- **Com Swagger:** Documentação específica para endpoints administrativos
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando adequadamente
-- [ ] **AC4:** Testes passando com cobertura adequada
-- [ ] **AC5:** Documentação atualizada e completa
+- [ ] **AC1:** Acesso restrito apenas a usuários com role ADMIN
+- [ ] **AC2:** Endpoint GET para listar logs com paginação
+- [ ] **AC3:** Filtros por: email, data (período), action type, IP
+- [ ] **AC4:** Retornar dados sensíveis apenas para admins autorizados
+- [ ] **AC5:** Resposta inclui: timestamp, email, action, IP, User-Agent, status
+- [ ] **AC6:** Ordenação padrão por timestamp descendente (mais recentes primeiro)
+- [ ] **AC7:** Rate limiting para prevenir abuse de consultas
+- [ ] **AC8:** Logs de acesso dos próprios admins (audit do audit)
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro e exceções
-- [ ] Teste de validações e regras de negócio
-- [ ] Teste de integração com componentes
+- [ ] Teste de autorização: apenas ADMIN pode acessar
+- [ ] Teste de negação de acesso para usuários não-admin
+- [ ] Teste de paginação com diferentes tamanhos de página
+- [ ] Teste de filtragem por cada parâmetro suportado
+- [ ] Teste de validação de parâmetros de entrada
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end da funcionalidade
-- [ ] Teste de performance e carga
-- [ ] Teste de segurança e compliance
+- [ ] Teste de consulta com diferentes combinações de filtros
+- [ ] Teste de performance com large datasets
+- [ ] Teste de segurança: tentativa de acesso não autorizado
+- [ ] Teste de rate limiting com múltiplas requisições
+- [ ] Teste de cache behavior para consultas repetidas
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade core
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações específicas
+- [ ] **src/main/java/com/blog/api/presentation/admin/ConsentLogController.java** - Controller admin
+- [ ] **src/main/java/com/blog/api/domain/newsletter/service/ConsentLogAdminService.java** - Service
+- [ ] **src/main/java/com/blog/api/application/admin/dto/ConsentLogQueryDto.java** - DTO para queries
+- [ ] **src/main/java/com/blog/api/application/admin/dto/ConsentLogResponseDto.java** - DTO response
+- [ ] **src/main/java/com/blog/api/infrastructure/security/SecurityConfig.java** - Config autorização
+- [ ] **src/main/java/com/blog/api/domain/newsletter/repository/ConsentLogRepository.java** - Queries
+- [ ] **src/test/java/com/blog/api/presentation/admin/ConsentLogControllerTest.java** - Testes
 
 ## 📚 Documentação para IA
 
@@ -57,11 +71,13 @@ Implementar API para consulta de logs restrita a admins.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Implementar API para consulta de logs restrita a admins. - Implementar seguindo rigorosamente os padrões arquiteturais estabelecidos no projeto.
+Implementar API REST segura para consulta de logs de consentimento exclusivamente para administradores, com sistema robusto de autorização, filtragem avançada, paginação otimizada e controles de segurança para atender requisitos de auditoria e compliance LGPD.
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar existente no projeto
-- **Referência 2:** Padrões a seguir e reutilizar
+- **Security Config:** Reutilizar padrões de autorização já implementados
+- **Admin Controllers:** Seguir estrutura de controllers administrativos existentes
+- **Pagination:** Aplicar mesmo padrão de paginação usado em outros endpoints
+- **DTO Patterns:** Seguir padrões de DTOs já estabelecidos no projeto
 
 ## 🔍 Validação e Testes
 

@@ -14,36 +14,53 @@ Implementar criptografia de dados sensíveis no banco.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
+- [ ] EncryptedStringConverter para criptografia JPA automática
+- [ ] CryptoService para criptografia/descriptografia de dados
+- [ ] Configuração de chaves de criptografia (AES-256)
+- [ ] Rotação de chaves de criptografia
+- [ ] Migração de dados existentes para formato criptografado
+- [ ] Key Management Service (KMS) integration
+- [ ] Auditoria de operações de criptografia
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências
+- **Com JPA/Hibernate:** Conversores automáticos para campos sensíveis
+- **Com NewsletterConsentLog:** Criptografia de email, IP, userAgent
+- **Com AWS KMS/HashiCorp Vault:** Gerenciamento seguro de chaves
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando
-- [ ] **AC4:** Testes passando
-- [ ] **AC5:** Documentação atualizada
+- [ ] **AC1:** Criptografia AES-256-GCM para dados pessoais (email, IP, userAgent)
+- [ ] **AC2:** EncryptedStringConverter aplicado automaticamente via @Convert
+- [ ] **AC3:** Chaves de criptografia armazenadas externamente (não no código)
+- [ ] **AC4:** Rotação automática de chaves a cada 90 dias
+- [ ] **AC5:** Migração de dados existentes sem perda
+- [ ] **AC6:** Performance: overhead máximo de 10ms para criptografia/descriptografia
+- [ ] **AC7:** Logs de auditoria para todas as operações de criptografia
+- [ ] **AC8:** Backup seguro das chaves de criptografia
+- [ ] **AC9:** Fallback para dados não criptografados (compatibility mode)
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro
-- [ ] Teste de validações
+- [ ] Teste de criptografia/descriptografia básica
+- [ ] Teste de EncryptedStringConverter
+- [ ] Teste de geração e rotação de chaves
+- [ ] Teste de compatibility mode (dados não criptografados)
+- [ ] Teste de recuperação de erro (chave inválida)
+- [ ] Teste de performance de criptografia
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end
-- [ ] Teste de performance
+- [ ] Teste de persistência com dados criptografados
+- [ ] Teste de migração de dados existentes
+- [ ] Teste de integração com KMS externo
+- [ ] Teste de backup e restore de chaves
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade
-- [ ] **Arquivo de teste:** Testes unitários e integração
+- [ ] **src/main/java/com/blog/api/security/crypto/CryptoService.java** - Serviço principal
+- [ ] **src/main/java/com/blog/api/security/crypto/EncryptedStringConverter.java** - Conversor JPA
+- [ ] **src/main/java/com/blog/api/security/crypto/KeyManagementService.java** - Gerenciamento de chaves
+- [ ] **src/main/java/com/blog/api/security/crypto/CryptoConfig.java** - Configuração
+- [ ] **src/main/resources/db/migration/V009__encrypt_existing_data.sql** - Migração
+- [ ] **src/test/java/com/blog/api/security/crypto/CryptoServiceTest.java** - Testes
 
 ## 📚 Documentação para IA
 
@@ -53,17 +70,145 @@ Implementar criptografia de dados sensíveis no banco.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Implementar criptografia de dados sensíveis no banco. - Seguir rigorosamente os padrões estabelecidos no projeto.
 
-### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar no projeto
+**CryptoService.java:**
+```java
+@Service
+public class CryptoService {
+    
+    private static final String ALGORITHM = "AES/GCM/NoPadding";
+    private static final int GCM_IV_LENGTH = 12;
+    private static final int GCM_TAG_LENGTH = 16;
+    
+    @Autowired
+    private KeyManagementService keyManagementService;
+    
+    public String encrypt(String plaintext) {
+        try {
+            SecretKey key = keyManagementService.getCurrentKey();
+            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            
+            byte[] iv = new byte[GCM_IV_LENGTH];
+            SecureRandom.getInstanceStrong().nextBytes(iv);
+            
+            GCMParameterSpec gcmSpec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, iv);
+            cipher.init(Cipher.ENCRYPT_MODE, key, gcmSpec);
+            
+            byte[] ciphertext = cipher.doFinal(plaintext.getBytes(StandardCharsets.UTF_8));
+            
+            // Combinar IV + dados criptografados
+            byte[] encryptedWithIv = new byte[iv.length + ciphertext.length];
+            System.arraycopy(iv, 0, encryptedWithIv, 0, iv.length);
+            System.arraycopy(ciphertext, 0, encryptedWithIv, iv.length, ciphertext.length);
+            
+            return Base64.getEncoder().encodeToString(encryptedWithIv);
+            
+        } catch (Exception e) {
+            throw new CryptoException("Erro na criptografia", e);
+        }
+    }
+    
+    public String decrypt(String encryptedData) {
+        try {
+            byte[] encryptedWithIv = Base64.getDecoder().decode(encryptedData);
+            
+            // Extrair IV e dados criptografados
+            byte[] iv = new byte[GCM_IV_LENGTH];
+            byte[] ciphertext = new byte[encryptedWithIv.length - GCM_IV_LENGTH];
+            
+            System.arraycopy(encryptedWithIv, 0, iv, 0, iv.length);
+            System.arraycopy(encryptedWithIv, iv.length, ciphertext, 0, ciphertext.length);
+            
+            SecretKey key = keyManagementService.getCurrentKey();
+            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            
+            GCMParameterSpec gcmSpec = new GCMParameterSpec(GCM_TAG_LENGTH * 8, iv);
+            cipher.init(Cipher.DECRYPT_MODE, key, gcmSpec);
+            
+            byte[] plaintext = cipher.doFinal(ciphertext);
+            return new String(plaintext, StandardCharsets.UTF_8);
+            
+        } catch (Exception e) {
+            // Tentar com chaves antigas (rotação)
+            return decryptWithOldKeys(encryptedData);
+        }
+    }
+}
+```
+
+**EncryptedStringConverter.java:**
+```java
+@Converter
+public class EncryptedStringConverter implements AttributeConverter<String, String> {
+    
+    @Autowired
+    private CryptoService cryptoService;
+    
+    @Override
+    public String convertToDatabaseColumn(String attribute) {
+        if (attribute == null || attribute.isEmpty()) {
+            return attribute;
+        }
+        return cryptoService.encrypt(attribute);
+    }
+    
+    @Override
+    public String convertToEntityAttribute(String dbData) {
+        if (dbData == null || dbData.isEmpty()) {
+            return dbData;
+        }
+        
+        // Verificar se já é um dado criptografado
+        if (isEncrypted(dbData)) {
+            return cryptoService.decrypt(dbData);
+        }
+        
+        // Compatibility mode - dados não criptografados
+        return dbData;
+    }
+    
+    private boolean isEncrypted(String data) {
+        try {
+            Base64.getDecoder().decode(data);
+            return data.length() > 20; // Dados criptografados são sempre longos
+        } catch (Exception e) {
+            return false;
+        }
+    }
+}
+```
+
+**Uso na Entidade:**
+```java
+@Entity
+public class NewsletterConsentLog {
+    
+    @Convert(converter = EncryptedStringConverter.class)
+    @Column(nullable = false)
+    private String email;
+    
+    @Convert(converter = EncryptedStringConverter.class)
+    private String ipAddress;
+    
+    @Convert(converter = EncryptedStringConverter.class)
+    private String userAgent;
+}
+```
+
+### **Referências de Código:**
+- **Spring Security:** Padrões de segurança do projeto
+- **JPA Converters:** Padrões de conversão de dados
 
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação
-2. Validar funcionalidade
-3. Verificar integrações
+1. Testar criptografia: `mvn test -Dtest=CryptoServiceTest`
+2. Verificar persistência: salvar entidade e verificar dados criptografados no banco
+3. Testar descriptografia: recuperar entidade e verificar dados descriptografados
+4. Executar migração: `mvn flyway:migrate`
+5. Testar performance: medir tempo de criptografia/descriptografia
+6. Testar rotação de chaves
+7. Verificar logs de auditoria de criptografia
 
 ### **Critérios de Sucesso:**
 - [ ] Funcionalidade implementada

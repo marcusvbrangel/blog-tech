@@ -9,44 +9,61 @@
 - **Sprint:** Sprint 2
 
 ## 🎯 Objetivo
-Implementar método sendNewPostNotification no NewsletterService.
+Implementar método sendNewPostNotification no NewsletterService para envio em massa de emails para todos os subscribers confirmados quando um novo post é publicado, com otimizações de performance e tratamento robusto de erros.
 
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
+- [ ] Método sendNewPostNotification(Post post) no NewsletterService
+- [ ] Consulta paginada de subscribers CONFIRMED ativos
+- [ ] Processamento em lotes (batch) para otimizar memória
+- [ ] Renderização do template HTML com dados do post
+- [ ] Envio paralelo com controle de concorrência
+- [ ] Tratamento de bounce/falha individual
+- [ ] Logging detalhado e métricas de envio
+- [ ] Rate limiting integrado para evitar spam
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências
+- **Com NewsletterRepository:** Consulta subscribers confirmados
+- **Com EmailService:** Envio individual de emails
+- **Com Thymeleaf:** Renderização do template new-post-notification
+- **Com Redis:** Cache e controle de rate limiting
+- **Com CompletableFuture:** Processamento assíncrono paralelo
+- **Com Spring Batch:** Processamento em lotes grandes (opcional)
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando
-- [ ] **AC4:** Testes passando
-- [ ] **AC5:** Documentação atualizada
+- [ ] **AC1:** Envia email para todos subscribers com status CONFIRMED
+- [ ] **AC2:** Processa em lotes de 100-500 para otimizar memória
+- [ ] **AC3:** Envio paralelo com máximo 10 threads simultâneas
+- [ ] **AC4:** Falha individual não interrompe processamento do lote
+- [ ] **AC5:** Rate limiting previne spam (max 1000 emails/hora)
+- [ ] **AC6:** Template personalizado com nome do subscriber
+- [ ] **AC7:** Métricas detalhadas: enviados, falhados, bounced
+- [ ] **AC8:** Retry automático para falhas temporárias
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro
-- [ ] Teste de validações
-- [ ] Teste de integrações
+- [ ] Teste de sendNewPostNotification com post válido
+- [ ] Teste de processamento em lotes (batching)
+- [ ] Teste de tratamento de falha individual
+- [ ] Teste de rate limiting acionado
+- [ ] Teste com zero subscribers
+- [ ] Mock de EmailService e Repository para isolamento
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end
-- [ ] Teste de performance
-- [ ] Teste de segurança
+- [ ] Teste end-to-end com subscribers reais no BD
+- [ ] Teste de performance com 10k+ subscribers
+- [ ] Teste de memória com processamento em lotes
+- [ ] Teste de concorrência com múltiplos posts
+- [ ] Teste de resiliência com falhas de SMTP
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações necessárias
+- [ ] **src/main/java/com/blog/api/newsletter/service/NewsletterService.java:** Método principal
+- [ ] **src/main/java/com/blog/api/newsletter/repository/NewsletterRepository.java:** Query paginada
+- [ ] **src/main/java/com/blog/api/config/EmailConfig.java:** Configurações de concorrência
+- [ ] **src/test/java/com/blog/api/newsletter/service/NewsletterServiceTest.java:** Testes unitários
+- [ ] **src/test/java/com/blog/api/newsletter/integration/BulkEmailIntegrationTest.java:** Testes integração
 
 ## 📚 Documentação para IA
 
@@ -56,19 +73,22 @@ Implementar método sendNewPostNotification no NewsletterService.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Implementar método sendNewPostNotification no NewsletterService. - Seguir rigorosamente os padrões estabelecidos no projeto.
+Método que recebe Post, consulta subscribers paginados, processa em lotes com CompletableFuture. Usar ThreadPoolExecutor customizado. Implementar circuit breaker para SMTP. Cache de templates renderizados. Métricas com Micrometer.
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar no projeto
-- **Referência 2:** Padrões a seguir
+- **Referência 1:** NewsletterService.sendConfirmationEmail() - padrões de envio
+- **Referência 2:** EmailService métodos existentes - estrutura base
+- **Referência 3:** Repository com paginação (outros services do projeto)
 
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação
-2. Validar funcionalidade
-3. Verificar integrações
-4. Confirmar performance
+1. Criar subscribers confirmados no banco de dados
+2. Publicar post e chamar sendNewPostNotification
+3. Verificar emails enviados em lotes paralelos
+4. Monitorar métricas de performance e memória
+5. Simular falhas SMTP e validar retry
+6. Testar rate limiting com volume alto
 
 ### **Critérios de Sucesso:**
 - [ ] Funcionalidade implementada
@@ -139,7 +159,7 @@ Implementar método sendNewPostNotification no NewsletterService. - Seguir rigor
 *[Lista de impedimentos, se houver]*
 
 ### **Next Steps:**
-*[Próxima tarefa da sequência]*
+*[Tarefa 34: Integrar com PostService para disparar eventos automaticamente]*
 
 ---
 

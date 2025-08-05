@@ -14,40 +14,54 @@ Criar token específico e seguro para solicitação de dados.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
-- [ ] Testes e documentação
+- [ ] DataRequestTokenGenerator - Gerador de tokens seguros
+- [ ] TokenSecurityManager - Gerenciador de segurança e criptografia
+- [ ] TokenLifecycleService - Gerenciamento do ciclo de vida
+- [ ] SecureTokenRepository - Repositório com criptografia
+- [ ] TokenDeliveryService - Entrega segura via email
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências técnicas
+- **Com JWT Library:** Geração de tokens JWT com criptografia RS256
+- **Com Redis:** Cache seguro e blacklist de tokens utilizados
+- **Com EmailService:** Entrega de tokens via email criptografado
+- **Com NewsletterSubscriber:** Associação segura token-usuário
+- **Com CryptographyService:** Criptografia adicional de payloads sensíveis
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando adequadamente
-- [ ] **AC4:** Testes passando com cobertura adequada
-- [ ] **AC5:** Documentação atualizada e completa
+- [ ] **AC1:** Tokens JWT com criptografia RS256 e entropy alta (256 bits)
+- [ ] **AC2:** Expiração automática em 1 hora com impossibilidade de renovação
+- [ ] **AC3:** Uso único: blacklist automática após utilização
+- [ ] **AC4:** Associação criptograficamente segura com usuário específico
+- [ ] **AC5:** Payload mínimo: apenas subscriber ID e timestamps
+- [ ] **AC6:** Entrega via email com link temporário seguro
+- [ ] **AC7:** Resistência a ataques: brute force, replay, timing
+- [ ] **AC8:** Logs de segurança para geração, uso e tentativas maliciosas
+- [ ] **AC9:** Rate limiting: 1 token válido por subscriber por hora
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro e exceções
-- [ ] Teste de validações e regras de negócio
-- [ ] Teste de integração com componentes
+- [ ] Teste de geração de token com entropy adequada
+- [ ] Teste de criptografia e assinatura JWT RS256
+- [ ] Teste de expiração automática em 1 hora
+- [ ] Teste de blacklist automática após uso
+- [ ] Teste de associação segura com subscriber
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end da funcionalidade
-- [ ] Teste de performance e carga
-- [ ] Teste de segurança e compliance
+- [ ] Teste de segurança: resistência a ataques de replay
+- [ ] Teste de segurança: proteção contra brute force
+- [ ] Teste de performance: geração em < 100ms
+- [ ] Teste de entrega: email com link seguro
+- [ ] Teste de rate limiting: 1 token por hora por usuário
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade core
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações específicas
+- [ ] **src/main/java/com/blog/api/newsletter/service/DataRequestTokenGenerator.java** - Gerador principal
+- [ ] **src/main/java/com/blog/api/newsletter/security/TokenSecurityManager.java** - Segurança
+- [ ] **src/main/java/com/blog/api/newsletter/service/TokenLifecycleService.java** - Ciclo de vida
+- [ ] **src/main/java/com/blog/api/newsletter/repository/SecureTokenRepository.java** - Repositório
+- [ ] **src/main/java/com/blog/api/newsletter/service/TokenDeliveryService.java** - Entrega
+- [ ] **src/main/java/com/blog/api/newsletter/config/DataRequestTokenConfig.java** - Configurações
+- [ ] **src/test/java/com/blog/api/newsletter/security/DataRequestTokenSecurityTest.java** - Testes segurança
 
 ## 📚 Documentação para IA
 
@@ -57,11 +71,34 @@ Criar token específico e seguro para solicitação de dados.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Criar token específico e seguro para solicitação de dados. - Implementar seguindo rigorosamente os padrões arquiteturais estabelecidos no projeto.
+Desenvolver sistema de geração e gerenciamento de tokens JWT especializados para solicitação segura de dados pessoais. Tokens devem ser criptograficamente seguros, de uso único, com expiração rápida e entrega via canal seguro.
+
+### **Estrutura do Token:**
+```java
+@Service
+public class DataRequestTokenGenerator {
+    
+    public SecureDataRequestToken generateToken(String subscriberEmail) {
+        // 1. Validar rate limiting (1 por hora)
+        // 2. Gerar JWT com RS256
+        // 3. Payload mínimo: subscriber_id, issued_at, expires_at
+        // 4. Armazenar em cache Redis com TTL
+        // 5. Enviar via email criptografado
+        // 6. Registrar log de segurança
+    }
+}
+
+public record SecureDataRequestToken(
+    String token,
+    LocalDateTime expiresAt,
+    String deliveryReference
+) {}
+```
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar existente no projeto
-- **Referência 2:** Padrões a seguir e reutilizar
+- **ConfirmationTokenService:** Padrões de geração e gerenciamento de tokens
+- **JwtSecurityConfig:** Configuração de criptografia JWT
+- **EmailSecurityService:** Entrega segura de informações sensíveis
 
 ## 🔍 Validação e Testes
 

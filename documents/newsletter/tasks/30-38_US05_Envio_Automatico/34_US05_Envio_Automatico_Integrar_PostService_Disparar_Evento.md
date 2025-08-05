@@ -9,44 +9,55 @@
 - **Sprint:** Sprint 2
 
 ## 🎯 Objetivo
-Integrar com PostService para disparar eventos de publicação.
+Integrar ApplicationEventPublisher no PostService para disparar automaticamente PostPublishedEvent sempre que um post for publicado, estabelecendo a ponte entre o sistema de posts e o sistema de newsletter.
 
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
+- [ ] Injeção de ApplicationEventPublisher no PostService
+- [ ] Modificação do método publishPost() para disparar evento
+- [ ] Criação de PostPublishedEvent com dados do post
+- [ ] Validação se post realmente foi publicado antes do evento
+- [ ] Logging de auditoria para disparo de eventos
+- [ ] Tratamento de erros no disparo sem afetar publicação
+- [ ] Cache bypass para garantir dados frescos no evento
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências
+- **Com Spring Events:** ApplicationEventPublisher para disparar eventos
+- **Com PostPublishedEvent:** Criação do evento com dados do post
+- **Com PostRepository:** Garantir que post foi persistido antes do evento
+- **Com Transaction:** Evento disparado após commit da transação
+- **Com NewsletterEventListener:** Receptor do evento (indiretamente)
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando
-- [ ] **AC4:** Testes passando
-- [ ] **AC5:** Documentação atualizada
+- [ ] **AC1:** PostPublishedEvent disparado automaticamente após publishPost()
+- [ ] **AC2:** Evento contém dados completos do post publicado
+- [ ] **AC3:** Evento disparado apenas se post realmente for publicado
+- [ ] **AC4:** Falha no evento não impede publicação do post
+- [ ] **AC5:** Evento disparado após commit da transação (consistency)
+- [ ] **AC6:** Post duplicado não gera evento duplicado
+- [ ] **AC7:** Logging adequado para auditoria de eventos
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro
-- [ ] Teste de validações
-- [ ] Teste de integrações
+- [ ] Teste de publishPost() dispara PostPublishedEvent
+- [ ] Teste de evento contém dados corretos do post
+- [ ] Teste de falha no evento não afeta publicação
+- [ ] Teste de post já publicado não gera evento
+- [ ] Mock de ApplicationEventPublisher para isolamento
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end
-- [ ] Teste de performance
-- [ ] Teste de segurança
+- [ ] Teste end-to-end: publishPost() → evento → newsletter
+- [ ] Teste transacional com rollback (evento não deve ser disparado)
+- [ ] Teste de concorrência com múltiplas publicações
+- [ ] Teste de performance com alta freqüência de publicações
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações necessárias
+- [ ] **src/main/java/com/blog/api/service/PostService.java:** Integração com eventos
+- [ ] **src/main/java/com/blog/api/event/PostPublishedEvent.java:** Certifique-se que existe
+- [ ] **src/test/java/com/blog/api/service/PostServiceTest.java:** Testes do evento
+- [ ] **src/test/java/com/blog/api/integration/PostEventIntegrationTest.java:** Testes integração
 
 ## 📚 Documentação para IA
 
@@ -56,19 +67,22 @@ Integrar com PostService para disparar eventos de publicação.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Integrar com PostService para disparar eventos de publicação. - Seguir rigorosamente os padrões estabelecidos no projeto.
+Adicionar @Autowired ApplicationEventPublisher no PostService. No método publishPost(), após salvar, publicar evento com eventPublisher.publishEvent(new PostPublishedEvent(post)). Usar @TransactionalEventListener para garantir consistência.
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar no projeto
-- **Referência 2:** Padrões a seguir
+- **Referência 1:** PostService métodos existentes - estrutura atual
+- **Referência 2:** PostPublishedEvent (tarefa 30) - estrutura do evento
+- **Referência 3:** Spring ApplicationEventPublisher documentation
 
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação
-2. Validar funcionalidade
-3. Verificar integrações
-4. Confirmar performance
+1. Publicar um post via PostService.publishPost()
+2. Verificar se PostPublishedEvent foi disparado
+3. Confirmar que evento contém dados corretos
+4. Testar que NewsletterEventListener recebe o evento
+5. Validar que falha no listener não afeta publicação
+6. Testar cenários de rollback transacional
 
 ### **Critérios de Sucesso:**
 - [ ] Funcionalidade implementada
@@ -139,7 +153,7 @@ Integrar com PostService para disparar eventos de publicação. - Seguir rigoros
 *[Lista de impedimentos, se houver]*
 
 ### **Next Steps:**
-*[Próxima tarefa da sequência]*
+*[Tarefa 35: Implementar consulta eficiente de subscribers confirmados]*
 
 ---
 

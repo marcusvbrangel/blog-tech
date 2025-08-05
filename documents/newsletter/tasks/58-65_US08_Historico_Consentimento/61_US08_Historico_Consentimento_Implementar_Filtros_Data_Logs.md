@@ -14,40 +14,54 @@ Implementar filtros por data para consulta de logs.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
-- [ ] Testes e documentação
+- [ ] DateRangeFilterDto para parâmetros de filtragem temporal
+- [ ] Custom queries no ConsentLogRepository com filtros por data
+- [ ] Validação de ranges de data (data inicial ≤ data final)
+- [ ] Índices de banco otimizados para consultas por timestamp
+- [ ] Suporte a diferentes formatos de data (ISO 8601, LocalDate)
+- [ ] Pre-sets de períodos: hoje, última semana, último mês, último ano
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências técnicas
+- **Com ConsentLogController:** Receber parâmetros de data via query params
+- **Com JPA Criteria API:** Queries dinâmicas com filtros opcionais
+- **Com PostgreSQL:** Índices BTREE otimizados para timestamp ranges
+- **Com Bean Validation:** Validação de formato e lógica de datas
+- **Com Redis Cache:** Cache de consultas por períodos comuns
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando adequadamente
-- [ ] **AC4:** Testes passando com cobertura adequada
-- [ ] **AC5:** Documentação atualizada e completa
+- [ ] **AC1:** Filtrar logs por data inicial (?startDate=2025-08-01)
+- [ ] **AC2:** Filtrar logs por data final (?endDate=2025-08-31)
+- [ ] **AC3:** Combinar ambos filtros para range específico
+- [ ] **AC4:** Validar que startDate ≤ endDate
+- [ ] **AC5:** Suportar formato ISO 8601 com timezone (2025-08-01T00:00:00Z)
+- [ ] **AC6:** Pre-sets via query param (?period=last_week, last_month, last_year)
+- [ ] **AC7:** Performance ≤ 200ms mesmo com ranges grandes
+- [ ] **AC8:** Retornar erro 400 para datas inválidas ou ranges inconsistentes
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro e exceções
-- [ ] Teste de validações e regras de negócio
-- [ ] Teste de integração com componentes
+- [ ] Teste de filtragem apenas por startDate
+- [ ] Teste de filtragem apenas por endDate
+- [ ] Teste de range completo (startDate + endDate)
+- [ ] Teste de validação de datas inválidas
+- [ ] Teste de pre-sets de períodos (last_week, etc.)
+- [ ] Teste de edge cases (datas futuras, ranges muito grandes)
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end da funcionalidade
-- [ ] Teste de performance e carga
-- [ ] Teste de segurança e compliance
+- [ ] Teste de consulta com diferentes ranges de data
+- [ ] Teste de performance com large datasets dentro de ranges
+- [ ] Teste de índices: explain query plans
+- [ ] Teste de timezone handling para diferentes fusos
+- [ ] Teste de combinação com outros filtros (email + data)
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade core
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações específicas
+- [ ] **src/main/java/com/blog/api/application/admin/dto/DateRangeFilterDto.java** - DTO filtros
+- [ ] **src/main/java/com/blog/api/domain/newsletter/repository/ConsentLogRepository.java** - Custom queries
+- [ ] **src/main/java/com/blog/api/presentation/admin/ConsentLogController.java** - Query params
+- [ ] **src/main/java/com/blog/api/infrastructure/validation/DateRangeValidator.java** - Validação
+- [ ] **src/main/resources/db/migration/V009__add_consent_log_date_indexes.sql** - Índices
+- [ ] **src/test/java/com/blog/api/domain/newsletter/repository/ConsentLogRepositoryTest.java** - Testes
 
 ## 📚 Documentação para IA
 
@@ -57,11 +71,13 @@ Implementar filtros por data para consulta de logs.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Implementar filtros por data para consulta de logs. - Implementar seguindo rigorosamente os padrões arquiteturais estabelecidos no projeto.
+Implementar sistema robusto de filtragem temporal para logs de consentimento, com suporte a ranges de data flexíveis, pre-sets comuns, validação rigorosa e performance otimizada via índices de banco, facilitando auditoria e compliance por períodos específicos.
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar existente no projeto
-- **Referência 2:** Padrões a seguir e reutilizar
+- **Repository Queries:** Seguir padrões de custom queries já implementadas
+- **Date Validation:** Reutilizar validators de data existentes no projeto
+- **Query Parameters:** Aplicar mesmo padrão de parâmetros de endpoints
+- **Database Indexes:** Seguir estratégia de indexação já estabelecida
 
 ## 🔍 Validação e Testes
 

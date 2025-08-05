@@ -9,44 +9,51 @@
 - **Sprint:** Sprint 2
 
 ## 🎯 Objetivo
-Implementar NewsletterEventListener assíncrono para processar eventos de publicação.
+Implementar NewsletterEventListener assíncrono para escutar eventos PostPublishedEvent e disparar automaticamente o envio de emails de newsletter para todos os subscribers confirmados.
 
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
+- [ ] Classe NewsletterEventListener com @Component e @EventListener
+- [ ] Método handlePostPublished() marcado com @Async
+- [ ] Integração com NewsletterService.sendNewPostNotification()
+- [ ] Tratamento de erros e logging para falhas de envio
+- [ ] Configuração de retry para falhas temporárias
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências
+- **Com Spring Events:** @EventListener para PostPublishedEvent
+- **Com NewsletterService:** Chamada para sendNewPostNotification()
+- **Com @Async:** Processamento assíncrono não-bloqueante
+- **Com Redis:** Cache para evitar processamento duplicado
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando
-- [ ] **AC4:** Testes passando
-- [ ] **AC5:** Documentação atualizada
+- [ ] **AC1:** EventListener escuta PostPublishedEvent automaticamente
+- [ ] **AC2:** Processamento assíncrono sem bloquear thread principal
+- [ ] **AC3:** Dispara sendNewPostNotification() para todos subscribers
+- [ ] **AC4:** Tratamento robusto de erros com retry automático
+- [ ] **AC5:** Logging detalhado para auditoria e debugging
+- [ ] **AC6:** Cache Redis evita processamento duplicado do mesmo post
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro
-- [ ] Teste de validações
-- [ ] Teste de integrações
+- [ ] Teste de handlePostPublished() recebe evento corretamente
+- [ ] Teste de integração com NewsletterService
+- [ ] Teste de tratamento de erro quando service falha
+- [ ] Teste de evitar processamento duplicado via cache
+- [ ] Mock do NewsletterService para isolamento
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end
-- [ ] Teste de performance
-- [ ] Teste de segurança
+- [ ] Teste completo: publicar post → evento → listener → envio emails
+- [ ] Teste de processamento assíncrono (não bloqueia)
+- [ ] Teste de performance com múltiplos eventos simultâneos
+- [ ] Teste de retry em caso de falha temporária
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações necessárias
+- [ ] **src/main/java/com/blog/api/newsletter/listener/NewsletterEventListener.java:** Event listener principal
+- [ ] **src/main/java/com/blog/api/config/AsyncConfig.java:** Configuração @EnableAsync (se não existir)
+- [ ] **src/test/java/com/blog/api/newsletter/listener/NewsletterEventListenerTest.java:** Testes unitários
+- [ ] **src/test/java/com/blog/api/newsletter/integration/NewsletterEventIntegrationTest.java:** Testes integração
 
 ## 📚 Documentação para IA
 
@@ -56,19 +63,22 @@ Implementar NewsletterEventListener assíncrono para processar eventos de public
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Implementar NewsletterEventListener assíncrono para processar eventos de publicação. - Seguir rigorosamente os padrões estabelecidos no projeto.
+Criar @EventListener assíncrono que escuta PostPublishedEvent. Usar @Async para não bloquear publicação. Implementar retry com @Retryable para falhas temporárias. Usar cache Redis para evitar processamento duplicado. Logging completo para auditoria.
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar no projeto
-- **Referência 2:** Padrões a seguir
+- **Referência 1:** PostPublishedEvent (tarefa 30) - estrutura do evento
+- **Referência 2:** NewsletterService métodos existentes - padrões de service
+- **Referência 3:** Outros @EventListener no projeto (se existirem)
 
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação
-2. Validar funcionalidade
-3. Verificar integrações
-4. Confirmar performance
+1. Publicar um post via PostService
+2. Verificar se PostPublishedEvent é capturado
+3. Confirmar que NewsletterService.sendNewPostNotification() é chamado
+4. Validar processamento assíncrono (não bloqueia)
+5. Testar retry em caso de falha
+6. Verificar logs de auditoria
 
 ### **Critérios de Sucesso:**
 - [ ] Funcionalidade implementada
@@ -139,7 +149,7 @@ Implementar NewsletterEventListener assíncrono para processar eventos de public
 *[Lista de impedimentos, se houver]*
 
 ### **Next Steps:**
-*[Próxima tarefa da sequência]*
+*[Tarefa 32: Criar template HTML para notificação de novos posts]*
 
 ---
 

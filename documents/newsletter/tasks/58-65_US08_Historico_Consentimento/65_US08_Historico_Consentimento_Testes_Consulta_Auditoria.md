@@ -14,40 +14,57 @@ Implementar testes de consulta e geração de relatórios de auditoria.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
-- [ ] Testes e documentação
+- [ ] Testes end-to-end de consulta de logs via API admin
+- [ ] Testes de geração de relatórios em diferentes formatos
+- [ ] Testes de autorização e controle de acesso
+- [ ] Testes de performance com queries complexas
+- [ ] Testes de data accuracy nos relatórios gerados
+- [ ] Testes de filtros combinados e edge cases
+- [ ] Testes de export/download de relatórios grandes
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências técnicas
+- **Com MockMvc:** Testes de controller com mock security
+- **Com TestRestTemplate:** Testes de integração completa
+- **Com Security Test:** @WithMockUser para diferentes roles
+- **Com File Assertions:** Validação de conteúdo de arquivos gerados
+- **Com Database Setup:** Dados de teste consistentes e realistas
+- **Com Report Generators:** Testes dos diferentes engines de relatório
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando adequadamente
-- [ ] **AC4:** Testes passando com cobertura adequada
-- [ ] **AC5:** Documentação atualizada e completa
+- [ ] **AC1:** Teste de consulta com diferentes combinações de filtros
+- [ ] **AC2:** Validação de acesso: apenas ADMIN pode consultar
+- [ ] **AC3:** Teste de geração de PDF com dados corretos
+- [ ] **AC4:** Teste de geração de CSV com formatação adequada
+- [ ] **AC5:** Teste de geração de Excel com múltiplas abas
+- [ ] **AC6:** Validação de performance: relatórios grandes < 30s
+- [ ] **AC7:** Teste de download de arquivos com headers corretos
+- [ ] **AC8:** Verificação de integridade: dados no relatório = dados no DB
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro e exceções
-- [ ] Teste de validações e regras de negócio
-- [ ] Teste de integração com componentes
+- [ ] Teste de service methods para consulta de logs
+- [ ] Teste de report generation com diferentes templates
+- [ ] Teste de data transformation para relatórios
+- [ ] Teste de validação de parâmetros de consulta
+- [ ] Teste de handling de datasets vazios
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end da funcionalidade
-- [ ] Teste de performance e carga
-- [ ] Teste de segurança e compliance
+- [ ] Teste end-to-end: consulta -> geração -> download
+- [ ] Teste de autorização com diferentes user roles
+- [ ] Teste de performance com 1M+ logs no dataset
+- [ ] Teste de concurrent report generation
+- [ ] Teste de disk space management durante geração
+- [ ] Teste de cleanup de arquivos temporários
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade core
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações específicas
+- [ ] **src/test/java/com/blog/api/presentation/admin/ConsentLogControllerIntegrationTest.java** - Controller tests
+- [ ] **src/test/java/com/blog/api/domain/newsletter/service/AuditReportServiceTest.java** - Service tests
+- [ ] **src/test/java/com/blog/api/infrastructure/report/ReportGeneratorTest.java** - Report tests
+- [ ] **src/test/java/com/blog/api/security/ConsentLogSecurityTest.java** - Security tests
+- [ ] **src/test/resources/reports/expected/** - Expected report samples
+- [ ] **src/test/java/com/blog/api/performance/AuditReportPerformanceTest.java** - Performance
+- [ ] **src/test/resources/data/large-consent-dataset.sql** - Test data
 
 ## 📚 Documentação para IA
 
@@ -57,11 +74,13 @@ Implementar testes de consulta e geração de relatórios de auditoria.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Implementar testes de consulta e geração de relatórios de auditoria. - Implementar seguindo rigorosamente os padrões arquiteturais estabelecidos no projeto.
+Desenvolver suite completa de testes para validação de consultas de auditoria e geração de relatórios, garantindo precisão dos dados, performance adequada, segurança robusta e conformidade com requisitos de compliance, cobrindo todos os cenários de uso administrativo.
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar existente no projeto
-- **Referência 2:** Padrões a seguir e reutilizar
+- **Integration Tests:** Seguir padrões de testes de integração estabelecidos
+- **Security Tests:** Reutilizar approach de testes de segurança existente
+- **Report Tests:** Aplicar padrões de validação de arquivo gerados
+- **Performance Tests:** Seguir benchmarks e thresholds já definidos
 
 ## 🔍 Validação e Testes
 

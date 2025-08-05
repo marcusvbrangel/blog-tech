@@ -9,44 +9,56 @@
 - **Sprint:** Sprint 2
 
 ## 🎯 Objetivo
-Criar template HTML para notificação de novos posts.
+Criar template HTML responsivo e atrativo usando Thymeleaf para notificar subscribers sobre novos posts publicados, incluindo preview do conteúdo e link para leitura completa.
 
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
+- [ ] Template Thymeleaf new-post-notification.html
+- [ ] CSS inline responsivo para diferentes clients de email
+- [ ] Seção de cabeçalho com branding do blog
+- [ ] Preview do post com título, resumo e imagem
+- [ ] Botão CTA (Call-to-Action) para leitura completa
+- [ ] Footer com link de unsubscribe e informações legais
+- [ ] Suporte a dark mode (preferência do usuário)
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências
+- **Com Thymeleaf:** Engine de template para renderização
+- **Com Post Entity:** Dados do post (título, conteúdo, autor, data)
+- **Com NewsletterSubscriber:** Dados do subscriber (nome, email)
+- **Com EmailService:** Template será usado no envio
+- **Com frontend assets:** Imagens, logos e estilos do blog
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando
-- [ ] **AC4:** Testes passando
-- [ ] **AC5:** Documentação atualizada
+- [ ] **AC1:** Template HTML renderiza dados do post corretamente
+- [ ] **AC2:** Design responsivo funciona em desktop, mobile e webmail
+- [ ] **AC3:** CSS inline garante compatibilidade com clients de email
+- [ ] **AC4:** Link de unsubscribe funciona corretamente
+- [ ] **AC5:** Preview do conteúdo truncado adequadamente (150-200 chars)
+- [ ] **AC6:** CTA button redireciona para post completo
+- [ ] **AC7:** Template suporta personalização com nome do subscriber
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro
-- [ ] Teste de validações
-- [ ] Teste de integrações
+- [ ] Teste de renderização do template com dados válidos
+- [ ] Teste de truncamento do conteúdo (preview)
+- [ ] Teste de escape de HTML no conteúdo
+- [ ] Teste de geração de links (post e unsubscribe)
+- [ ] Teste com dados nulos ou vazios
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end
-- [ ] Teste de performance
-- [ ] Teste de segurança
+- [ ] Teste de renderização completa via Thymeleaf
+- [ ] Teste de compatibilidade com diferentes clients (Gmail, Outlook)
+- [ ] Teste de performance de renderização com templates grandes
+- [ ] Teste visual/screenshot em diferentes resoluções
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações necessárias
+- [ ] **src/main/resources/templates/email/new-post-notification.html:** Template principal
+- [ ] **src/main/resources/static/css/email-styles.css:** Estilos para emails (opcional)
+- [ ] **src/main/resources/static/images/email/:** Imagens para templates de email
+- [ ] **src/test/java/com/blog/api/newsletter/template/EmailTemplateTest.java:** Testes do template
+- [ ] **src/test/resources/templates/email/:** Templates de teste
 
 ## 📚 Documentação para IA
 
@@ -56,19 +68,22 @@ Criar template HTML para notificação de novos posts.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Criar template HTML para notificação de novos posts. - Seguir rigorosamente os padrões estabelecidos no projeto.
+Template Thymeleaf com estrutura HTML tábela para compatibilidade máxima. CSS inline. Usar th:text, th:href para dados dinâmicos. Design minimalista e profissional. Incluir meta tags para responsividade. Testar em múltiplos clients de email.
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar no projeto
-- **Referência 2:** Padrões a seguir
+- **Referência 1:** Templates Thymeleaf existentes no projeto
+- **Referência 2:** Email confirmation template (tarefa 11) - estrutura base
+- **Referência 3:** Padrões de email HTML responsível (Bootstrap Email, Foundation)
 
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação
-2. Validar funcionalidade
-3. Verificar integrações
-4. Confirmar performance
+1. Renderizar template com dados mock de Post
+2. Verificar HTML gerado é válido
+3. Testar responsividade em diferentes resoluções
+4. Validar em simuladores de email clients
+5. Testar links de unsubscribe e leitura
+6. Verificar acessibilidade (alt texts, contrast)
 
 ### **Critérios de Sucesso:**
 - [ ] Funcionalidade implementada
@@ -139,7 +154,7 @@ Criar template HTML para notificação de novos posts. - Seguir rigorosamente os
 *[Lista de impedimentos, se houver]*
 
 ### **Next Steps:**
-*[Próxima tarefa da sequência]*
+*[Tarefa 33: Implementar método sendNewPostNotification no NewsletterService]*
 
 ---
 

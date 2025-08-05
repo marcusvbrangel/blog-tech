@@ -14,40 +14,55 @@ Implementar política de retenção específica para logs.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
-- [ ] Testes e documentação
+- [ ] LogRetentionService para gestão de retenção
+- [ ] Scheduled job para limpeza automática de logs antigos
+- [ ] Configurações de retenção por tipo de log (3 anos LGPD)
+- [ ] Archive service para mover logs antigos para storage de longo prazo
+- [ ] Soft delete vs hard delete baseado em compliance requirements
+- [ ] Notification system para alertar sobre operações de retenção
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências técnicas
+- **Com Spring Scheduler:** Jobs automatizados de cleanup
+- **Com ConsentLogRepository:** Queries para identificação de logs antigos
+- **Com AWS S3/Azure Blob:** Archive de logs para storage de longo prazo
+- **Com application.properties:** Configurações de períodos de retenção
+- **Com Audit Trail:** Logging das próprias operações de retenção
+- **Com EmailService:** Notificações para admins sobre retenção
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando adequadamente
-- [ ] **AC4:** Testes passando com cobertura adequada
-- [ ] **AC5:** Documentação atualizada e completa
+- [ ] **AC1:** Configurar retenção de 3 anos conforme LGPD (dados sensíveis)
+- [ ] **AC2:** Configurar retenção de 7 anos para dados de auditoria
+- [ ] **AC3:** Implementar soft delete antes do hard delete final
+- [ ] **AC4:** Archive automático para cold storage após 1 ano
+- [ ] **AC5:** Job diário para identificação de logs elegíveis para cleanup
+- [ ] **AC6:** Preservar logs relacionados a disputas legais em andamento
+- [ ] **AC7:** Notification 30 dias antes da remoção definitiva
+- [ ] **AC8:** Backup de segurança antes de qualquer operação de remoção
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro e exceções
-- [ ] Teste de validações e regras de negócio
-- [ ] Teste de integração com componentes
+- [ ] Teste de identificação de logs elegíveis para retenção
+- [ ] Teste de cálculo de períodos de retenção por tipo
+- [ ] Teste de soft delete vs hard delete logic
+- [ ] Teste de validação de configurações de retenção
+- [ ] Teste de exclusões (logs em disputa legal)
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end da funcionalidade
-- [ ] Teste de performance e carga
-- [ ] Teste de segurança e compliance
+- [ ] Teste end-to-end do ciclo completo de retenção
+- [ ] Teste de agendamento e execução do job de cleanup
+- [ ] Teste de archive para external storage
+- [ ] Teste de recovery de logs arquivados
+- [ ] Teste de compliance: verificação de períodos corretos
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade core
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações específicas
+- [ ] **src/main/java/com/blog/api/domain/newsletter/service/LogRetentionService.java** - Service
+- [ ] **src/main/java/com/blog/api/infrastructure/scheduler/LogRetentionScheduler.java** - Scheduler
+- [ ] **src/main/java/com/blog/api/infrastructure/storage/LogArchiveService.java** - Archive
+- [ ] **src/main/java/com/blog/api/domain/newsletter/repository/ConsentLogRepository.java** - Queries
+- [ ] **src/main/resources/application.yml** - Configurações de retenção
+- [ ] **src/main/java/com/blog/api/domain/newsletter/entity/ConsentLog.java** - Soft delete fields
+- [ ] **src/test/java/com/blog/api/domain/newsletter/service/LogRetentionServiceTest.java** - Testes
 
 ## 📚 Documentação para IA
 
@@ -57,11 +72,13 @@ Implementar política de retenção específica para logs.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Implementar política de retenção específica para logs. - Implementar seguindo rigorosamente os padrões arquiteturais estabelecidos no projeto.
+Implementar sistema robusto de gestão de retenção de logs conforme LGPD e best practices de compliance, com ciclo de vida automatizado, archive para storage de longo prazo, e controles de segurança para garantir preservação adequada sem acumular dados desnecessariamente.
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar existente no projeto
-- **Referência 2:** Padrões a seguir e reutilizar
+- **Scheduled Services:** Seguir padrões de jobs agendados já implementados
+- **Soft Delete:** Aplicar padrões de soft delete existentes no projeto
+- **Configuration Management:** Reutilizar approach de configurações externalizadas
+- **Storage Integration:** Seguir padrões de integração com external storage
 
 ## 🔍 Validação e Testes
 

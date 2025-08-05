@@ -14,40 +14,54 @@ Implementar retorno completo de todos os dados do subscriber.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
-- [ ] Testes e documentação
+- [ ] PersonalDataAggregatorService - Agregador principal de dados
+- [ ] SubscriberDataCollector - Coleta dados de inscrição
+- [ ] ConsentHistoryCollector - Coleta histórico de consentimentos
+- [ ] EmailHistoryCollector - Coleta histórico de emails
+- [ ] DataCompletenessValidator - Valida completude dos dados coletados
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências técnicas
+- **Com NewsletterRepository:** Dados principais do subscriber
+- **Com ConsentRepository:** Histórico completo de consentimentos e revisões
+- **Com EmailAuditRepository:** Registros de todos os emails enviados
+- **Com TokenValidationService:** Validação de autorização para acesso aos dados
+- **Com DataAnonymizationService:** Aplicar regras de anonimização quando necessário
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando adequadamente
-- [ ] **AC4:** Testes passando com cobertura adequada
-- [ ] **AC5:** Documentação atualizada e completa
+- [ ] **AC1:** Coleta de 100% dos dados pessoais do subscriber em todas as tabelas
+- [ ] **AC2:** Inclusão de dados: email, nome, data de inscrição, status, IP, user agent
+- [ ] **AC3:** Histórico completo de consentimentos: datas, versões, tipos, IPs
+- [ ] **AC4:** Histórico de emails: assuntos, datas, status de entrega, aberturas, cliques
+- [ ] **AC5:** Metadados técnicos: timestamps de criação, última atualização, origem
+- [ ] **AC6:** Dados organizados cronologicamente para auditoria
+- [ ] **AC7:** Performance otimizada com joins eficientes (< 500ms)
+- [ ] **AC8:** Tratamento de subscribers inativos ou com dados parciais
+- [ ] **AC9:** Logs de auditoria da solicitação de dados completos
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro e exceções
-- [ ] Teste de validações e regras de negócio
-- [ ] Teste de integração com componentes
+- [ ] Teste de agregação completa de dados para subscriber ativo
+- [ ] Teste de tratamento de subscriber sem histórico de consentimento
+- [ ] Teste de tratamento de subscriber sem emails enviados
+- [ ] Teste de validação de completude de dados coletados
+- [ ] Teste de ordenação cronológica de históricos
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end da funcionalidade
-- [ ] Teste de performance e carga
-- [ ] Teste de segurança e compliance
+- [ ] Teste de performance com datasets grandes (1000+ emails)
+- [ ] Teste de integridade: dados coletados vs dados no banco
+- [ ] Teste de authorização: apenas dados do subscriber solicitante
+- [ ] Teste de completude LGPD: todos os dados pessoais incluïdos
+- [ ] Teste de edge cases: subscribers com dados corrompidos
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade core
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações específicas
+- [ ] **src/main/java/com/blog/api/newsletter/service/PersonalDataAggregatorService.java** - Serviço principal
+- [ ] **src/main/java/com/blog/api/newsletter/collector/SubscriberDataCollector.java** - Coletor de dados base
+- [ ] **src/main/java/com/blog/api/newsletter/collector/ConsentHistoryCollector.java** - Coletor de consentimentos
+- [ ] **src/main/java/com/blog/api/newsletter/collector/EmailHistoryCollector.java** - Coletor de emails
+- [ ] **src/main/java/com/blog/api/newsletter/validator/DataCompletenessValidator.java** - Validador
+- [ ] **src/test/java/com/blog/api/newsletter/service/PersonalDataAggregatorServiceTest.java** - Testes unitários
+- [ ] **src/test/java/com/blog/api/newsletter/integration/PersonalDataCompletenessTest.java** - Testes de integração
 
 ## 📚 Documentação para IA
 
@@ -57,11 +71,29 @@ Implementar retorno completo de todos os dados do subscriber.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Implementar retorno completo de todos os dados do subscriber. - Implementar seguindo rigorosamente os padrões arquiteturais estabelecidos no projeto.
+Desenvolver sistema abrangente de coleta e agregação de todos os dados pessoais do subscriber armazenados no sistema. Deve garantir completude total para conformidade LGPD, performance otimizada com queries eficientes e organização cronológica para auditoria.
+
+### **Fluxo de Agregação:**
+```java
+@Service
+public class PersonalDataAggregatorService {
+    
+    public PersonalDataResponse aggregateAllUserData(String email) {
+        // 1. Coletar dados base do subscriber
+        // 2. Coletar histórico de consentimentos
+        // 3. Coletar histórico de emails enviados
+        // 4. Coletar metadados técnicos
+        // 5. Validar completude dos dados
+        // 6. Organizar cronologicamente
+        // 7. Aplicar anonimização se necessário
+    }
+}
+```
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar existente no projeto
-- **Referência 2:** Padrões a seguir e reutilizar
+- **NewsletterService:** Padrões de consulta e agregação de dados
+- **AdminSubscriberService:** Lógica de coleta de dados completos
+- **ConsentService:** Tratamento de históricos e ordenação cronológica
 
 ## 🔍 Validação e Testes
 

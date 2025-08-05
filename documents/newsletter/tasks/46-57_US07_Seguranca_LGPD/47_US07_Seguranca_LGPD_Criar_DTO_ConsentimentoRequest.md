@@ -14,36 +14,43 @@ Criar DTO ConsentimentoRequest para solicitações de consentimento.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
+- [ ] DTO ConsentimentoRequest record class
+- [ ] Validações de entrada (Bean Validation)
+- [ ] Enum para tipos de consentimento LGPD
+- [ ] Conversão para entidades (mappers)
+- [ ] Integração com NewsletterConsentLog
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências
+- **Com NewsletterConsentLog:** Para auditoria de consentimento
+- **Com NewsletterController:** Recebimento de solicitações de consentimento
+- **Com Bean Validation:** Validação de campos obrigatórios
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando
-- [ ] **AC4:** Testes passando
-- [ ] **AC5:** Documentação atualizada
+- [ ] **AC1:** DTO ConsentimentoRequest deve incluir campos: email, consentType, timestamp, ipAddress, userAgent
+- [ ] **AC2:** Enum ConsentType deve ter valores: SUBSCRIBE, UNSUBSCRIBE, MARKETING, DATA_PROCESSING
+- [ ] **AC3:** Validações obrigatórias: email válido, consentType não nulo, timestamp não nulo
+- [ ] **AC4:** Campos opcionais: purpose, dataProcessingDetails, retentionPeriod
+- [ ] **AC5:** Implementado como Java Record com anotações de validação
+- [ ] **AC6:** Serialização JSON funcional para API REST
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro
-- [ ] Teste de validações
+- [ ] Teste de criação do DTO com todos os campos
+- [ ] Teste de validação de email inválido
+- [ ] Teste de validação de campos obrigatórios nulos
+- [ ] Teste de serialização/deserialização JSON
+- [ ] Teste de enum ConsentType
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end
-- [ ] Teste de performance
+- [ ] Teste de integração com endpoint REST
+- [ ] Teste de conversão para entidade NewsletterConsentLog
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade
-- [ ] **Arquivo de teste:** Testes unitários e integração
+- [ ] **src/main/java/com/blog/api/newsletter/dto/ConsentimentoRequest.java** - DTO principal
+- [ ] **src/main/java/com/blog/api/newsletter/enums/ConsentType.java** - Enum de tipos de consentimento
+- [ ] **src/test/java/com/blog/api/newsletter/dto/ConsentimentoRequestTest.java** - Testes unitários
+- [ ] **src/test/java/com/blog/api/newsletter/integration/ConsentimentoIntegrationTest.java** - Testes de integração
 
 ## 📚 Documentação para IA
 
@@ -53,17 +60,45 @@ Criar DTO ConsentimentoRequest para solicitações de consentimento.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Criar DTO ConsentimentoRequest para solicitações de consentimento. - Seguir rigorosamente os padrões estabelecidos no projeto.
 
-### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar no projeto
+**ConsentimentoRequest.java:**
+```java
+public record ConsentimentoRequest(
+    @NotBlank @Email String email,
+    @NotNull ConsentType consentType,
+    @NotNull LocalDateTime timestamp,
+    @NotBlank String ipAddress,
+    String userAgent,
+    String purpose,
+    String dataProcessingDetails,
+    Integer retentionPeriod
+) {}
+```
+
+**ConsentType.java:**
+```java
+public enum ConsentType {
+    SUBSCRIBE("Consentimento para receber newsletter"),
+    UNSUBSCRIBE("Revogação de consentimento"),
+    MARKETING("Consentimento para marketing"),
+    DATA_PROCESSING("Consentimento para processamento de dados");
+    
+    private final String description;
+}
+```
+
+### **Referências de Código:**
+- **NewsletterSubscriptionRequest:** Padrão de DTO existente
+- **BaseEntity:** Padrão de validações no projeto
 
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação
-2. Validar funcionalidade
-3. Verificar integrações
+1. Executar testes unitários: `mvn test -Dtest=ConsentimentoRequestTest`
+2. Testar validações com dados inválidos (email malformado, campos nulos)
+3. Testar serialização JSON via endpoint REST
+4. Verificar integração com sistema de logs de consentimento
+5. Testar todos os valores do enum ConsentType
 
 ### **Critérios de Sucesso:**
 - [ ] Funcionalidade implementada

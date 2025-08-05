@@ -14,36 +14,41 @@ Configurar Spring Scheduler com @Scheduled para jobs automáticos.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
+- [ ] Configuração do @EnableScheduling na classe principal
+- [ ] Criar classe NewsletterSchedulerConfig para configurações avançadas
+- [ ] Configurar ThreadPoolTaskScheduler para execução assíncrona
+- [ ] Implementar logs de auditoria para execuções
+- [ ] Configurar tratamento de exceções em jobs
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências
+- **Com Spring Boot:** Integração com @EnableScheduling e TaskScheduler
+- **Com Newsletter Service:** Chamadas para envio de digest semanal
+- **Com sistema de logs:** Registro de execuções e falhas
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando
-- [ ] **AC4:** Testes passando
-- [ ] **AC5:** Documentação atualizada
+- [ ] **AC1:** Spring Scheduler configurado com @EnableScheduling ativo
+- [ ] **AC2:** ThreadPoolTaskScheduler configurado com pool adequado (min 2, max 5 threads)
+- [ ] **AC3:** Tratamento de exceções implementado para evitar falhas silenciosas
+- [ ] **AC4:** Logs de auditoria registram início/fim/falha de cada execução
+- [ ] **AC5:** Configurações externalizadas em application.properties
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro
-- [ ] Teste de validações
+- [ ] Teste de configuração do TaskScheduler bean
+- [ ] Teste de configuração de thread pool
+- [ ] Teste de tratamento de exceções em jobs
+- [ ] Teste de logs de auditoria
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end
-- [ ] Teste de performance
+- [ ] Teste de carregamento do contexto Spring com @EnableScheduling
+- [ ] Teste de execução de job simulado
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade
-- [ ] **Arquivo de teste:** Testes unitários e integração
+- [ ] **src/main/java/com/blog/api/BlogApiApplication.java:** Adicionar @EnableScheduling
+- [ ] **src/main/java/com/blog/api/newsletter/config/NewsletterSchedulerConfig.java:** Configuração do TaskScheduler
+- [ ] **src/main/resources/application.properties:** Propriedades de configuração do scheduler
+- [ ] **src/test/java/com/blog/api/newsletter/config/NewsletterSchedulerConfigTest.java:** Testes unitários
 
 ## 📚 Documentação para IA
 
@@ -53,22 +58,35 @@ Configurar Spring Scheduler com @Scheduled para jobs automáticos.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Configurar Spring Scheduler com @Scheduled para jobs automáticos. - Seguir rigorosamente os padrões estabelecidos no projeto.
+1. Ativar @EnableScheduling na classe principal da aplicação
+2. Criar NewsletterSchedulerConfig com @Configuration
+3. Configurar TaskScheduler bean customizado:
+   - ThreadPoolTaskScheduler com nome "newsletter-scheduler"
+   - Pool size: 2-5 threads
+   - Prefixo de thread: "newsletter-task-"
+4. Implementar exception handler para jobs
+5. Configurar logging detalhado
+6. Externalizar configurações (pool size, timeouts)
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar no projeto
+- **Referência 1:** Configurações similares podem ser encontradas em classes @Configuration existentes
+- **Referência 2:** Padrões de logging já estabelecidos no projeto
 
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação
-2. Validar funcionalidade
-3. Verificar integrações
+1. Executar aplicação e verificar logs de inicialização do scheduler
+2. Validar bean TaskScheduler no contexto Spring
+3. Verificar configuração de thread pool através de logs
+4. Testar execução de job simulado
+5. Validar tratamento de exceções
 
 ### **Critérios de Sucesso:**
-- [ ] Funcionalidade implementada
-- [ ] Testes passando
-- [ ] Performance adequada
+- [ ] @EnableScheduling ativo sem erros de inicialização
+- [ ] TaskScheduler bean criado com configurações corretas
+- [ ] Logs de auditoria funcionais
+- [ ] Thread pool configurado conforme especificado
+- [ ] Tratamento de exceções implementado
 
 ## ✅ Definition of Done
 

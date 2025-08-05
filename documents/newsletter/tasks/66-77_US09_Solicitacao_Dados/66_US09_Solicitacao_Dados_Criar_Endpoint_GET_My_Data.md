@@ -14,40 +14,49 @@ Criar endpoint GET /api/newsletter/my-data para solicitação de dados pessoais.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
-- [ ] Testes e documentação
+- [ ] Controller endpoint GET /api/newsletter/my-data
+- [ ] Validação de token de acesso seguro
+- [ ] Integração com PersonalDataService
+- [ ] Tratamento de erros e exceções LGPD
+- [ ] Documentação Swagger para portabilidade
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências técnicas
+- **Com DataRequestTokenService:** Validação de tokens específicos para solicitação de dados
+- **Com NewsletterPersonalDataService:** Agregação de todos os dados pessoais do usuário
+- **Com AuditLogService:** Registro de todas as solicitações de dados para compliance
+- **Com RateLimitingService:** Controle de frequência de solicitações
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando adequadamente
-- [ ] **AC4:** Testes passando com cobertura adequada
-- [ ] **AC5:** Documentação atualizada e completa
+- [ ] **AC1:** Endpoint GET /api/newsletter/my-data implementado e funcional
+- [ ] **AC2:** Validação rigorosa de token específico para solicitação de dados
+- [ ] **AC3:** Retorno completo de dados pessoais em formato estruturado (JSON)
+- [ ] **AC4:** Rate limiting aplicado (máximo 3 solicitações por hora por usuário)
+- [ ] **AC5:** Logs de auditoria registrados para cada solicitação
+- [ ] **AC6:** Tratamento adequado de erros (token inválido, usuário não encontrado)
+- [ ] **AC7:** Conformidade com LGPD Article 18, VI (direito à portabilidade)
+- [ ] **AC8:** Documentação Swagger completa com exemplos de uso
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro e exceções
-- [ ] Teste de validações e regras de negócio
-- [ ] Teste de integração com componentes
+- [ ] Teste de endpoint com token válido retorna dados completos
+- [ ] Teste de endpoint com token inválido retorna 401 Unauthorized
+- [ ] Teste de endpoint com token expirado retorna 401 Unauthorized
+- [ ] Teste de validação de rate limiting (máximo 3 por hora)
+- [ ] Teste de tratamento de exceções e logs de auditoria
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end da funcionalidade
-- [ ] Teste de performance e carga
-- [ ] Teste de segurança e compliance
+- [ ] Teste end-to-end: geração de token → solicitação → retorno de dados
+- [ ] Teste de performance: resposta em < 200ms para datasets típicos
+- [ ] Teste de segurança: tentativas de acesso não autorizado
+- [ ] Teste de compliance LGPD: estrutura e completude dos dados
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade core
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações específicas
+- [ ] **src/main/java/com/blog/api/newsletter/controller/PersonalDataController.java** - Endpoint principal
+- [ ] **src/main/java/com/blog/api/newsletter/service/PersonalDataService.java** - Lógica de agregação de dados
+- [ ] **src/main/java/com/blog/api/newsletter/config/RateLimitConfig.java** - Configuração de rate limiting
+- [ ] **src/test/java/com/blog/api/newsletter/controller/PersonalDataControllerTest.java** - Testes unitários
+- [ ] **src/test/java/com/blog/api/newsletter/integration/PersonalDataIntegrationTest.java** - Testes de integração
 
 ## 📚 Documentação para IA
 
@@ -57,11 +66,26 @@ Criar endpoint GET /api/newsletter/my-data para solicitação de dados pessoais.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Criar endpoint GET /api/newsletter/my-data para solicitação de dados pessoais. - Implementar seguindo rigorosamente os padrões arquiteturais estabelecidos no projeto.
+Desenvolver endpoint RESTful seguro para permitir que usuários solicitem acesso a todos os seus dados pessoais em conformidade com LGPD Article 18, VI. O endpoint deve validar tokens específicos, aplicar rate limiting, registrar logs de auditoria e retornar dados em formato estruturado para portabilidade.
+
+### **Estrutura do Endpoint:**
+```java
+@GetMapping("/my-data")
+@Operation(summary = "Solicitar dados pessoais (LGPD Article 18, VI)")
+public ResponseEntity<PersonalDataResponse> getMyPersonalData(
+    @RequestHeader("X-Data-Request-Token") String token
+) {
+    // Validar token específico
+    // Aplicar rate limiting
+    // Buscar dados completos
+    // Registrar log de auditoria
+    // Retornar dados estruturados
+}
+```
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar existente no projeto
-- **Referência 2:** Padrões a seguir e reutilizar
+- **NewsletterController:** Padrões de validação e tratamento de erros
+- **ConsentController:** Estrutura de logs de auditoria e compliance LGPD
 
 ## 🔍 Validação e Testes
 

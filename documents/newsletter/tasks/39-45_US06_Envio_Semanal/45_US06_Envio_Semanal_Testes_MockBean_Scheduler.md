@@ -14,36 +14,52 @@ Implementar testes com @MockBean para scheduler.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
+- [ ] Testes unitários com @MockBean para TaskScheduler
+- [ ] Testes de configuração do Spring Scheduler
+- [ ] Mocks para NewsletterService.sendWeeklyDigest()
+- [ ] Testes de cron expression validation
+- [ ] Testes de exception handling em scheduled jobs
+- [ ] Testes de métricas e logging
+- [ ] Testes de distributed locking
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências
+- **Com Spring Test:** @SpringBootTest e @MockBean
+- **Com Mockito:** Mocking de services e repositories
+- **Com TestContainers:** Testes de integração com Redis (opcional)
+- **Com AssertJ:** Assertions avançadas para validações
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando
-- [ ] **AC4:** Testes passando
-- [ ] **AC5:** Documentação atualizada
+- [ ] **AC1:** @MockBean configurado para TaskScheduler sem execução real
+- [ ] **AC2:** Testes verificam chamadas para NewsletterService.sendWeeklyDigest()
+- [ ] **AC3:** Validação de cron expressions válidas e inválidas
+- [ ] **AC4:** Testes de exception handling (service failures)
+- [ ] **AC5:** Verificação de logs estruturados em testes
+- [ ] **AC6:** Testes de distributed locking behavior
+- [ ] **AC7:** Cobertura de código ≥ 95% para classes de scheduling
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro
-- [ ] Teste de validações
+- [ ] Teste de execução do método @Scheduled com mock
+- [ ] Teste de validação de cron expression
+- [ ] Teste de holiday checking logic
+- [ ] Teste de exception handling (NewsletterService falha)
+- [ ] Teste de logging com MDC context
+- [ ] Teste de métricas collection
+- [ ] Teste de distributed lock acquisition/release
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end
-- [ ] Teste de performance
+- [ ] Teste de contexto Spring com scheduler habilitado
+- [ ] Teste de configuração de beans do scheduler
+- [ ] Teste end-to-end com MailHog (opcional)
+- [ ] Teste de performance do job completo
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade
-- [ ] **Arquivo de teste:** Testes unitários e integração
+- [ ] **src/test/java/com/blog/api/newsletter/service/NewsletterScheduledServiceTest.java:** Testes unitários
+- [ ] **src/test/java/com/blog/api/newsletter/config/NewsletterSchedulerConfigTest.java:** Testes de configuração
+- [ ] **src/test/java/com/blog/api/newsletter/integration/WeeklyDigestSchedulingIntegrationTest.java:** Testes integração
+- [ ] **src/test/resources/application-test.properties:** Configurações para teste
+- [ ] **src/test/java/com/blog/api/newsletter/TestSchedulerConfig.java:** Configuração de teste
 
 ## 📚 Documentação para IA
 
@@ -53,22 +69,50 @@ Implementar testes com @MockBean para scheduler.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Implementar testes com @MockBean para scheduler. - Seguir rigorosamente os padrões estabelecidos no projeto.
+1. Criar NewsletterScheduledServiceTest com:
+   ```java
+   @SpringBootTest
+   @MockBean(TaskScheduler.class)
+   class NewsletterScheduledServiceTest {
+       @MockBean NewsletterService newsletterService;
+       @Autowired NewsletterScheduledService scheduledService;
+   }
+   ```
+2. Implementar testes para:
+   - Validação de chamada do sendWeeklyDigest()
+   - Verificação de logs com @Slf4j e Logback testing
+   - Testes de exception handling com verify()
+   - Mock de distributed lock com ShedLock
+3. Criar TestSchedulerConfig para desabilitar scheduling real
+4. Usar @TestConfiguration para override de beans
+5. Implementar testes de métricas com Micrometer test utilities
+6. Adicionar testes de integração com @TestContainers (Redis)
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar no projeto
+- **Referência 1:** Testes existentes com @MockBean no projeto
+- **Referência 2:** Padrões de testes de services com Mockito
 
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação
-2. Validar funcionalidade
-3. Verificar integrações
+1. Executar testes unitários com `mvn test -Dtest=NewsletterScheduledServiceTest`
+2. Verificar cobertura de código com JaCoCo report
+3. Validar mocks são chamados corretamente (verify)
+4. Testar cenários de falha do NewsletterService
+5. Verificar logs são gerados nos testes
+6. Executar testes de integração com profile 'test'
+7. Validar que scheduler real não executa durante testes
+8. Verificar métricas são coletadas corretamente
 
 ### **Critérios de Sucesso:**
-- [ ] Funcionalidade implementada
-- [ ] Testes passando
-- [ ] Performance adequada
+- [ ] Todos os testes passam sem execução real do scheduler
+- [ ] Mocks verificam chamadas corretas aos services
+- [ ] Exception handling testado adequadamente
+- [ ] Logs estruturados validados em testes
+- [ ] Cobertura de código ≥ 95% para classes de scheduling
+- [ ] Testes executam rapidamente (< 30s total)
+- [ ] Distributed locking behavior validado
+- [ ] Métricas de teste funcionais
 
 ## ✅ Definition of Done
 

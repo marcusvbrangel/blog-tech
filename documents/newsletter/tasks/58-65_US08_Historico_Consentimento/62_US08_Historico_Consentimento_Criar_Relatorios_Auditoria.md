@@ -14,40 +14,56 @@ Criar relatórios de auditoria para compliance.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
-- [ ] Testes e documentação
+- [ ] AuditReportService para geração de relatórios
+- [ ] Template engine para relatórios (PDF, CSV, Excel)
+- [ ] ReportController com endpoints para diferentes tipos de relatório
+- [ ] Agregadores estatísticos (count, group by action type, período)
+- [ ] Scheduler para relatórios periódicos automáticos
+- [ ] Sistema de notificação para admins quando relatórios ficam prontos
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências técnicas
+- **Com Apache POI:** Geração de relatórios Excel
+- **Com iText/Flying Saucer:** Geração de relatórios PDF
+- **Com Spring Scheduler:** Relatórios automatizados
+- **Com ConsentLogRepository:** Queries agregadas para stats
+- **Com Redis:** Cache de relatórios gerados recentemente
+- **Com EmailService:** Envio de relatórios via email para admins
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando adequadamente
-- [ ] **AC4:** Testes passando com cobertura adequada
-- [ ] **AC5:** Documentação atualizada e completa
+- [ ] **AC1:** Relatório de atividade por período (diário, semanal, mensal)
+- [ ] **AC2:** Estatísticas agregadas: total subscriptions, unsubscriptions, confirmations
+- [ ] **AC3:** Breakdown por action type com percentuais
+- [ ] **AC4:** Top IPs com mais atividade (para detectar anomalias)
+- [ ] **AC5:** Relatório em múltiplos formatos: PDF, CSV, Excel
+- [ ] **AC6:** Filtros personalizados: data, email domain, action type
+- [ ] **AC7:** Relatórios agendados automaticamente (compliance mensal)
+- [ ] **AC8:** Assinatura digital nos relatórios para non-repudiation
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro e exceções
-- [ ] Teste de validações e regras de negócio
-- [ ] Teste de integração com componentes
+- [ ] Teste de geração de relatório PDF com dados mock
+- [ ] Teste de geração de relatório CSV com diferentes filtros
+- [ ] Teste de cálculos estatísticos e agregadores
+- [ ] Teste de validação de parâmetros de relatório
+- [ ] Teste de template rendering com dados reais
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end da funcionalidade
-- [ ] Teste de performance e carga
-- [ ] Teste de segurança e compliance
+- [ ] Teste end-to-end: requisição -> geração -> download
+- [ ] Teste de performance com datasets grandes (100k+ logs)
+- [ ] Teste de agendamento automático de relatórios
+- [ ] Teste de integridade dos dados nos relatórios gerados
+- [ ] Teste de controle de acesso para diferentes tipos de relatório
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade core
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações específicas
+- [ ] **src/main/java/com/blog/api/domain/newsletter/service/AuditReportService.java** - Service
+- [ ] **src/main/java/com/blog/api/presentation/admin/ReportController.java** - Controller
+- [ ] **src/main/java/com/blog/api/infrastructure/report/ReportGenerator.java** - Generator
+- [ ] **src/main/java/com/blog/api/infrastructure/report/template/** - Templates
+- [ ] **src/main/java/com/blog/api/application/admin/dto/ReportRequestDto.java** - DTOs
+- [ ] **src/main/java/com/blog/api/infrastructure/scheduler/ReportScheduler.java** - Scheduler
+- [ ] **src/main/resources/templates/reports/** - Template files
+- [ ] **src/test/java/com/blog/api/domain/newsletter/service/AuditReportServiceTest.java** - Testes
 
 ## 📚 Documentação para IA
 
@@ -57,11 +73,13 @@ Criar relatórios de auditoria para compliance.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Criar relatórios de auditoria para compliance. - Implementar seguindo rigorosamente os padrões arquiteturais estabelecidos no projeto.
+Desenvolver sistema completo de geração de relatórios de auditoria para compliance LGPD, com múltiplos formatos, estatísticas agregadas, agendamento automático e controles de segurança, facilitando demonstração de conformidade para auditores e órgãos reguladores.
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar existente no projeto
-- **Referência 2:** Padrões a seguir e reutilizar
+- **Template Engines:** Reutilizar padrões de template já implementados
+- **File Generation:** Seguir padrões de geração de arquivos existentes
+- **Scheduler Config:** Aplicar configurações de scheduling já estabelecidas
+- **Admin Controllers:** Seguir estrutura de endpoints administrativos
 
 ## 🔍 Validação e Testes
 

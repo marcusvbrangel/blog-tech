@@ -14,36 +14,48 @@ Criar entidade NewsletterConsentLog para auditoria LGPD.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
+- [ ] Entidade JPA NewsletterConsentLog
+- [ ] Campos para auditoria LGPD completa
+- [ ] Índices de performance para consultas
+- [ ] Relacionamento com NewsletterSubscriber
+- [ ] Configuração de retenção de dados
+- [ ] Anotações para criptografia de campos sensíveis
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências
+- **Com NewsletterSubscriber:** Relacionamento many-to-one para rastreamento
+- **Com ConsentimentoRequest:** Persistência de dados de consentimento
+- **Com sistema de criptografia:** Proteção de dados pessoais
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando
-- [ ] **AC4:** Testes passando
-- [ ] **AC5:** Documentação atualizada
+- [ ] **AC1:** Entidade deve incluir: id, subscriberId, consentType, email, timestamp, ipAddress, userAgent
+- [ ] **AC2:** Campos de auditoria: action, previousValue, newValue, reason, legalBasis
+- [ ] **AC3:** Criptografia em campos: email, ipAddress, userAgent (dados pessoais)
+- [ ] **AC4:** Índices para: email, subscriberId, timestamp, consentType
+- [ ] **AC5:** Retenção configurada para 5 anos (requisito LGPD)
+- [ ] **AC6:** Soft delete não permitido (log permanente para compliance)
+- [ ] **AC7:** Campos não nulos: consentType, timestamp, action, legalBasis
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro
-- [ ] Teste de validações
+- [ ] Teste de criação de log de consentimento
+- [ ] Teste de validação de campos obrigatórios
+- [ ] Teste de relacionamento com NewsletterSubscriber
+- [ ] Teste de criptografia de campos sensíveis
+- [ ] Teste de enumerações (ConsentType, LegalBasis)
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end
-- [ ] Teste de performance
+- [ ] Teste de persistência no banco de dados
+- [ ] Teste de consultas com índices
+- [ ] Teste de performance com grandes volumes
+- [ ] Teste de retenção de dados
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade
-- [ ] **Arquivo de teste:** Testes unitários e integração
+- [ ] **src/main/java/com/blog/api/newsletter/entity/NewsletterConsentLog.java** - Entidade principal
+- [ ] **src/main/java/com/blog/api/newsletter/enums/LegalBasis.java** - Base legal LGPD
+- [ ] **src/main/resources/db/migration/V008__create_newsletter_consent_log.sql** - Migração do banco
+- [ ] **src/test/java/com/blog/api/newsletter/entity/NewsletterConsentLogTest.java** - Testes unitários
+- [ ] **src/test/java/com/blog/api/newsletter/repository/NewsletterConsentLogRepositoryTest.java** - Testes de repositório
 
 ## 📚 Documentação para IA
 
@@ -53,17 +65,80 @@ Criar entidade NewsletterConsentLog para auditoria LGPD.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Criar entidade NewsletterConsentLog para auditoria LGPD. - Seguir rigorosamente os padrões estabelecidos no projeto.
 
-### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar no projeto
+**NewsletterConsentLog.java:**
+```java
+@Entity
+@Table(name = "newsletter_consent_log", indexes = {
+    @Index(name = "idx_consent_email", columnList = "email"),
+    @Index(name = "idx_consent_subscriber", columnList = "subscriber_id"),
+    @Index(name = "idx_consent_timestamp", columnList = "timestamp")
+})
+public class NewsletterConsentLog {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subscriber_id")
+    private NewsletterSubscriber subscriber;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ConsentType consentType;
+    
+    @Convert(converter = EncryptedStringConverter.class)
+    @Column(nullable = false)
+    private String email;
+    
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
+    
+    @Convert(converter = EncryptedStringConverter.class)
+    private String ipAddress;
+    
+    @Convert(converter = EncryptedStringConverter.class)
+    private String userAgent;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ConsentAction action;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private LegalBasis legalBasis;
+    
+    private String previousValue;
+    private String newValue;
+    private String reason;
+    private String dataProcessingPurpose;
+    private Integer retentionPeriod;
+}
+```
+
+**LegalBasis.java:**
+```java
+public enum LegalBasis {
+    CONSENT("Consentimento do titular"),
+    LEGITIMATE_INTERESTS("Interesse legítimo"),
+    CONTRACT("Execução de contrato"),
+    LEGAL_OBLIGATION("Cumprimento de obrigação legal");
+}
+```
+
+### **Referências de Código:**
+- **NewsletterSubscriber:** Padrão de entidade base do projeto
+- **BaseEntity:** Campos de auditoria padrão
 
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação
-2. Validar funcionalidade
-3. Verificar integrações
+1. Executar migração do banco: `mvn flyway:migrate`
+2. Testar persistência: `mvn test -Dtest=NewsletterConsentLogTest`
+3. Validar criptografia de campos sensíveis
+4. Testar relacionamento com NewsletterSubscriber
+5. Verificar performance de consultas com índices
+6. Testar consultas de auditoria por período
 
 ### **Critérios de Sucesso:**
 - [ ] Funcionalidade implementada

@@ -9,44 +9,59 @@
 - **Sprint:** Sprint 2
 
 ## 🎯 Objetivo
-Implementar rate limiting para envios em massa de emails.
+Implementar sistema de rate limiting inteligente para controlar envios em massa de emails, evitando blacklisting do servidor SMTP e garantindo delivery rate otimizado conforme limites do provedor.
 
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
+- [ ] Componente EmailRateLimiter com algoritmo Token Bucket
+- [ ] Configuração por minuto/hora baseada no provedor SMTP
+- [ ] Integração com Redis para controle distribuído
+- [ ] Backpressure mechanism para pausar envios quando limite atingido
+- [ ] Métricas em tempo real de rate limiting
+- [ ] Configuração dinâmica via properties (sem restart)
+- [ ] Circuit breaker para falhas consecutivas de SMTP
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências
+- **Com Redis:** Armazenamento distribuído dos contadores
+- **Com EmailService:** Interceptação antes do envio real
+- **Com NewsletterService:** Rate limiting no processamento bulk
+- **Com Spring Boot Actuator:** Métricas e health checks
+- **Com Configuration Properties:** Configuração externa flexível
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando
-- [ ] **AC4:** Testes passando
-- [ ] **AC5:** Documentação atualizada
+- [ ] **AC1:** Rate limiting configurável (ex: 1000 emails/hora)
+- [ ] **AC2:** Algoritmo Token Bucket com refill automático
+- [ ] **AC3:** Funciona em ambiente distribuído (múltiplas instâncias)
+- [ ] **AC4:** Backpressure pausa processamento quando limite atingido
+- [ ] **AC5:** Métricas expostas: emails/min, tokens restantes, delays
+- [ ] **AC6:** Configuração dinâmica sem restart da aplicação
+- [ ] **AC7:** Graceful degradation em caso de falha do Redis
+- [ ] **AC8:** Logs detalhados para debugging e auditoria
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro
-- [ ] Teste de validações
-- [ ] Teste de integrações
+- [ ] Teste de Token Bucket algorithm (acquire/release)
+- [ ] Teste de rate limiting com diferentes configurações
+- [ ] Teste de backpressure quando limite atingido
+- [ ] Teste de recovery após refill do bucket
+- [ ] Mock do Redis para testes isolados
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end
-- [ ] Teste de performance
-- [ ] Teste de segurança
+- [ ] Teste com Redis real em ambiente distribuído
+- [ ] Teste de concorrência com múltiplas threads
+- [ ] Teste de performance sob alta carga
+- [ ] Teste de resiliência com falha do Redis
+- [ ] Teste de configuração dinâmica em runtime
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações necessárias
+- [ ] **src/main/java/com/blog/api/email/ratelimiter/EmailRateLimiter.java:** Componente principal
+- [ ] **src/main/java/com/blog/api/email/ratelimiter/TokenBucketRateLimiter.java:** Algoritmo
+- [ ] **src/main/java/com/blog/api/config/RateLimitingConfig.java:** Configurações
+- [ ] **src/main/java/com/blog/api/email/service/EmailService.java:** Integração
+- [ ] **src/main/resources/application.yml:** Properties de rate limiting
+- [ ] **src/test/java/com/blog/api/email/ratelimiter/RateLimiterTest.java:** Testes
 
 ## 📚 Documentação para IA
 
@@ -56,19 +71,22 @@ Implementar rate limiting para envios em massa de emails.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Implementar rate limiting para envios em massa de emails. - Seguir rigorosamente os padrões estabelecidos no projeto.
+Implementar @Component com Token Bucket usando RedisTemplate. Usar @ConfigurationProperties para configuração flexível. Interceptar EmailService com aspect ou decorator pattern. Expor métricas via Micrometer.
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar no projeto
-- **Referência 2:** Padrões a seguir
+- **Referência 1:** Configuração Redis existente no projeto
+- **Referência 2:** EmailService métodos - padrões de integração
+- **Referência 3:** Google Guava RateLimiter, Spring Cloud Gateway rate limiting
 
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Executar implementação
-2. Validar funcionalidade
-3. Verificar integrações
-4. Confirmar performance
+1. Configurar rate limit baixo (ex: 10 emails/min)
+2. Disparar envio em massa de newsletter
+3. Verificar que envios são pausados quando limite atingido
+4. Monitorar métricas de rate limiting
+5. Validar que refill funciona corretamente
+6. Testar configuração dinâmica via properties
 
 ### **Critérios de Sucesso:**
 - [ ] Funcionalidade implementada
@@ -139,7 +157,7 @@ Implementar rate limiting para envios em massa de emails. - Seguir rigorosamente
 *[Lista de impedimentos, se houver]*
 
 ### **Next Steps:**
-*[Próxima tarefa da sequência]*
+*[Tarefa 37: Configurar processamento assíncrono com @Async]*
 
 ---
 

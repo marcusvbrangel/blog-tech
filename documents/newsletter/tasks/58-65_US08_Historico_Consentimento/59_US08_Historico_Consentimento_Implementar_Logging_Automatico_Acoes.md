@@ -14,40 +14,54 @@ Implementar logging automático de todas as ações de consentimento.
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Componente principal da tarefa
-- [ ] Integrações necessárias
-- [ ] Configurações específicas
-- [ ] Validações e tratamento de erros
-- [ ] Testes e documentação
+- [ ] Event-driven logging system usando Spring Events
+- [ ] ConsentActionEvent para diferentes tipos de ações
+- [ ] ConsentEventListener para processamento assíncrono
+- [ ] Enumeração ConsentActionType (SUBSCRIBE, UNSUBSCRIBE, CONFIRM, etc.)
+- [ ] Service para processamento e persistência dos eventos
+- [ ] Configuração de thread pool para processamento assíncrono
 
 ### **Integrações Necessárias:**
-- **Com sistema principal:** Integração específica
-- **Com componentes relacionados:** Dependências técnicas
+- **Com ConsentAuditService:** Utilizar service de captura de IP/User-Agent
+- **Com Spring Events:** Implementar publisher/listener pattern
+- **Com NewsletterService:** Integrar eventos nos métodos existentes
+- **Com database:** Persistência transacional dos logs
+- **Com Redis:** Cache para otimização de consultas de audit
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Critério específico e testável
-- [ ] **AC2:** Funcionalidade implementada corretamente
-- [ ] **AC3:** Integração funcionando adequadamente
-- [ ] **AC4:** Testes passando com cobertura adequada
-- [ ] **AC5:** Documentação atualizada e completa
+- [ ] **AC1:** Logar automaticamente toda ação de subscribe sem intervenção manual
+- [ ] **AC2:** Logar automaticamente toda ação de unsubscribe com razão
+- [ ] **AC3:** Logar automaticamente confirmações de email com token validation
+- [ ] **AC4:** Processamento assíncrono para não impactar performance da API
+- [ ] **AC5:** Incluir contexto completo: timestamp, IP, User-Agent, email, action type
+- [ ] **AC6:** Garantir atomicidade: se a ação falha, o log não é persistido
+- [ ] **AC7:** Implementar retry mechanism para falhas de logging
+- [ ] **AC8:** Logar tentativas falhadas de ações (para análise de segurança)
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste da funcionalidade principal
-- [ ] Teste de cenários de erro e exceções
-- [ ] Teste de validações e regras de negócio
-- [ ] Teste de integração com componentes
+- [ ] Teste de publicação de eventos para cada tipo de ação
+- [ ] Teste de listener com processamento assíncrono
+- [ ] Teste de fallback quando logging falha
+- [ ] Teste de serialização/deserialização dos eventos
+- [ ] Teste de validação de dados obrigatórios nos eventos
 
 ### **Testes de Integração:**
-- [ ] Teste end-to-end da funcionalidade
-- [ ] Teste de performance e carga
-- [ ] Teste de segurança e compliance
+- [ ] Teste end-to-end: subscribe -> evento -> log persistido
+- [ ] Teste de rollback: falha na ação não gera log
+- [ ] Teste de performance com alta concorrência
+- [ ] Teste de retry mechanism em caso de falha de persistência
+- [ ] Teste de integridade referencial entre logs e subscribers
 
 ## 🔗 Arquivos Afetados
-- [ ] **Arquivo principal:** Implementação da funcionalidade core
-- [ ] **Arquivo de teste:** Testes unitários e integração
-- [ ] **Arquivo de configuração:** Configurações específicas
+- [ ] **src/main/java/com/blog/api/domain/newsletter/event/ConsentActionEvent.java** - Event class
+- [ ] **src/main/java/com/blog/api/domain/newsletter/event/ConsentEventListener.java** - Event listener
+- [ ] **src/main/java/com/blog/api/domain/newsletter/enums/ConsentActionType.java** - Enum para tipos
+- [ ] **src/main/java/com/blog/api/domain/newsletter/service/ConsentLoggingService.java** - Service
+- [ ] **src/main/java/com/blog/api/domain/newsletter/service/NewsletterService.java** - Atualizar com events
+- [ ] **src/main/java/com/blog/api/infrastructure/config/AsyncConfig.java** - Config assíncrona
+- [ ] **src/test/java/com/blog/api/domain/newsletter/event/ConsentEventListenerTest.java** - Testes
 
 ## 📚 Documentação para IA
 
@@ -57,11 +71,13 @@ Implementar logging automático de todas as ações de consentimento.
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-Implementar logging automático de todas as ações de consentimento. - Implementar seguindo rigorosamente os padrões arquiteturais estabelecidos no projeto.
+Implementar sistema de logging automático baseado em eventos para capturar todas as ações de consentimento sem acoplamento direto, garantindo rastreabilidade completa e conformidade com LGPD, processando de forma assíncrona para manter performance.
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** Código similar existente no projeto
-- **Referência 2:** Padrões a seguir e reutilizar
+- **Spring Events:** Utilizar @EventListener e @Async para processamento
+- **Service Layer:** Seguir padrões de service já estabelecidos no projeto
+- **Exception Handling:** Aplicar mesmo padrão de tratamento de erros
+- **Transaction Management:** Usar @Transactional adequadamente
 
 ## 🔍 Validação e Testes
 
