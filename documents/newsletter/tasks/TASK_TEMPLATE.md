@@ -54,23 +54,6 @@
 - **Arquitetura:** Clean Architecture (Controller → Service → Repository)
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
-### **Convenções de Código:**
-```java
-// Exemplo de padrões seguidos no projeto
-@Entity
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class ExampleEntity {
-    // Implementação seguindo padrão do projeto
-}
-
-// DTOs como Java Records
-public record ExampleRequest(
-    @NotBlank String field1,
-    @Email String field2
-) {}
-```
 
 ### **Implementação Esperada:**
 [Guidelines específicas sobre como a IA deve implementar esta tarefa]
@@ -78,26 +61,6 @@ public record ExampleRequest(
 ### **Exemplos de Código Existente:**
 - **Referência 1:** [Caminho do arquivo + linha específica]
 - **Referência 2:** [Caminho do arquivo + linha específica]
-
-## ⚙️ Configuration & Setup
-
-### **Database Changes:** (se aplicável)
-```sql
--- Migration script necessária
-[SQL commands]
-```
-
-### **Properties/Configuration:** (se aplicável)
-```yaml
-# application.yml changes
-[configurações necessárias]
-```
-
-### **Dependencies:** (se aplicável)
-```xml
-<!-- pom.xml dependencies -->
-[dependências Maven necessárias]
-```
 
 ## 🔍 Validação e Testes
 
@@ -110,15 +73,6 @@ public record ExampleRequest(
 - [ ] [Critério 1 verificável]
 - [ ] [Critério 2 verificável]
 - [ ] [Critério 3 verificável]
-
-### **Comandos de Teste:**
-```bash
-# Testes unitários específicos
-mvn test -Dtest="*[NomeDaTarefa]*Test"
-
-# Testes de integração
-mvn test -Dtest="*[NomeDaTarefa]*IntegrationTest"
-```
 
 ## ✅ Definition of Done
 

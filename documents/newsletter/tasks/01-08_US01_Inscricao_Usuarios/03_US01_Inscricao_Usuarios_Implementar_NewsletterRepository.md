@@ -9,146 +9,106 @@
 - **Sprint:** Sprint 1
 
 ## 🎯 Objetivo
-Criar o repository interface `NewsletterSubscriberRepository` usando Spring Data JPA com queries customizadas necessárias para gerenciar inscrições da newsletter, incluindo métodos para busca, filtros e operações LGPD.
+Implementar o repositório NewsletterSubscriberRepository usando Spring Data JPA, incluindo queries customizadas para busca por email, status e operações específicas da newsletter.
 
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Interface NewsletterSubscriberRepository
-- [ ] Queries customizadas com @Query
-- [ ] Métodos de busca por email e status
-- [ ] Métodos para filtros administrativos
-- [ ] Métodos para compliance LGPD (soft delete)
-- [ ] Métodos para métricas e relatórios
-
+- [ ] Interface NewsletterSubscriberRepository extends JpaRepository
+- [ ] Query method findByEmail para busca por email
+- [ ] Query method findByStatus para busca por status
+- [ ] Query customizada com filtros para administração
+- [ ] Query para soft delete (LGPD compliance)
+- [ ] Métodos de contagem para estatísticas
 
 ### **Integrações Necessárias:**
-- **Com Spring Data JPA:** Para operações de banco automáticas
-- **Com NewsletterSubscriber:** Entity principal
-- **Com Pagination:** Para APIs administrativas
+- **Com JPA:** Extensão de JpaRepository
+- **Com Entity:** NewsletterSubscriber
+- **Com Service:** Usado pelo NewsletterService
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Repository interface criado estendendo JpaRepository
-- [ ] **AC2:** Método findByEmail implementado para busca por email único
-- [ ] **AC3:** Método findByStatus para filtrar por status de inscrição
-- [ ] **AC4:** Query customizada com filtros para admin implementada
-- [ ] **AC5:** Métodos LGPD (soft delete) implementados
-- [ ] **AC6:** Métodos para métricas e relatórios implementados
+- [ ] **AC1:** Interface NewsletterSubscriberRepository estendendo JpaRepository
+- [ ] **AC2:** Método findByEmail retornando Optional<NewsletterSubscriber>
+- [ ] **AC3:** Método findByStatus retornando List<NewsletterSubscriber>
+- [ ] **AC4:** Query customizada para filtros de administração (status, data)
+- [ ] **AC5:** Método para soft delete (marcar como DELETED)
+- [ ] **AC6:** Métodos de contagem para estatísticas
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste findByEmail - encontrar subscriber existente
-- [ ] Teste findByEmail - não encontrar subscriber inexistente
-- [ ] Teste findByStatus - filtrar por CONFIRMED
-- [ ] Teste findByStatus - filtrar por PENDING
-- [ ] Teste existsByEmail - email existente retorna true
-- [ ] Teste existsByEmail - email inexistente retorna false
+- [ ] Teste de busca por email existente
+- [ ] Teste de busca por email inexistente
+- [ ] Teste de busca por status
+- [ ] Teste de query customizada com filtros
 
 ### **Testes de Integração:**
-- [ ] Teste findWithFilters - todos os filtros
-- [ ] Teste findWithFilters - apenas status
-- [ ] Teste findWithFilters - apenas data range
-- [ ] Teste markAsDeleted - soft delete funcionando
-- [ ] Teste countConfirmedSince - contagem correta
-- [ ] Teste paginação funcionando
+- [ ] Teste de persistência de NewsletterSubscriber
+- [ ] Teste de queries com dados reais
+- [ ] Teste de soft delete
+- [ ] Teste de contagem
 
 ## 🔗 Arquivos Afetados
-- [ ] **src/main/java/com/blog/api/repository/NewsletterSubscriberRepository.java:** Novo repository
-- [ ] **src/test/java/com/blog/api/repository/NewsletterSubscriberRepositoryTest.java:** Testes unitários
+- [ ] **src/main/java/com/blog/api/repository/NewsletterSubscriberRepository.java:** Novo repositório
+- [ ] **src/test/java/com/blog/api/repository/NewsletterSubscriberRepositoryTest.java:** Testes
 
 ## 📚 Documentação para IA
 
 ### **Contexto do Projeto:**
-- **Stack:** Spring Data JPA + PostgreSQL + H2 (testes)
-- **Padrões:** Repository pattern com JpaRepository
-- **Queries:** @Query para custom queries complexas
-
-### **Convenções de Código:**
-```java
-// Padrão seguido no projeto - exemplo UserRepository
-@Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByUsername(String username);
-    Optional<User> findByEmail(String email);
-    boolean existsByUsername(String username);
-    boolean existsByEmail(String email);
-    
-    @Query("SELECT u FROM User u WHERE u.role = :role")
-    List<User> findByRole(@Param("role") UserRole role);
-}
-```
+- **Stack:** Java 21 + Spring Boot 3.2 + PostgreSQL + Redis
+- **Arquitetura:** Clean Architecture (Controller → Service → Repository)
+- **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-- Seguir padrão dos outros repositories do projeto
-- Usar @Query para queries complexas
-- Implementar paginação corretamente
-- Incluir métodos para LGPD compliance
+Seguir padrões estabelecidos nos repositórios existentes. Utilizar:
+- Spring Data JPA com query methods
+- @Query annotations para queries customizadas
+- Nomenclatura consistente com outros repositórios
+- Paginação para listagens administrativas
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** src/main/java/com/blog/api/repository/UserRepository.java
-- **Referência 2:** src/main/java/com/blog/api/repository/PostRepository.java (queries complexas)
-
-## ⚙️ Configuration & Setup
-
-### **Database Changes:**
-```sql
--- Indexes serão criados em migration posterior (tarefa 79)
--- Por enquanto, apenas definir queries JPA
-```
-
-### **Dependencies:**
-```xml
-<!-- Dependências já existem no projeto -->
-<!-- spring-boot-starter-data-jpa -->
-```
+- **Referência 1:** `/src/main/java/com/blog/api/repository/UserRepository.java` (para estrutura base)
+- **Referência 2:** `/src/main/java/com/blog/api/repository/PostRepository.java` (para queries customizadas)
 
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Criar subscribers de teste no banco H2
-2. Testar cada método do repository
-3. Verificar se queries customizadas funcionam
-4. Testar paginação e filtros
-5. Verificar performance das queries
+1. Compilar projeto e verificar ausência de erros
+2. Executar testes de repositório
+3. Verificar queries no log SQL
+4. Testar operações CRUD básicas
 
 ### **Critérios de Sucesso:**
-- [ ] Todos os métodos funcionam corretamente
-- [ ] Queries customizadas retornam dados corretos
-- [ ] Paginação funciona
-- [ ] Soft delete funciona
-- [ ] Não há N+1 query problems
-
-### **Comandos de Teste:**
-```bash
-# Testes unitários específicos
-mvn test -Dtest="NewsletterSubscriberRepositoryTest"
-
-# Testes de integração JPA
-mvn test -Dtest="*Repository*Test"
-```
+- [ ] Compilação sem erros
+- [ ] Testes de repositório passando
+- [ ] Queries SQL corretas no log
+- [ ] Operações CRUD funcionais
 
 ## ✅ Definition of Done
 
 ### **Código:**
-- [ ] Interface NewsletterSubscriberRepository implementada
-- [ ] Todos os métodos necessários criados
-- [ ] Queries customizadas funcionando
-- [ ] @Repository annotation aplicada
+- [ ] Implementação completa seguindo padrões do projeto
+- [ ] Code review interno (self-review)
+- [ ] Sem warnings ou erros de compilação
+- [ ] Logging apropriado implementado
 
 ### **Testes:**
-- [ ] Testes unitários passando
-- [ ] Testes de integração JPA passando
-- [ ] Cobertura ≥ 85% para métodos testáveis
+- [ ] Testes unitários implementados e passando
+- [ ] Testes de integração implementados (se aplicável)
+- [ ] Cobertura de código ≥ 85% para componentes novos
+- [ ] Todos os ACs validados via testes
 
 ### **Documentação:**
-- [ ] Javadoc para métodos customizados
-- [ ] Comentários sobre queries complexas
+- [ ] Javadoc atualizado para métodos públicos
+- [ ] Swagger/OpenAPI atualizado (se endpoint)
+- [ ] README atualizado (se necessário)
+- [ ] Este arquivo de tarefa atualizado com notas de implementação
 
 ### **Quality Gates:**
-- [ ] Compilação sem warnings
-- [ ] Queries executando corretamente
-- [ ] Performance aceitável
+- [ ] Performance dentro dos SLAs (< 200ms para endpoints)
+- [ ] Security validation (input validation, authorization)
+- [ ] OWASP compliance (se aplicável)
+- [ ] Cache strategy implementada (se aplicável)
 
 ## 📊 Métricas
 
@@ -161,13 +121,19 @@ mvn test -Dtest="*Repository*Test"
 - **Real:** _____ *(a ser preenchido após implementação)*
 
 ## 📝 Notas de Implementação
-*[Este espaço será preenchido durante a implementação]*
+*[Este espaço será preenchido durante a implementação com descobertas, decisões técnicas, e observações importantes]*
 
-### **Queries Performance:**
-*[Notas sobre performance das queries customizadas]*
+### **Decisões Técnicas:**
+- [Decisão 1: justificativa]
+- [Decisão 2: justificativa]
 
-### **Indexing Strategy:**
-*[Estratégia de índices para otimização]*
+### **Descobertas:**
+- [Descoberta 1: impacto]
+- [Descoberta 2: impacto]
+
+### **Refactorings Necessários:**
+- [Refactoring 1: razão]
+- [Refactoring 2: razão]
 
 ## 📊 Status Tracking
 
@@ -177,12 +143,15 @@ mvn test -Dtest="*Repository*Test"
 - [ ] 👀 **Code Review** - Aguardando revisão
 - [ ] ✅ **Done** - Concluída e validada
 
+### **Bloqueadores:**
+*[Lista de impedimentos, se houver]*
+
 ### **Next Steps:**
-- Tarefa 04: Implementar NewsletterService.subscribe() (usará este repository)
-- Tarefa 24: Criar endpoint admin (usará queries de filtro)
+*[Tarefa 04: Implementar NewsletterService.subscribe()]*
 
 ---
 
 **Criado em:** Agosto 2025  
 **Última Atualização:** Agosto 2025  
-**Responsável:** AI-Driven Development
+**Responsável:** AI-Driven Development  
+**Reviewer:** [Nome do reviewer, se aplicável]

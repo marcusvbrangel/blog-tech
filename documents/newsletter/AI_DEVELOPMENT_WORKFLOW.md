@@ -261,7 +261,7 @@ public void subscribe(NewsletterSubscriptionRequest request) {
 
 - **Projeto Base**: Blog API REST (20h desenvolvimento, enterprise-grade)
 - **Metodologia**: [DEVELOPMENT_LOG.md](../DEVELOPMENT_LOG.md)
-- **Sprint Backlog**: [sprint_backlog_newsletter.md](../sprint_backlog_newsletter.md)
+- **Sprint Backlog**: [sprint_backlog_newsletter.md](sprint_backlog_newsletter.md)
 - **Arquitetura**: Seguir padrões estabelecidos em `/src/main/java/com/blog/api/`
 
 ---

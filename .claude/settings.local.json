@@ -46,7 +46,14 @@
       "Bash(./mvnw clean compile -q)",
       "Bash(for i in {49..53})",
       "Bash(do touch \"$i_US05_Envio_Automatico_Task$i.md\")",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(/home/base/Documentos/desenvolvimento/claude-estudo/first-project/generate_all_tasks.sh)",
+      "Bash(/home/base/Documentos/desenvolvimento/claude-estudo/first-project/create_remaining_tasks.sh:*)",
+      "Bash(/home/base/Documentos/desenvolvimento/claude-estudo/first-project/create_final_tasks.sh:*)",
+      "Bash(/home/base/Documentos/desenvolvimento/claude-estudo/first-project/create_last_tasks.sh:*)",
+      "Bash(/home/base/Documentos/desenvolvimento/claude-estudo/first-project/create_infra_tasks.sh:*)",
+      "Bash(./create_remaining_tasks.sh:*)",
+      "Bash(bash:*)"
     ],
     "deny": []
   }

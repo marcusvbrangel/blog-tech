@@ -9,45 +9,42 @@
 - **Sprint:** Sprint 1
 
 ## 🎯 Objetivo
-Criar a entidade JPA `NewsletterSubscriber` que será a base do sistema de newsletter, incluindo todos os campos necessários para LGPD compliance, auditoria e gestão de status de inscrição.
+Criar a entidade principal NewsletterSubscriber que representará os assinantes da newsletter no banco de dados, seguindo os padrões arquiteturais do projeto e incluindo todos os campos necessários para compliance LGPD.
 
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
-- [ ] Entidade JPA NewsletterSubscriber
-- [ ] Enum SubscriptionStatus
-- [ ] Campos de auditoria (@CreationTimestamp, @UpdateTimestamp)
-- [ ] Campos de consentimento LGPD
-- [ ] Validações de negócio
-- [ ] Builder pattern seguindo padrão do projeto
-
+- [ ] Entidade NewsletterSubscriber com anotações JPA
+- [ ] Enum SubscriptionStatus (PENDING, CONFIRMED, UNSUBSCRIBED, DELETED)
+- [ ] Builder pattern para construção da entidade
+- [ ] Campos de auditoria (CreatedDate, UpdatedDate)
+- [ ] Campos de compliance LGPD (consentimento, IP, User-Agent)
 
 ### **Integrações Necessárias:**
-- **Com Spring Data JPA:** Anotações JPA para persistência
-- **Com validation:** @Email, @NotNull para validações
-- **Com Lombok:** Builder pattern + getters/setters
+- **Com JPA:** Mapeamento para tabela newsletter_subscribers
+- **Com Enum:** SubscriptionStatus para controle de estado
+- **Com Auditoria:** Integração com AuditingEntityListener
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Entidade criada com todos os campos especificados
-- [ ] **AC2:** Enum SubscriptionStatus com todos os valores necessários
-- [ ] **AC3:** Constraints de banco aplicadas (unique email, not null)
-- [ ] **AC4:** Builder pattern implementado seguindo padrão do projeto
-- [ ] **AC5:** Campos de auditoria automáticos funcionando
-- [ ] **AC6:** Campos LGPD implementados conforme compliance
+- [ ] **AC1:** Entidade NewsletterSubscriber criada com todos os campos obrigatórios
+- [ ] **AC2:** Enum SubscriptionStatus com valores PENDING, CONFIRMED, UNSUBSCRIBED, DELETED
+- [ ] **AC3:** Builder pattern implementado seguindo padrão do projeto
+- [ ] **AC4:** Campos de auditoria automática (createdAt, updatedAt)
+- [ ] **AC5:** Campos LGPD implementados (consentGivenAt, consentIpAddress, consentUserAgent, privacyPolicyVersion)
+- [ ] **AC6:** Email único e validado com anotações Bean Validation
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
 - [ ] Teste de criação da entidade com Builder
-- [ ] Teste de validação de email
-- [ ] Teste de constraints de campos obrigatórios
+- [ ] Teste de validação de email (formato e unicidade)
 - [ ] Teste de enum SubscriptionStatus
-- [ ] Teste de campos de auditoria automáticos
+- [ ] Teste de campos obrigatórios
 
 ### **Testes de Integração:**
-- [ ] Teste de persistência no banco H2 (test)
-- [ ] Teste de constraint unique no email
-- [ ] Teste de relacionamentos JPA (se houver)
+- [ ] Teste de persistência no banco de dados
+- [ ] Teste de auditoria automática
+- [ ] Teste de constraints de banco
 
 ## 🔗 Arquivos Afetados
 - [ ] **src/main/java/com/blog/api/entity/NewsletterSubscriber.java:** Nova entidade
@@ -57,108 +54,61 @@ Criar a entidade JPA `NewsletterSubscriber` que será a base do sistema de newsl
 ## 📚 Documentação para IA
 
 ### **Contexto do Projeto:**
-- **Stack:** Java 17 + Spring Boot 3.2 + PostgreSQL + Redis
+- **Stack:** Java 21 + Spring Boot 3.2 + PostgreSQL + Redis
 - **Arquitetura:** Clean Architecture (Controller → Service → Repository)
 - **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
-### **Convenções de Código:**
-```java
-// Padrões seguidos no projeto - exemplo da entidade User
-@Entity
-@Table(name = "users")
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    @CreationTimestamp
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-    
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-}
-```
-
 ### **Implementação Esperada:**
-- Seguir exatamente o padrão das outras entidades do projeto
-- Usar Lombok annotations para reduzir boilerplate
-- Implementar todos os campos necessários para LGPD
-- Garantir que constraint unique funcione corretamente
+Seguir o padrão estabelecido na entidade User.java localizada em `/src/main/java/com/blog/api/entity/User.java`. Utilizar:
+- Anotações Jakarta Persistence (JPA)
+- Builder pattern do Lombok
+- Bean Validation para validações
+- EntityListeners para auditoria
+- Campos de compliance LGPD desde o início
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** src/main/java/com/blog/api/entity/User.java (padrão de entidade)
-- **Referência 2:** src/main/java/com/blog/api/entity/Post.java (builder pattern)
-
-## ⚙️ Configuration & Setup
-
-### **Database Changes:**
-```sql
--- Migration será criada em tarefa posterior (78)
--- Por enquanto, apenas definir a estrutura JPA
-```
-
-### **Dependencies:**
-```xml
-<!-- Dependências já existem no projeto -->
-<!-- spring-boot-starter-data-jpa -->
-<!-- lombok -->
-<!-- spring-boot-starter-validation -->
-```
+- **Referência 1:** `/src/main/java/com/blog/api/entity/User.java` (linhas 15-50 para estrutura base)
+- **Referência 2:** `/src/main/java/com/blog/api/entity/Post.java` (para padrões de auditoria)
 
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Criar instância com Builder pattern
-2. Verificar se campos obrigatórios funcionam
-3. Testar validação de email
-4. Verificar timestamps automáticos
-5. Testar todos os enum values
+1. Compilar projeto e verificar ausência de erros
+2. Executar testes unitários da entidade
+3. Verificar geração da tabela no banco (via logs Hibernate)
+4. Testar Builder pattern e validações
 
 ### **Critérios de Sucesso:**
-- [ ] Entidade compila sem erros
-- [ ] Builder pattern funciona corretamente
-- [ ] Validações de campo funcionam
-- [ ] Enum values estão corretos
-- [ ] Timestamps são preenchidos automaticamente
-
-### **Comandos de Teste:**
-```bash
-# Testes unitários específicos
-mvn test -Dtest="NewsletterSubscriberTest"
-
-# Compilação
-mvn compile
-```
+- [ ] Compilação sem erros
+- [ ] Testes unitários passando
+- [ ] Entidade persistível no banco
+- [ ] Builder pattern funcional
 
 ## ✅ Definition of Done
 
 ### **Código:**
-- [ ] Entidade NewsletterSubscriber implementada
-- [ ] Enum SubscriptionStatus implementado
-- [ ] Builder pattern funcionando
-- [ ] Todas as anotações JPA aplicadas
-- [ ] Campos LGPD implementados
+- [ ] Implementação completa seguindo padrões do projeto
+- [ ] Code review interno (self-review)
+- [ ] Sem warnings ou erros de compilação
+- [ ] Logging apropriado implementado
 
 ### **Testes:**
-- [ ] Testes unitários da entidade passando
-- [ ] Teste de Builder pattern passando
-- [ ] Cobertura ≥ 85% para a entidade
+- [ ] Testes unitários implementados e passando
+- [ ] Testes de integração implementados (se aplicável)
+- [ ] Cobertura de código ≥ 85% para componentes novos
+- [ ] Todos os ACs validados via testes
 
 ### **Documentação:**
-- [ ] Javadoc para classe e campos principais
-- [ ] Comentários sobre campos LGPD
+- [ ] Javadoc atualizado para métodos públicos
+- [ ] Swagger/OpenAPI atualizado (se endpoint)
+- [ ] README atualizado (se necessário)
+- [ ] Este arquivo de tarefa atualizado com notas de implementação
 
 ### **Quality Gates:**
-- [ ] Compilação sem warnings
-- [ ] Validações funcionando corretamente
-- [ ] Padrões do projeto seguidos
+- [ ] Performance dentro dos SLAs (< 200ms para endpoints)
+- [ ] Security validation (input validation, authorization)
+- [ ] OWASP compliance (se aplicável)
+- [ ] Cache strategy implementada (se aplicável)
 
 ## 📊 Métricas
 
@@ -171,7 +121,19 @@ mvn compile
 - **Real:** _____ *(a ser preenchido após implementação)*
 
 ## 📝 Notas de Implementação
-*[Este espaço será preenchido durante a implementação]*
+*[Este espaço será preenchido durante a implementação com descobertas, decisões técnicas, e observações importantes]*
+
+### **Decisões Técnicas:**
+- [Decisão 1: justificativa]
+- [Decisão 2: justificativa]
+
+### **Descobertas:**
+- [Descoberta 1: impacto]
+- [Descoberta 2: impacto]
+
+### **Refactorings Necessários:**
+- [Refactoring 1: razão]
+- [Refactoring 2: razão]
 
 ## 📊 Status Tracking
 
@@ -181,12 +143,15 @@ mvn compile
 - [ ] 👀 **Code Review** - Aguardando revisão
 - [ ] ✅ **Done** - Concluída e validada
 
+### **Bloqueadores:**
+*[Lista de impedimentos, se houver]*
+
 ### **Next Steps:**
-- Tarefa 02: Criar DTO NewsletterSubscriptionRequest
-- Tarefa 03: Implementar NewsletterRepository
+*[Tarefa 02: Criar DTO NewsletterSubscriptionRequest]*
 
 ---
 
 **Criado em:** Agosto 2025  
 **Última Atualização:** Agosto 2025  
-**Responsável:** AI-Driven Development
+**Responsável:** AI-Driven Development  
+**Reviewer:** [Nome do reviewer, se aplicável]

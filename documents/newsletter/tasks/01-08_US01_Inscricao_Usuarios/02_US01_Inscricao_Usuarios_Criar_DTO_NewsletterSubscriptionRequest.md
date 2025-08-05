@@ -5,140 +5,107 @@
 - **Número da Tarefa:** 02/95
 - **Complexidade:** Baixa
 - **Estimativa:** 1 hora
-- **Dependências:** Nenhuma (pode ser feito em paralelo com 01)
+- **Dependências:** Nenhuma
 - **Sprint:** Sprint 1
 
 ## 🎯 Objetivo
-Criar o DTO (Data Transfer Object) `NewsletterSubscriptionRequest` como Java Record para receber dados de inscrição na newsletter via API REST, incluindo validações e campos necessários para compliance LGPD.
+Criar o DTO (Data Transfer Object) NewsletterSubscriptionRequest como Java Record para receber dados da requisição de inscrição na newsletter, incluindo validações e campos de compliance LGPD.
 
 ## 📝 Especificação Técnica
 
 ### **Componentes a Implementar:**
 - [ ] Java Record NewsletterSubscriptionRequest
-- [ ] Validações Bean Validation (@NotBlank, @Email, etc.)
-- [ ] Campos para consentimento LGPD
-- [ ] Documentação OpenAPI (@Schema)
-- [ ] Campos para captura de IP e User-Agent
-
+- [ ] Validações Bean Validation (@NotBlank, @Email, @NotNull)
+- [ ] Campos para captura de consentimento LGPD
+- [ ] Campos para captura de metadados (IP, User-Agent)
+- [ ] Javadoc completo
 
 ### **Integrações Necessárias:**
-- **Com Bean Validation:** Para validações automáticas
-- **Com OpenAPI:** Para documentação Swagger
-- **Com Controller:** Para receber dados do frontend
+- **Com Bean Validation:** Anotações de validação
+- **Com Controller:** DTO usado no endpoint POST /api/newsletter/subscribe
+- **Com Service:** Conversão para entidade NewsletterSubscriber
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Java Record criado seguindo padrão do projeto
-- [ ] **AC2:** Validações implementadas para todos os campos obrigatórios
-- [ ] **AC3:** Documentação OpenAPI implementada
-- [ ] **AC4:** Factory methods implementados para facilitar uso
-- [ ] **AC5:** Campos LGPD (consentimento, policy version) incluídos
-- [ ] **AC6:** Campos de auditoria (IP, User-Agent) incluídos
+- [ ] **AC1:** Java Record NewsletterSubscriptionRequest criado seguindo padrão do projeto
+- [ ] **AC2:** Campo email com validação @NotBlank e @Email
+- [ ] **AC3:** Campo consentToReceiveEmails obrigatório (@NotNull)
+- [ ] **AC4:** Campo privacyPolicyVersion obrigatório (@NotBlank)
+- [ ] **AC5:** Campos ipAddress e userAgent para metadados
+- [ ] **AC6:** Validações funcionais testadas
 
 ## 🧪 Testes Requeridos
 
 ### **Testes Unitários:**
-- [ ] Teste de criação do record
+- [ ] Teste de criação do record com dados válidos
 - [ ] Teste de validação de email inválido
-- [ ] Teste de validação de campos obrigatórios null/blank
-- [ ] Teste do factory method create()
-- [ ] Teste do method withClientInfo()
-- [ ] Teste de validação de consentimento null
+- [ ] Teste de validação de campos obrigatórios
+- [ ] Teste de serialização/deserialização JSON
 
 ### **Testes de Integração:**
-- [ ] Teste de deserialização JSON
-- [ ] Teste de validação via Jackson
-- [ ] Teste de documentação OpenAPI gerada
+- [ ] Teste de binding no controller
+- [ ] Teste de mensagens de erro de validação
 
 ## 🔗 Arquivos Afetados
-- [ ] **src/main/java/com/blog/api/dto/NewsletterSubscriptionRequest.java:** Novo DTO
+- [ ] **src/main/java/com/blog/api/dto/NewsletterSubscriptionRequest.java:** Novo DTO record
 - [ ] **src/test/java/com/blog/api/dto/NewsletterSubscriptionRequestTest.java:** Testes unitários
 
 ## 📚 Documentação para IA
 
 ### **Contexto do Projeto:**
-- **Stack:** Java 17 + Spring Boot 3.2 + Bean Validation + OpenAPI
-- **Padrões:** Java Records para DTOs (modernização do projeto)
-- **Validações:** Bean Validation com mensagens em português
-
-### **Convenções de Código:**
-```java
-// Padrão seguido no projeto - exemplo CreateUserDTO convertido para Record
-public record CreateUserDTO(
-    @NotBlank(message = "Username é obrigatório")
-    @Size(min = 3, max = 50, message = "Username deve ter entre 3 e 50 caracteres")
-    String username,
-    
-    @NotBlank(message = "Email é obrigatório")
-    @Email(message = "Email deve ter formato válido")
-    String email
-) {}
-```
+- **Stack:** Java 21 + Spring Boot 3.2 + PostgreSQL + Redis
+- **Arquitetura:** Clean Architecture (Controller → Service → Repository)
+- **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
 ### **Implementação Esperada:**
-- Seguir padrão de Java Records já adotado no projeto
-- Usar Bean Validation com mensagens em português
-- Implementar documentação OpenAPI completa
-- Incluir factory methods para facilitar uso nos testes
+Criar Java Record seguindo padrão estabelecido nos DTOs existentes. Utilizar:
+- Java Records para DTOs (modernização do projeto)
+- Bean Validation annotations
+- Javadoc para documentação
+- Nomenclatura clara e consistente
 
 ### **Exemplos de Código Existente:**
-- **Referência 1:** src/main/java/com/blog/api/dto/CreateUserDTO.java (padrão de Record)
-- **Referência 2:** src/main/java/com/blog/api/dto/LoginRequest.java (validações)
-
-## ⚙️ Configuration & Setup
-
-### **Dependencies:**
-```xml
-<!-- Dependências já existem no projeto -->
-<!-- spring-boot-starter-validation -->
-<!-- springdoc-openapi-starter-webmvc-ui -->
-```
+- **Referência 1:** `/src/main/java/com/blog/api/dto/CreateUserDTO.java` (para padrão de validações)
+- **Referência 2:** `/src/main/java/com/blog/api/dto/LoginRequest.java` (para estrutura de request)
 
 ## 🔍 Validação e Testes
 
 ### **Como Testar:**
-1. Criar instância do record com dados válidos
-2. Testar validações com dados inválidos
-3. Verificar messages de erro em português
-4. Testar factory methods
-5. Verificar serialização/deserialização JSON
+1. Compilar projeto e verificar ausência de erros
+2. Executar testes unitários do DTO
+3. Testar validações com dados inválidos
+4. Verificar serialização JSON
 
 ### **Critérios de Sucesso:**
-- [ ] Record compila sem erros
-- [ ] Validações funcionam corretamente
-- [ ] Factory methods funcionam
-- [ ] Documentação OpenAPI gerada
-- [ ] Serialização JSON funciona
-
-### **Comandos de Teste:**
-```bash
-# Testes unitários específicos
-mvn test -Dtest="NewsletterSubscriptionRequestTest"
-
-# Teste de compilação
-mvn compile
-```
+- [ ] Compilação sem erros
+- [ ] Testes unitários passando
+- [ ] Validações funcionando corretamente
+- [ ] JSON binding funcional
 
 ## ✅ Definition of Done
 
 ### **Código:**
-- [ ] Java Record NewsletterSubscriptionRequest implementado
-- [ ] Todas as validações Bean Validation aplicadas
-- [ ] Factory methods implementados
-- [ ] Documentação OpenAPI completa
+- [ ] Implementação completa seguindo padrões do projeto
+- [ ] Code review interno (self-review)
+- [ ] Sem warnings ou erros de compilação
+- [ ] Logging apropriado implementado
 
 ### **Testes:**
-- [ ] Testes unitários passando
-- [ ] Testes de validação passando
-- [ ] Cobertura ≥ 85% para o DTO
+- [ ] Testes unitários implementados e passando
+- [ ] Testes de integração implementados (se aplicável)
+- [ ] Cobertura de código ≥ 85% para componentes novos
+- [ ] Todos os ACs validados via testes
 
 ### **Documentação:**
-- [ ] Javadoc para record e methods
-- [ ] Documentação OpenAPI (@Schema)
+- [ ] Javadoc atualizado para métodos públicos
+- [ ] Swagger/OpenAPI atualizado (se endpoint)
+- [ ] README atualizado (se necessário)
+- [ ] Este arquivo de tarefa atualizado com notas de implementação
 
 ### **Quality Gates:**
-- [ ] Compilação sem warnings
-- [ ] Validações funcionando
-- [ ] Padrões do projeto seguidos
+- [ ] Performance dentro dos SLAs (< 200ms para endpoints)
+- [ ] Security validation (input validation, authorization)
+- [ ] OWASP compliance (se aplicável)
+- [ ] Cache strategy implementada (se aplicável)
 
 ## 📊 Métricas
 
@@ -151,7 +118,19 @@ mvn compile
 - **Real:** _____ *(a ser preenchido após implementação)*
 
 ## 📝 Notas de Implementação
-*[Este espaço será preenchido durante a implementação]*
+*[Este espaço será preenchido durante a implementação com descobertas, decisões técnicas, e observações importantes]*
+
+### **Decisões Técnicas:**
+- [Decisão 1: justificativa]
+- [Decisão 2: justificativa]
+
+### **Descobertas:**
+- [Descoberta 1: impacto]
+- [Descoberta 2: impacto]
+
+### **Refactorings Necessários:**
+- [Refactoring 1: razão]
+- [Refactoring 2: razão]
 
 ## 📊 Status Tracking
 
@@ -161,12 +140,15 @@ mvn compile
 - [ ] 👀 **Code Review** - Aguardando revisão
 - [ ] ✅ **Done** - Concluída e validada
 
+### **Bloqueadores:**
+*[Lista de impedimentos, se houver]*
+
 ### **Next Steps:**
-- Tarefa 05: Criar NewsletterController.subscribe() (usará este DTO)
-- Tarefa 06: Configurar validações no controller
+*[Tarefa 03: Implementar NewsletterRepository]*
 
 ---
 
 **Criado em:** Agosto 2025  
 **Última Atualização:** Agosto 2025  
-**Responsável:** AI-Driven Development
+**Responsável:** AI-Driven Development  
+**Reviewer:** [Nome do reviewer, se aplicável]

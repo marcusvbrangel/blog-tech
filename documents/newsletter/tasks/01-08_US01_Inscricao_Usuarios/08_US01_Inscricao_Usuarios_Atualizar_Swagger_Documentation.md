@@ -5,91 +5,158 @@
 - **Número da Tarefa:** 08/95
 - **Complexidade:** Baixa
 - **Estimativa:** 1 hora
-- **Dependências:** Tarefa 05
+- **Dependências:** Tarefa 05 (NewsletterController)
 - **Sprint:** Sprint 1
 
 ## 🎯 Objetivo
-Atualizar a documentação Swagger/OpenAPI com o novo endpoint da newsletter, incluindo exemplos completos, response schemas e tags organizacionais para facilitar uso pelos desenvolvedores frontend.
+Atualizar a documentação Swagger/OpenAPI para incluir o novo endpoint de inscrição na newsletter, com exemplos, schemas detalhados e informações de compliance LGPD.
 
 ## 📝 Especificação Técnica
 
-### **Componentes a Atualizar:**
-- [ ] Controller NewsletterController com @Tag
-- [ ] DTOs com @Schema completos
-- [ ] Endpoint com @Operation detalhada
-- [ ] Response examples
-- [ ] Error responses documentadas
+### **Componentes a Implementar:**
+- [ ] Documentação @Tag para NewsletterController
+- [ ] Documentação @Operation para endpoint subscribe
+- [ ] Documentação @ApiResponses para todos os status codes
+- [ ] Schema examples para request/response DTOs
+- [ ] Descrições de compliance LGPD
+- [ ] Informações de autorização
 
-### **Documentação OpenAPI:**
-```java
-@Tag(name = "Newsletter", description = "Newsletter subscription and management API")
-@RestController
-public class NewsletterController {
-    
-    @PostMapping("/subscribe")
-    @Operation(
-        summary = "Subscribe to newsletter",
-        description = "Subscribe email to receive blog updates with double opt-in confirmation"
-    )
-    @ApiResponses({
-        @ApiResponse(responseCode = "202", 
-                    description = "Subscription successful - confirmation email sent",
-                    content = @Content(schema = @Schema(implementation = NewsletterSubscriptionResponse.class))),
-        @ApiResponse(responseCode = "409", 
-                    description = "Email already subscribed",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-        @ApiResponse(responseCode = "400", 
-                    description = "Invalid email format or missing required fields",
-                    content = @Content(schema = @Schema(implementation = ValidationErrorResponse.class)))
-    })
-    public ResponseEntity<NewsletterSubscriptionResponse> subscribe(
-        @Valid @RequestBody NewsletterSubscriptionRequest request) {
-        // Implementation
-    }
-}
-```
+### **Integrações Necessárias:**
+- **Com SpringDoc:** Anotações OpenAPI
+- **Com DTOs:** Schema documentation
+- **Com Controller:** Operation documentation
+- **Com Security:** Authorization info
 
 ## ✅ Acceptance Criteria
-- [ ] **AC1:** Endpoint documentado no Swagger UI
-- [ ] **AC2:** Request/Response schemas visíveis
-- [ ] **AC3:** Exemplos funcionais de payload
-- [ ] **AC4:** Error responses documentadas
-- [ ] **AC5:** Tag "Newsletter" criada e organizada
-- [ ] **AC6:** Descrições em inglês e clara
+- [ ] **AC1:** Endpoint POST /api/newsletter/subscribe documentado no Swagger UI
+- [ ] **AC2:** Schema do NewsletterSubscriptionRequest com exemplos
+- [ ] **AC3:** Schema do NewsletterSubscriptionResponse com exemplos
+- [ ] **AC4:** Todas as responses HTTP documentadas (202, 400, 409)
+- [ ] **AC5:** Informações de compliance LGPD incluídas
+- [ ] **AC6:** Exemplos práticos para teste no Swagger UI
 
-## 🧪 Testes de Documentação
-- [ ] Swagger UI carrega sem erros
-- [ ] Endpoint visível na interface
-- [ ] "Try it out" funciona corretamente
-- [ ] Schemas de request/response corretos
-- [ ] Exemplos válidos
+## 🧪 Testes Requeridos
+
+### **Testes Unitários:**
+- [ ] Teste de geração do schema OpenAPI
+- [ ] Validação de exemplos JSON
+- [ ] Teste de documentação completa
+
+### **Testes de Integração:**
+- [ ] Swagger UI acessível
+- [ ] Endpoint executável via Swagger
+- [ ] Schemas validando corretamente
 
 ## 🔗 Arquivos Afetados
-- [ ] **src/main/java/com/blog/api/controller/NewsletterController.java:** Adicionar @Tag e @Operation
-- [ ] **src/main/java/com/blog/api/dto/NewsletterSubscriptionRequest.java:** @Schema detalhado
-- [ ] **src/main/java/com/blog/api/dto/NewsletterSubscriptionResponse.java:** @Schema detalhado
+- [ ] **src/main/java/com/blog/api/controller/NewsletterController.java:** Adicionar anotações Swagger
+- [ ] **src/main/java/com/blog/api/dto/NewsletterSubscriptionRequest.java:** Schema documentation
+- [ ] **src/main/java/com/blog/api/dto/NewsletterSubscriptionResponse.java:** Schema documentation
+- [ ] **src/main/java/com/blog/api/config/SwaggerConfig.java:** Atualizar configuração se necessário
 
-## 🔍 Validação
+## 📚 Documentação para IA
 
-### **Como Validar:**
-1. Executar aplicação localmente
-2. Acessar http://localhost:8080/swagger-ui.html
-3. Verificar se tag "Newsletter" aparece
-4. Testar endpoint via "Try it out"
-5. Verificar schemas e exemplos
+### **Contexto do Projeto:**
+- **Stack:** Java 21 + Spring Boot 3.2 + PostgreSQL + Redis
+- **Arquitetura:** Clean Architecture (Controller → Service → Repository)
+- **Padrões:** Builder Pattern, Java Records para DTOs, Cache-First
 
-### **URLs de Teste:**
-- **Swagger UI:** http://localhost:8080/swagger-ui.html
-- **OpenAPI JSON:** http://localhost:8080/v3/api-docs
+### **Implementação Esperada:**
+Seguir padrões de documentação estabelecidos. Utilizar:
+- @Tag para categorização do controller
+- @Operation para descrição detalhada
+- @ApiResponses para todos os cenários
+- @Schema para DTOs com examples
+- Descrições claras e user-friendly
+- Compliance LGPD mencionada
+
+### **Exemplos de Código Existente:**
+- **Referência 1:** `/src/main/java/com/blog/api/controller/AuthController.java` (linhas 28-50 para anotações Swagger)
+- **Referência 2:** `/src/main/java/com/blog/api/dto/CreateUserDTO.java` (para schema documentation)
+
+## 🔍 Validação e Testes
+
+### **Como Testar:**
+1. Acessar Swagger UI: http://localhost:8080/swagger-ui.html
+2. Localizar seção Newsletter
+3. Verificar endpoint POST /api/newsletter/subscribe
+4. Testar execução via Swagger UI
+5. Validar schemas e exemplos
+
+### **Critérios de Sucesso:**
+- [ ] Documentação visível no Swagger UI
+- [ ] Endpoint executável via interface
+- [ ] Schemas corretos e exemplos válidos
+- [ ] Informações claras e completas
+- [ ] Compliance LGPD documentada
 
 ## ✅ Definition of Done
-- [ ] Tag "Newsletter" criada no Swagger
-- [ ] Endpoint POST /api/newsletter/subscribe documentado
-- [ ] Request/Response schemas completos
-- [ ] Exemplos funcionais adicionados
-- [ ] Error responses documentadas
-- [ ] "Try it out" funcionando no Swagger UI
+
+### **Código:**
+- [ ] Implementação completa seguindo padrões do projeto
+- [ ] Code review interno (self-review)
+- [ ] Sem warnings ou erros de compilação
+- [ ] Logging apropriado implementado
+
+### **Testes:**
+- [ ] Testes unitários implementados e passando
+- [ ] Testes de integração implementados (se aplicável)
+- [ ] Cobertura de código ≥ 85% para componentes novos
+- [ ] Todos os ACs validados via testes
+
+### **Documentação:**
+- [ ] Javadoc atualizado para métodos públicos
+- [ ] Swagger/OpenAPI atualizado (se endpoint)
+- [ ] README atualizado (se necessário)
+- [ ] Este arquivo de tarefa atualizado com notas de implementação
+
+### **Quality Gates:**
+- [ ] Performance dentro dos SLAs (< 200ms para endpoints)
+- [ ] Security validation (input validation, authorization)
+- [ ] OWASP compliance (se aplicável)
+- [ ] Cache strategy implementada (se aplicável)
+
+## 📊 Métricas
+
+### **Estimativa vs Real:**
+- **Estimativa:** 1 hora
+- **Real:** ___ horas *(a ser preenchido após implementação)*
+
+### **Complexidade:**
+- **Estimada:** Baixa
+- **Real:** _____ *(a ser preenchido após implementação)*
+
+## 📝 Notas de Implementação
+*[Este espaço será preenchido durante a implementação com descobertas, decisões técnicas, e observações importantes]*
+
+### **Decisões Técnicas:**
+- [Decisão 1: justificativa]
+- [Decisão 2: justificativa]
+
+### **Descobertas:**
+- [Descoberta 1: impacto]
+- [Descoberta 2: impacto]
+
+### **Refactorings Necessários:**
+- [Refactoring 1: razão]
+- [Refactoring 2: razão]
+
+## 📊 Status Tracking
+
+### **Status Atual:**
+- [x] 📋 **Todo** - Não iniciada
+- [ ] 🔄 **In Progress** - Em desenvolvimento  
+- [ ] 👀 **Code Review** - Aguardando revisão
+- [ ] ✅ **Done** - Concluída e validada
+
+### **Bloqueadores:**
+*[Lista de impedimentos, se houver]*
+
+### **Next Steps:**
+*[US01 COMPLETA - Iniciar US02: Confirmação de Email]*
 
 ---
 
-**Criado em:** Agosto 2025
+**Criado em:** Agosto 2025  
+**Última Atualização:** Agosto 2025  
+**Responsável:** AI-Driven Development  
+**Reviewer:** [Nome do reviewer, se aplicável]
