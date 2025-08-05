@@ -179,6 +179,20 @@ public interface NewsletterTokenRepository extends JpaRepository<NewsletterToken
     long countUsedTokens();
 
     /**
+     * Find valid token by email and type (for integration tests).
+     * 
+     * @param email the email address
+     * @param tokenType the token type
+     * @param now current timestamp
+     * @return Optional containing the valid token
+     */
+    @Query("SELECT nt FROM NewsletterToken nt WHERE nt.email = :email AND nt.tokenType = :tokenType " +
+           "AND nt.expiresAt > :now AND nt.usedAt IS NULL ORDER BY nt.createdAt DESC")
+    Optional<NewsletterToken> findValidTokenByEmail(@Param("email") String email, 
+                                                   @Param("tokenType") NewsletterTokenType tokenType,
+                                                   @Param("now") LocalDateTime now);
+
+    /**
      * Count tokens created for an email in the last period (rate limiting).
      * 
      * @param email the email address

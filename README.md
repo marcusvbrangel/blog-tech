@@ -57,9 +57,21 @@ API REST para sistema de blog desenvolvida com Java e Spring Boot seguindo metod
 ### Sistema de Email
 - [x] **Email Verification** - Templates HTML profissionais
 - [x] **Password Recovery** - Tokens seguros com expiração
+- [x] **Newsletter System** - Sistema completo de newsletter com confirmação de email
 - [x] **Rate Limiting** - Proteção contra spam de emails e força bruta em login
 - [x] **MailHog Integration** - Ambiente de desenvolvimento
 - [x] **SMTP Support** - Configuração flexível de provedores
+
+### Newsletter e Inscrições
+- [x] **Newsletter Subscription** - Sistema completo de inscrição na newsletter
+- [x] **Email Confirmation** - Confirmação obrigatória por email com tokens seguros
+- [x] **Welcome Emails** - Emails de boas-vindas automáticos após confirmação
+- [x] **Token Management** - Múltiplos tipos de token (confirmação, unsubscribe, data request)
+- [x] **LGPD Compliance** - Conformidade com LGPD para tratamento de dados
+- [x] **Automated Cleanup** - Limpeza automática de tokens expirados
+- [x] **Newsletter Templates** - Templates HTML responsivos profissionais
+- [x] **Async Processing** - Processamento assíncrono de emails
+- [x] **Audit Logging** - Logging completo para auditoria e compliance
 
 ### Segurança e Proteção
 - [x] **Login Rate Limiting** - Bloqueio automático após 5 tentativas incorretas
@@ -88,7 +100,8 @@ src/main/java/com/blog/api/
 ├── entity/          # JPA Entities
 ├── dto/             # Data Transfer Objects
 ├── exception/       # Exception Handling
-└── util/            # Utilities (JWT)
+├── scheduler/       # Scheduled Tasks (Token Cleanup)
+└── util/            # Utilities (JWT, Validation)
 ```
 
 ## 🔐 Endpoints da API
@@ -125,6 +138,13 @@ src/main/java/com/blog/api/
 - `POST /api/v1/comments` - Criar comentário
 - `PUT /api/v1/comments/{id}` - Atualizar comentário
 - `DELETE /api/v1/comments/{id}` - Deletar comentário
+
+### Newsletter
+- `POST /api/v1/newsletter/subscribe` - Inscrever na newsletter
+- `GET /api/v1/newsletter/confirm?token=` - Confirmar inscrição por email
+- `GET /api/v1/newsletter/check?email=` - Verificar status de inscrição
+- `POST /api/v1/newsletter/unsubscribe` - Cancelar inscrição
+- `GET /api/v1/newsletter/unsubscribe?token=` - Cancelar por token
 
 ### Monitoramento
 - `GET /actuator/health` - Health check da aplicação
@@ -221,6 +241,26 @@ spring:
     type: redis
     redis:
       time-to-live: 600000  # 10 minutos
+```
+
+### Newsletter Configuration
+```yaml
+blog:
+  newsletter:
+    confirmation:
+      token-expiration: 48h
+      max-attempts-per-hour: 3
+    unsubscribe:
+      token-expiration: 365d
+      max-attempts-per-hour: 2
+    data-request:
+      token-expiration: 7d
+      max-attempts-per-day: 1
+    cleanup:
+      enabled: true
+      expired-tokens-cron: "0 0 */6 * * *"  # Every 6 hours
+      used-tokens-cron: "0 0 2 * * *"       # Daily at 2 AM
+      old-tokens-retention-days: 30
 ```
 
 ### Monitoring (Prometheus)
@@ -430,8 +470,22 @@ docker-compose up -d
 ### Tipos de Teste
 - **Unit Tests**: Service layer, Repository layer
 - **Integration Tests**: Controller endpoints, Database
+- **MailHog Integration Tests**: Validação real de envio de emails
 - **Performance Tests**: Load testing com JMeter
 - **Security Tests**: OWASP dependency check
+
+### Testes de Newsletter
+```bash
+# Testes unitários do sistema de newsletter
+mvn test -Dtest=Newsletter*Test
+
+# Testes de integração básicos
+mvn test -Dtest=NewsletterIntegrationTest
+
+# Testes de integração com MailHog (requer MailHog rodando)
+docker-compose up -d mailhog
+mvn test -Dtest=NewsletterMailHogIntegrationTest
+```
 
 ### 📚 Documentação de Testes
 Para detalhes completos sobre a refatoração dos testes, consulte:
@@ -483,42 +537,48 @@ Para ver o log completo de desenvolvimento, consulte [DEVELOPMENT_LOG.md](docume
 
 ## 📊 Métricas do Projeto
 
-- **Total de Sessões**: 8 sessões de desenvolvimento
-- **Arquivos criados**: 80+ arquivos
-- **Linhas de código**: 5000+ linhas
-- **Endpoints API**: 25+ endpoints REST
-- **Containers Docker**: 6 serviços orquestrados
+- **Total de Sessões**: 9 sessões de desenvolvimento
+- **Arquivos criados**: 95+ arquivos
+- **Linhas de código**: 6500+ linhas
+- **Endpoints API**: 30+ endpoints REST
+- **Containers Docker**: 7 serviços orquestrados
 - **Workflows CI/CD**: 4 pipelines completos
-- **DTOs modernizadas**: 8 Java Records
+- **DTOs modernizadas**: 10+ Java Records
 - **Dashboards Grafana**: 4 dashboards operacionais
 - **Métricas Prometheus**: 15+ métricas customizadas
 - **Postman Collection**: 23 requests com automação
 - **Cobertura de testes**: 85%+ implementada
 - **Cache Redis**: 26 pontos de cache distribuído
 - **Observabilidade**: Stack 360° completa
+- **Newsletter System**: Sistema completo implementado
+- **Testes Integração**: 15+ testes incluindo MailHog
+- **Scheduled Tasks**: 4 tarefas agendadas (cleanup de tokens)
 
 ## 🎯 Status do Projeto
 
 ### ✅ **Implementado e Funcionando:**
-- 🏗️ **Arquitetura**: API REST enterprise com Spring Boot 3.2 + Java 17
+- 🏗️ **Arquitetura**: API REST enterprise com Spring Boot 3.2 + Java 21
 - 🔐 **Segurança**: JWT Authentication com roles (USER, AUTHOR, ADMIN)
 - 📧 **Email System**: Verificação de email + recuperação de senha com templates HTML profissionais
+- 📬 **Newsletter System**: Sistema completo de newsletter com confirmação por email, tokens seguros e compliance LGPD
 - 💾 **Persistência**: PostgreSQL 15 com JPA/Hibernate otimizado
 - ⚡ **Cache**: Redis 7 distribuído com TTL customizado por entidade
 - 📊 **Monitoramento**: Stack completa Prometheus + Grafana + Zipkin
 - 🐳 **Containerização**: Docker Compose com 7 serviços orquestrados (+ MailHog)
 - 🚀 **CI/CD**: 4 GitHub Actions pipelines completos (CI, Docker, Deploy, Performance)
-- 🧪 **Testes**: Unit, Integration, Performance e Security tests
+- 🧪 **Testes**: Unit, Integration, MailHog Integration, Performance e Security tests
 - 📈 **Performance**: Cache Redis + métricas em tempo real + alerting
 - 📝 **Documentação**: Swagger/OpenAPI + Postman collection completa
 - 🎯 **Modern Java**: DTOs convertidas para Java Records
 - 📮 **API Testing**: Coleção Postman com 23 requests e automação completa
+- ⏰ **Scheduled Tasks**: Sistema de limpeza automática de tokens com monitoramento
 
 ### 🔄 **Roadmap de Evolução:**
 
 #### **Phase 1: Core Enhancement (Q3 2025)**
 - ✅ **Email Verification** - IMPLEMENTADO (Jan 2025)
-- ✅ **Password Recovery** - IMPLEMENTADO (Jan 2025)
+- ✅ **Password Recovery** - IMPLEMENTADO (Jan 2025)  
+- ✅ **Newsletter System** - IMPLEMENTADO (Aug 2025)
 - Rate limiting com Redis
 - Logs estruturados com ELK Stack
 - Advanced caching strategies
