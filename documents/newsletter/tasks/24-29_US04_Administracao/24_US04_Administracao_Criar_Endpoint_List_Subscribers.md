@@ -1,5 +1,14 @@
 # 24_US04_Administracao_Criar_Endpoint_List_Subscribers.md
 
+### ✅ US04 – Administração
+*Como administrador, quero visualizar e gerenciar todos os inscritos da newsletter, para ter controle administrativo do sistema.*
+
+## 📋 Descrição da Tarefa
+**Criar Endpoint List Subscribers**
+
+Implementar endpoint administrativo GET /api/admin/newsletter/subscribers para listagem paginada de todos os inscritos da newsletter.
+O endpoint deve ser protegido por ROLE_ADMIN e retornar dados seguros através do DTO AdminSubscriberResponse.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US04 - Administração
 - **Número da Tarefa:** 24/95

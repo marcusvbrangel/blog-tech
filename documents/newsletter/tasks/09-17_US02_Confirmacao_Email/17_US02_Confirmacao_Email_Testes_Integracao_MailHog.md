@@ -1,5 +1,14 @@
 # 17_US02_Confirmacao_Email_Testes_Integracao_MailHog.md
 
+### ✅ US02 – Confirmação de E-mail
+*Como usuário inscrito, quero receber um e-mail de confirmação após me inscrever, para validar minha inscrição na newsletter.*
+
+## 📋 Descrição da Tarefa
+**17_US02_Confirmacao_Email_Testes_Integracao_MailHog**
+
+Esta tarefa implementa testes de integração completos com MailHog para validar todo o fluxo de confirmação de email.
+Os testes verificarão o envio, recebimento e processamento de emails de confirmação em ambiente controlado.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US02 - Confirmação de E-mail
 - **Número da Tarefa:** 17/95

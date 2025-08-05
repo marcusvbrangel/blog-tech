@@ -1,5 +1,14 @@
 # 10_US02_Confirmacao_Email_Implementar_NewsletterTokenRepository.md
 
+### ✅ US02 – Confirmação de E-mail
+*Como usuário inscrito, quero receber um e-mail de confirmação após me inscrever, para validar minha inscrição na newsletter.*
+
+## 📋 Descrição da Tarefa
+**10_US02_Confirmacao_Email_Implementar_NewsletterTokenRepository**
+
+Esta tarefa implementa o repositório JPA para operações CRUD com tokens de newsletter.
+O repositório incluirá queries otimizadas para busca por token, tipo e limpeza de tokens expirados.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US02 - Confirmação de E-mail
 - **Número da Tarefa:** 10/95

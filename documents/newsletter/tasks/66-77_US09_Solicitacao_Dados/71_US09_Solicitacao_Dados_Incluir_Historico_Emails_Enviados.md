@@ -1,5 +1,14 @@
 # 71_US09_Solicitacao_Dados_Incluir_Historico_Emails_Enviados.md
 
+### ✅ US09 – Solicitação de Dados
+*Como titular de dados, quero solicitar uma cópia de todos os meus dados pessoais, para exercer meu direito à portabilidade conforme LGPD.*
+
+## 📋 Descrição da Tarefa
+**Incluir Histórico Emails Enviados**
+
+Desenvolver sistema completo de coleta e organização do histórico de emails enviados ao usuário.
+Incluir metadados completos, dados de tracking, status de entrega e sanitização adequada para LGPD.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US09 - Solicitação de Dados
 - **Número da Tarefa:** 71/95

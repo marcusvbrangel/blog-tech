@@ -1,5 +1,14 @@
 # 51_US07_Seguranca_LGPD_Criar_Endpoint_GET_Consent_History.md
 
+### ✅ US07 – Segurança LGPD
+*Como titular de dados, quero que meus dados pessoais sejam protegidos e gerenciados conforme a LGPD, para garantir minha privacidade e direitos.*
+
+## 📋 Descrição da Tarefa
+**Criar Endpoint GET Consent History**
+
+Desenvolve API administrativa protegida para consulta do histórico completo de consentimentos com filtros avançados.
+Permite auditoria detalhada de ações LGPD com export para relatórios e cache inteligente para performance otimizada.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US07 - Segurança LGPD
 - **Número da Tarefa:** 51/95

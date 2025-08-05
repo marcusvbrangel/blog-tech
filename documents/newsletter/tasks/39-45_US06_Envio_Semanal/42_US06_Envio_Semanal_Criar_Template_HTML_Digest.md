@@ -1,5 +1,14 @@
 # 42_US06_Envio_Semanal_Criar_Template_HTML_Digest.md
 
+### ✅ US06 – Envio Semanal
+*Como usuário confirmado, quero receber um digest semanal com os posts publicados na semana, para acompanhar o conteúdo de forma organizada.*
+
+## 📋 Descrição da Tarefa
+**Criar Template HTML Digest**
+
+Criar template HTML responsivo usando Thymeleaf para o digest semanal de posts.
+Implementar layout profissional com lista iterativa de posts e CSS inline para compatibilidade com clientes de email.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US06 - Envio Semanal
 - **Número da Tarefa:** 42/95

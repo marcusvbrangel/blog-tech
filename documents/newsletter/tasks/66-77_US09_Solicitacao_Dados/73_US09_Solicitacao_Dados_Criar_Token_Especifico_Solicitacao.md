@@ -1,5 +1,14 @@
 # 73_US09_Solicitacao_Dados_Criar_Token_Especifico_Solicitacao.md
 
+### ✅ US09 – Solicitação de Dados
+*Como titular de dados, quero solicitar uma cópia de todos os meus dados pessoais, para exercer meu direito à portabilidade conforme LGPD.*
+
+## 📋 Descrição da Tarefa
+**Criar Token Específico Solicitação**
+
+Desenvolver sistema de geração e gerenciamento de tokens JWT especializados para solicitação segura de dados.
+Tokens criptograficamente seguros, de uso único, com expiração rápida e entrega via canal seguro.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US09 - Solicitação de Dados
 - **Número da Tarefa:** 73/95

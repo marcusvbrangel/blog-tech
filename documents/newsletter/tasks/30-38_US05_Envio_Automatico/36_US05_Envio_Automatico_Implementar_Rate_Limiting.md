@@ -1,5 +1,14 @@
 # 36_US05_Envio_Automatico_Implementar_Rate_Limiting.md
 
+### ✅ US05 – Envio Automático
+*Como usuário confirmado, quero receber automaticamente por e-mail quando novos posts forem publicados, para me manter atualizado.*
+
+## 📋 Descrição da Tarefa
+**Implementar Rate Limiting**
+
+Esta tarefa implementa sistema inteligente de rate limiting para controlar envios em massa de emails e evitar blacklisting do servidor SMTP.
+O sistema utilizará algoritmo Token Bucket com controle distribuído via Redis para garantir conformidade com limites dos provedores de email.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US05 - Envio Automático
 - **Número da Tarefa:** 36/95

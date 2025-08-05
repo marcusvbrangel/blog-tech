@@ -1,5 +1,14 @@
 # 58_US08_Historico_Consentimento_Capturar_IP_UserAgent_Consentimento.md
 
+### ✅ US08 – Histórico de Consentimento
+*Como titular de dados, quero ter acesso ao histórico completo dos meus consentimentos, para acompanhar como meus dados são utilizados.*
+
+## 📋 Descrição da Tarefa
+**Capturar IP e User-Agent no momento do consentimento**
+
+Implementa sistema de captura automática de dados de auditoria (IP e User-Agent) durante ações de consentimento do newsletter.
+Garante conformidade LGPD através de trilha de auditoria completa e íntegra para todas as interações de consentimento.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US08 - Histórico de Consentimento
 - **Número da Tarefa:** 58/95

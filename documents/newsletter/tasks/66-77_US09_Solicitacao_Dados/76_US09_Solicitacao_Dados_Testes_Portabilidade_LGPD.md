@@ -1,5 +1,14 @@
 # 76_US09_Solicitacao_Dados_Testes_Portabilidade_LGPD.md
 
+### ✅ US09 – Solicitação de Dados
+*Como titular de dados, quero solicitar uma cópia de todos os meus dados pessoais, para exercer meu direito à portabilidade conforme LGPD.*
+
+## 📋 Descrição da Tarefa
+**Testes Portabilidade LGPD**
+
+Desenvolver suíte abrangente de testes para validar conformidade completa com requisitos de portabilidade da LGPD.
+Verificar completude, integridade, formato e interoperabilidade dos dados exportados conforme Article 18, VI.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US09 - Solicitação de Dados
 - **Número da Tarefa:** 76/95

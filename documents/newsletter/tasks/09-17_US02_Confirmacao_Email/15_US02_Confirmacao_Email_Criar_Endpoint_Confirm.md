@@ -1,5 +1,14 @@
 # 15_US02_Confirmacao_Email_Criar_Endpoint_Confirm.md
 
+### ✅ US02 – Confirmação de E-mail
+*Como usuário inscrito, quero receber um e-mail de confirmação após me inscrever, para validar minha inscrição na newsletter.*
+
+## 📋 Descrição da Tarefa
+**15_US02_Confirmacao_Email_Criar_Endpoint_Confirm**
+
+Esta tarefa cria endpoint GET /api/newsletter/confirm para processar confirmações de email via token.
+O endpoint validará tokens de confirmação e atualizará o status do subscriber para confirmado.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US02 - Confirmação de E-mail
 - **Número da Tarefa:** 15/95

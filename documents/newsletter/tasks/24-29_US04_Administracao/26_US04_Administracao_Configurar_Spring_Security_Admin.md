@@ -1,5 +1,14 @@
 # 26_US04_Administracao_Configurar_Spring_Security_Admin.md
 
+### ✅ US04 – Administração
+*Como administrador, quero visualizar e gerenciar todos os inscritos da newsletter, para ter controle administrativo do sistema.*
+
+## 📋 Descrição da Tarefa
+**Configurar Spring Security Admin**
+
+Configurar Spring Security para proteger todos os endpoints administrativos (/api/admin/**) com autorização ROLE_ADMIN.
+Implementar validação de JWT tokens, method-level security e tratamento customizado de erros de autorização.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US04 - Administração
 - **Número da Tarefa:** 26/95

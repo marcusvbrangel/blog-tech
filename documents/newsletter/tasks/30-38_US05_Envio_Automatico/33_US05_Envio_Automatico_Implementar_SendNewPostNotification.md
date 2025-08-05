@@ -1,5 +1,14 @@
 # 33_US05_Envio_Automatico_Implementar_SendNewPostNotification.md
 
+### ✅ US05 – Envio Automático
+*Como usuário confirmado, quero receber automaticamente por e-mail quando novos posts forem publicados, para me manter atualizado.*
+
+## 📋 Descrição da Tarefa
+**Implementar SendNewPostNotification**
+
+Esta tarefa implementa o método principal no NewsletterService para envio em massa de emails quando novos posts são publicados.
+O sistema processará subscribers confirmados em lotes otimizados, com paralelização e tratamento robusto de erros para garantir máxima performance e confiabilidade.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US05 - Envio Automático
 - **Número da Tarefa:** 33/95

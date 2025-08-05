@@ -1,5 +1,14 @@
 # 69_US09_Solicitacao_Dados_Implementar_Retorno_Todos_Dados_Subscriber.md
 
+### ✅ US09 – Solicitação de Dados
+*Como titular de dados, quero solicitar uma cópia de todos os meus dados pessoais, para exercer meu direito à portabilidade conforme LGPD.*
+
+## 📋 Descrição da Tarefa
+**Implementar Retorno Todos Dados Subscriber**
+
+Desenvolver sistema abrangente de coleta e agregação de 100% dos dados pessoais do subscriber.
+Garantir completude total para conformidade LGPD, performance otimizada e organização cronológica para auditoria.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US09 - Solicitação de Dados
 - **Número da Tarefa:** 69/95

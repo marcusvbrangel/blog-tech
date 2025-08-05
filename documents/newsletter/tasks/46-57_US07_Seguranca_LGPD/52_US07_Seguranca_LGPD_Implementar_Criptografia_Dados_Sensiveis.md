@@ -1,5 +1,14 @@
 # 52_US07_Seguranca_LGPD_Implementar_Criptografia_Dados_Sensiveis.md
 
+### ✅ US07 – Segurança LGPD
+*Como titular de dados, quero que meus dados pessoais sejam protegidos e gerenciados conforme a LGPD, para garantir minha privacidade e direitos.*
+
+## 📋 Descrição da Tarefa
+**Implementar Criptografia de Dados Sensíveis**
+
+Estabelece sistema robusto de criptografia AES-256-GCM para proteção automática de dados pessoais no banco de dados.
+Implementa rotação de chaves, conversores JPA transparentes e compatibilidade reversa para migração segura de dados existentes.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US07 - Segurança LGPD
 - **Número da Tarefa:** 52/95

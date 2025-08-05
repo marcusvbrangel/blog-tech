@@ -1,5 +1,14 @@
 # 61_US08_Historico_Consentimento_Implementar_Filtros_Data_Logs.md
 
+### ✅ US08 – Histórico de Consentimento
+*Como titular de dados, quero ter acesso ao histórico completo dos meus consentimentos, para acompanhar como meus dados são utilizados.*
+
+## 📋 Descrição da Tarefa
+**Implementar filtros por data para consulta de logs**
+
+Cria sistema robusto de filtragem temporal para logs de consentimento com suporte a ranges de data flexíveis e pre-sets comuns.
+Otimiza performance através de índices de banco e facilita auditoria por períodos específicos para compliance.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US08 - Histórico de Consentimento
 - **Número da Tarefa:** 61/95

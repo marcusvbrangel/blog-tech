@@ -1,5 +1,14 @@
 # 27_US04_Administracao_Criar_DTO_AdminSubscriberResponse.md
 
+### ✅ US04 – Administração
+*Como administrador, quero visualizar e gerenciar todos os inscritos da newsletter, para ter controle administrativo do sistema.*
+
+## 📋 Descrição da Tarefa
+**Criar DTO AdminSubscriberResponse**
+
+Criar Data Transfer Object seguro para exposição de dados de subscribers em endpoints administrativos.
+O DTO deve conter apenas campos não sensíveis (id, email, status, timestamps) garantindo privacidade e segurança.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US04 - Administração
 - **Número da Tarefa:** 27/95

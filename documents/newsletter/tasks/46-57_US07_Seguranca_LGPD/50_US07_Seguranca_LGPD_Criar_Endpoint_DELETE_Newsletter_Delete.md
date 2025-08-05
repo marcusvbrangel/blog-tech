@@ -1,5 +1,14 @@
 # 50_US07_Seguranca_LGPD_Criar_Endpoint_DELETE_Newsletter_Delete.md
 
+### ✅ US07 – Segurança LGPD
+*Como titular de dados, quero que meus dados pessoais sejam protegidos e gerenciados conforme a LGPD, para garantir minha privacidade e direitos.*
+
+## 📋 Descrição da Tarefa
+**Criar Endpoint DELETE Newsletter Delete**
+
+Implementa endpoint seguro para exclusão definitiva de dados pessoais com validação de token e rate limiting.
+Garante direito ao esquecimento da LGPD através de processo auditado de exclusão total com confirmação por email.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US07 - Segurança LGPD
 - **Número da Tarefa:** 50/95

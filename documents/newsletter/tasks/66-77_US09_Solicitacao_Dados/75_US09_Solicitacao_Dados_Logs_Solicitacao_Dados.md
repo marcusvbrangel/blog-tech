@@ -1,5 +1,14 @@
 # 75_US09_Solicitacao_Dados_Logs_Solicitacao_Dados.md
 
+### ✅ US09 – Solicitação de Dados
+*Como titular de dados, quero solicitar uma cópia de todos os meus dados pessoais, para exercer meu direito à portabilidade conforme LGPD.*
+
+## 📋 Descrição da Tarefa
+**Logs Solicitação Dados**
+
+Desenvolver sistema abrangente de auditoria e logging para solicitações de dados pessoais.
+Garantir rastreabilidade completa, conformidade LGPD e detecção de padrões suspeitos com logs estruturados.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US09 - Solicitação de Dados
 - **Número da Tarefa:** 75/95

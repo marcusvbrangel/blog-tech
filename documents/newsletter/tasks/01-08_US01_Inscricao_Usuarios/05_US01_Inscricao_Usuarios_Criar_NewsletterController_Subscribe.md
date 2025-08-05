@@ -1,5 +1,14 @@
 # 05_US01_Inscricao_Usuarios_Criar_NewsletterController_Subscribe.md
 
+### ✅ US01 – Inscrição de Usuários
+*Como visitante, quero me inscrever na newsletter informando meu e-mail, para receber novos conteúdos.*
+
+## 📋 Descrição da Tarefa
+**Criar NewsletterController Subscribe**
+
+Criar o endpoint REST POST /api/newsletter/subscribe para receber requisições de inscrição na newsletter.
+Implementar captura automática de metadados (IP, User-Agent), validação de entrada e documentação Swagger completa.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US01 - Inscrição de Usuários
 - **Número da Tarefa:** 05/95

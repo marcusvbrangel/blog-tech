@@ -1,5 +1,14 @@
 # 60_US08_Historico_Consentimento_API_Consulta_Logs_Admin_Only.md
 
+### ✅ US08 – Histórico de Consentimento
+*Como titular de dados, quero ter acesso ao histórico completo dos meus consentimentos, para acompanhar como meus dados são utilizados.*
+
+## 📋 Descrição da Tarefa
+**Implementar API para consulta de logs restrita a administradores**
+
+Cria API REST segura para consulta de logs de consentimento exclusivamente para administradores com autorização robusta.
+Fornece sistema de filtragem avançada, paginação otimizada e controles de segurança para auditoria e compliance LGPD.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US08 - Histórico de Consentimento
 - **Número da Tarefa:** 60/95

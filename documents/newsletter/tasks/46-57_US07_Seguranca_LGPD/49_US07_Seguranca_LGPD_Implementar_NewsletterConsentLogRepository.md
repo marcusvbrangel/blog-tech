@@ -1,5 +1,14 @@
 # 49_US07_Seguranca_LGPD_Implementar_NewsletterConsentLogRepository.md
 
+### ✅ US07 – Segurança LGPD
+*Como titular de dados, quero que meus dados pessoais sejam protegidos e gerenciados conforme a LGPD, para garantir minha privacidade e direitos.*
+
+## 📋 Descrição da Tarefa
+**Implementar NewsletterConsentLogRepository**
+
+Desenvolve camada de acesso a dados especializada para logs de consentimento com consultas otimizadas para auditoria.
+Fornece métodos customizados para relatórios de compliance e paginação eficiente de grandes volumes de logs LGPD.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US07 - Segurança LGPD
 - **Número da Tarefa:** 49/95

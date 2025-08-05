@@ -1,5 +1,14 @@
 # 54_US07_Seguranca_LGPD_Implementar_Soft_Delete_Compliance.md
 
+### ✅ US07 – Segurança LGPD
+*Como titular de dados, quero que meus dados pessoais sejam protegidos e gerenciados conforme a LGPD, para garantir minha privacidade e direitos.*
+
+## 📋 Descrição da Tarefa
+**Implementar Soft Delete para Compliance LGPD**
+
+Implementa sistema de exclusão lógica com período de grace de 30 dias e hard delete automático posterior.
+Fornece funcionalidades de restore administrativo e limpeza schedulada, mantendo trilha de auditoria completa para compliance.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US07 - Segurança LGPD
 - **Número da Tarefa:** 54/95

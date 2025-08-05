@@ -1,5 +1,14 @@
 # 19_US03_Descadastro_Implementar_NewsletterService_Unsubscribe.md
 
+### ✅ US03 – Descadastro
+*Como usuário inscrito, quero poder me descadastrar da newsletter através de um link seguro, para parar de receber e-mails.*
+
+## 📋 Descrição da Tarefa
+**Implementar NewsletterService Unsubscribe**
+
+Desenvolver método unsubscribe no NewsletterService para processar descadastros via token seguro.
+Garantir validação robusta, atualização de status e sistema de logging para auditoria completa.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US03 - Descadastro
 - **Número da Tarefa:** 19/95

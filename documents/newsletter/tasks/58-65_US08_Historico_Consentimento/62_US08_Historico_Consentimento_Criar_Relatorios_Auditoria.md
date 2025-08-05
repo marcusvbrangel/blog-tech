@@ -1,5 +1,14 @@
 # 62_US08_Historico_Consentimento_Criar_Relatorios_Auditoria.md
 
+### ✅ US08 – Histórico de Consentimento
+*Como titular de dados, quero ter acesso ao histórico completo dos meus consentimentos, para acompanhar como meus dados são utilizados.*
+
+## 📋 Descrição da Tarefa
+**Criar relatórios de auditoria para compliance**
+
+Desenvolve sistema completo de geração de relatórios de auditoria para compliance LGPD com múltiplos formatos e estatísticas agregadas.
+Fornece agendamento automático e controles de segurança facilitando demonstração de conformidade para auditores e órgãos reguladores.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US08 - Histórico de Consentimento
 - **Número da Tarefa:** 62/95

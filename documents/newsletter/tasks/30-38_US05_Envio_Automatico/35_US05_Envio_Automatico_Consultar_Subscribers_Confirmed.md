@@ -1,5 +1,14 @@
 # 35_US05_Envio_Automatico_Consultar_Subscribers_Confirmed.md
 
+### ✅ US05 – Envio Automático
+*Como usuário confirmado, quero receber automaticamente por e-mail quando novos posts forem publicados, para me manter atualizado.*
+
+## 📋 Descrição da Tarefa
+**Consultar Subscribers Confirmed**
+
+Esta tarefa implementa métodos otimizados no NewsletterRepository para consultar apenas subscribers com status CONFIRMED de forma eficiente.
+A consulta será paginada e otimizada para uso em envios em massa, garantindo performance adequada mesmo com grandes volumes de dados.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US05 - Envio Automático
 - **Número da Tarefa:** 35/95

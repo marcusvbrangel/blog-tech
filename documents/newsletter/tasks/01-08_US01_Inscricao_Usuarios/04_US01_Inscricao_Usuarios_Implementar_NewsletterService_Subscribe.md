@@ -1,5 +1,14 @@
 # 04_US01_Inscricao_Usuarios_Implementar_NewsletterService_Subscribe.md
 
+### ✅ US01 – Inscrição de Usuários
+*Como visitante, quero me inscrever na newsletter informando meu e-mail, para receber novos conteúdos.*
+
+## 📋 Descrição da Tarefa
+**Implementar NewsletterService Subscribe**
+
+Implementar a lógica de negócio para processar inscrições na newsletter, incluindo validações de email duplicado e reinscrição.
+Integrar com sistema de email para confirmação, logging de consentimento LGPD e gerenciamento de cache Redis.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US01 - Inscrição de Usuários
 - **Número da Tarefa:** 04/95

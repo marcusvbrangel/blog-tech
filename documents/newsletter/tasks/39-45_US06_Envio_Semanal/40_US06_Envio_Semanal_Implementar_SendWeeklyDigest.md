@@ -1,5 +1,14 @@
 # 40_US06_Envio_Semanal_Implementar_SendWeeklyDigest.md
 
+### ✅ US06 – Envio Semanal
+*Como usuário confirmado, quero receber um digest semanal com os posts publicados na semana, para acompanhar o conteúdo de forma organizada.*
+
+## 📋 Descrição da Tarefa
+**Implementar SendWeeklyDigest**
+
+Implementar o método sendWeeklyDigest() no NewsletterService para processar e enviar digest semanal aos subscribers.
+Incluir integração com PostService, processamento de template HTML e envio em lote com rate limiting.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US06 - Envio Semanal
 - **Número da Tarefa:** 40/95

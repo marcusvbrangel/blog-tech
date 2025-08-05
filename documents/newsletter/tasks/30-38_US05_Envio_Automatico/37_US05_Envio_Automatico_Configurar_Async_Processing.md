@@ -1,5 +1,14 @@
 # 37_US05_Envio_Automatico_Configurar_Async_Processing.md
 
+### ✅ US05 – Envio Automático
+*Como usuário confirmado, quero receber automaticamente por e-mail quando novos posts forem publicados, para me manter atualizado.*
+
+## 📋 Descrição da Tarefa
+**Configurar Async Processing**
+
+Esta tarefa configura infraestrutura de processamento assíncrono otimizada com @Async e thread pools customizados para newsletter.
+A configuração garantirá performance máxima no envio de newsletters sem impactar a responsividade geral da aplicação através de monitoramento e tuning adequados.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US05 - Envio Automático
 - **Número da Tarefa:** 37/95

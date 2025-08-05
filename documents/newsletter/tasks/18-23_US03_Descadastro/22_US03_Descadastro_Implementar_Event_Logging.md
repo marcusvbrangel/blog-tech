@@ -1,5 +1,14 @@
 # 22_US03_Descadastro_Implementar_Event_Logging.md
 
+### ✅ US03 – Descadastro
+*Como usuário inscrito, quero poder me descadastrar da newsletter através de um link seguro, para parar de receber e-mails.*
+
+## 📋 Descrição da Tarefa
+**Implementar Event Logging**
+
+Desenvolver sistema de logging robusto para eventos de descadastro visando auditoria e compliance LGPD.
+Capturar informações completas (IP, UserAgent, timestamps) de forma assíncrona sem impactar performance.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US03 - Descadastro
 - **Número da Tarefa:** 22/95

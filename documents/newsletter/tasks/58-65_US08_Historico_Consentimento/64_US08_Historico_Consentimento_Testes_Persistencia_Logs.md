@@ -1,5 +1,14 @@
 # 64_US08_Historico_Consentimento_Testes_Persistencia_Logs.md
 
+### ✅ US08 – Histórico de Consentimento
+*Como titular de dados, quero ter acesso ao histórico completo dos meus consentimentos, para acompanhar como meus dados são utilizados.*
+
+## 📋 Descrição da Tarefa
+**Implementar testes de persistência e integridade dos logs**
+
+Desenvolve suite abrangente de testes para garantir persistência robusta, integridade dos dados e performance sob stress dos logs de consentimento.
+Valida todos os cenários críticos e recovery confiável para um sistema de auditoria mission-critical conforme padrões LGPD.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US08 - Histórico de Consentimento
 - **Número da Tarefa:** 64/95

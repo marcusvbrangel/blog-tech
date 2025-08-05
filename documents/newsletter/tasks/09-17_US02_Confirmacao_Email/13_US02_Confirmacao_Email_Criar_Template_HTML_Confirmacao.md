@@ -1,5 +1,14 @@
 # 13_US02_Confirmacao_Email_Criar_Template_HTML_Confirmacao.md
 
+### ✅ US02 – Confirmação de E-mail
+*Como usuário inscrito, quero receber um e-mail de confirmação após me inscrever, para validar minha inscrição na newsletter.*
+
+## 📋 Descrição da Tarefa
+**13_US02_Confirmacao_Email_Criar_Template_HTML_Confirmacao**
+
+Esta tarefa cria template HTML responsivo e atrativo para emails de confirmação de inscrição na newsletter.
+O template incluirá link de confirmação, informações sobre LGPD e design consistente com a marca.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US02 - Confirmação de E-mail
 - **Número da Tarefa:** 13/95

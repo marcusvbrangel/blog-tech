@@ -1,5 +1,14 @@
 # 41_US06_Envio_Semanal_Criar_Query_Posts_7_Dias.md
 
+### ✅ US06 – Envio Semanal
+*Como usuário confirmado, quero receber um digest semanal com os posts publicados na semana, para acompanhar o conteúdo de forma organizada.*
+
+## 📋 Descrição da Tarefa
+**Criar Query Posts 7 Dias**
+
+Criar query JPA otimizada no PostRepository para buscar posts publicados nos últimos 7 dias.
+Implementar filtragem por status PUBLISHED, ordenação por data e cache Redis para performance.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US06 - Envio Semanal
 - **Número da Tarefa:** 41/95

@@ -1,5 +1,14 @@
 # 21_US03_Descadastro_Atualizar_Status_Unsubscribed.md
 
+### ✅ US03 – Descadastro
+*Como usuário inscrito, quero poder me descadastrar da newsletter através de um link seguro, para parar de receber e-mails.*
+
+## 📋 Descrição da Tarefa
+**Atualizar Status Unsubscribed**
+
+Implementar atualização atômica do status do subscriber para UNSUBSCRIBED na base de dados.
+Garantir integridade transacional, timestamps de auditoria e invalidação automática de cache.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US03 - Descadastro
 - **Número da Tarefa:** 21/95

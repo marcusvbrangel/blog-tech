@@ -1,5 +1,14 @@
 # 38_US05_Envio_Automatico_Testes_Integracao_Eventos.md
 
+### ✅ US05 – Envio Automático
+*Como usuário confirmado, quero receber automaticamente por e-mail quando novos posts forem publicados, para me manter atualizado.*
+
+## 📋 Descrição da Tarefa
+**Testes Integração Eventos**
+
+Esta tarefa implementa suite completa de testes de integração end-to-end para validar todo o fluxo de eventos da funcionalidade de envio automático.
+Os testes cobrem desde a publicação de posts até o envio efetivo de emails, incluindo cenários de performance, concorrência e resiliência do sistema.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US05 - Envio Automático
 - **Número da Tarefa:** 38/95

@@ -1,5 +1,14 @@
 # 14_US02_Confirmacao_Email_Implementar_NewsletterService_SendConfirmation.md
 
+### ✅ US02 – Confirmação de E-mail
+*Como usuário inscrito, quero receber um e-mail de confirmação após me inscrever, para validar minha inscrição na newsletter.*
+
+## 📋 Descrição da Tarefa
+**14_US02_Confirmacao_Email_Implementar_NewsletterService_SendConfirmation**
+
+Esta tarefa implementa o método sendConfirmation no NewsletterService para integrar geração de token e envio de email.
+O método incluirá logging de eventos, tratamento de erros e integração com os serviços de token e email.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US02 - Confirmação de E-mail
 - **Número da Tarefa:** 14/95

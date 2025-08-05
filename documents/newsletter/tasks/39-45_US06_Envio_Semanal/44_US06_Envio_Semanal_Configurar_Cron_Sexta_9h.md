@@ -1,5 +1,14 @@
 # 44_US06_Envio_Semanal_Configurar_Cron_Sexta_9h.md
 
+### ✅ US06 – Envio Semanal
+*Como usuário confirmado, quero receber um digest semanal com os posts publicados na semana, para acompanhar o conteúdo de forma organizada.*
+
+## 📋 Descrição da Tarefa
+**Configurar Cron Sexta 9h**
+
+Configurar cron expression para execução automática do digest semanal todas as sextas-feiras às 9h UTC.
+Implementar tratamento de feriados, distributed locking e logs detalhados de execução agendada.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US06 - Envio Semanal
 - **Número da Tarefa:** 44/95

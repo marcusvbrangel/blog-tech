@@ -1,5 +1,14 @@
 # 39_US06_Envio_Semanal_Configurar_Spring_Scheduler.md
 
+### ✅ US06 – Envio Semanal
+*Como usuário confirmado, quero receber um digest semanal com os posts publicados na semana, para acompanhar o conteúdo de forma organizada.*
+
+## 📋 Descrição da Tarefa
+**Configurar Spring Scheduler**
+
+Configurar o Spring Scheduler com @EnableScheduling e TaskScheduler personalizado para executar jobs automáticos.
+Implementar configurações avançadas de thread pool e tratamento de exceções para garantir execuções confiáveis.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US06 - Envio Semanal
 - **Número da Tarefa:** 39/95

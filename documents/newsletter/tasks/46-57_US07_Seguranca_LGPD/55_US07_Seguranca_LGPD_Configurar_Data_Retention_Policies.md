@@ -1,5 +1,14 @@
 # 55_US07_Seguranca_LGPD_Configurar_Data_Retention_Policies.md
 
+### ✅ US07 – Segurança LGPD
+*Como titular de dados, quero que meus dados pessoais sejam protegidos e gerenciados conforme a LGPD, para garantir minha privacidade e direitos.*
+
+## 📋 Descrição da Tarefa
+**Configurar Políticas de Retenção de Dados**
+
+Estabelece sistema automatizado de retenção com políticas diferenciadas por tipo de dado conforme requisitos LGPD.
+Implementa alertas pré-exclusão, backup seguro e relatórios mensais de compliance com execução schedulada.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US07 - Segurança LGPD
 - **Número da Tarefa:** 55/95

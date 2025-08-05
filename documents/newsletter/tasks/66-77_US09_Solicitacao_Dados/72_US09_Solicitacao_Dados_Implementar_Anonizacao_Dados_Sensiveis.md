@@ -1,5 +1,14 @@
 # 72_US09_Solicitacao_Dados_Implementar_Anonizacao_Dados_Sensiveis.md
 
+### ✅ US09 – Solicitação de Dados
+*Como titular de dados, quero solicitar uma cópia de todos os meus dados pessoais, para exercer meu direito à portabilidade conforme LGPD.*
+
+## 📋 Descrição da Tarefa
+**Implementar Anonização Dados Sensíveis**
+
+Desenvolver sistema sofisticado de anonimização que equilibra conformidade LGPD, segurança e utilidade dos dados.
+Classificar automaticamente dados sensíveis e aplicar técnicas adequadas de mascaramento e hash criptográfico.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US09 - Solicitação de Dados
 - **Número da Tarefa:** 72/95

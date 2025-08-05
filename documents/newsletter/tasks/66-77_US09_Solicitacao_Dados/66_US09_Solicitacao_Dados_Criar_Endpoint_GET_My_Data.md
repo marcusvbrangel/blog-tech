@@ -1,5 +1,14 @@
 # 66_US09_Solicitacao_Dados_Criar_Endpoint_GET_My_Data.md
 
+### ✅ US09 – Solicitação de Dados
+*Como titular de dados, quero solicitar uma cópia de todos os meus dados pessoais, para exercer meu direito à portabilidade conforme LGPD.*
+
+## 📋 Descrição da Tarefa
+**Criar Endpoint GET My Data**
+
+Criar endpoint RESTful seguro que permite aos usuários solicitar acesso completo aos seus dados pessoais.
+Implementar validação de tokens específicos, rate limiting e auditoria completa para conformidade LGPD.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US09 - Solicitação de Dados
 - **Número da Tarefa:** 66/95

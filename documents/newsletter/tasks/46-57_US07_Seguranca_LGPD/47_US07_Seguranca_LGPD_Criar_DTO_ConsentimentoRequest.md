@@ -1,5 +1,14 @@
 # 47_US07_Seguranca_LGPD_Criar_DTO_ConsentimentoRequest.md
 
+### ✅ US07 – Segurança LGPD
+*Como titular de dados, quero que meus dados pessoais sejam protegidos e gerenciados conforme a LGPD, para garantir minha privacidade e direitos.*
+
+## 📋 Descrição da Tarefa
+**Criar DTO ConsentimentoRequest**
+
+Cria estrutura de dados padronizada para capturar solicitações de consentimento LGPD com validações robustas.
+Implementa enum de tipos de consentimento e conversão automática para entidades de auditoria, garantindo integridade dos dados.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US07 - Segurança LGPD
 - **Número da Tarefa:** 47/95

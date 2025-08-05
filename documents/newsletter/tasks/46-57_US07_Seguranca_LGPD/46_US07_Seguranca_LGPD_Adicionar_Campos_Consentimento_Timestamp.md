@@ -1,5 +1,14 @@
 # 46_US07_Seguranca_LGPD_Adicionar_Campos_Consentimento_Timestamp.md
 
+### ✅ US07 – Segurança LGPD
+*Como titular de dados, quero que meus dados pessoais sejam protegidos e gerenciados conforme a LGPD, para garantir minha privacidade e direitos.*
+
+## 📋 Descrição da Tarefa
+**Adicionar Campos de Consentimento e Timestamp**
+
+Implementa campos LGPD essenciais na entidade NewsletterSubscriber para registrar consentimento explícito e dados de auditoria.
+Garante compliance com LGPD através de campos obrigatórios para rastreamento de consentimento e versão da política aceita.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US07 - Segurança e LGPD
 - **Número da Tarefa:** 46/95

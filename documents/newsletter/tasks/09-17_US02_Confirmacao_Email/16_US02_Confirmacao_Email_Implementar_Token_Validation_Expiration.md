@@ -1,5 +1,14 @@
 # 16_US02_Confirmacao_Email_Implementar_Token_Validation_Expiration.md
 
+### ✅ US02 – Confirmação de E-mail
+*Como usuário inscrito, quero receber um e-mail de confirmação após me inscrever, para validar minha inscrição na newsletter.*
+
+## 📋 Descrição da Tarefa
+**16_US02_Confirmacao_Email_Implementar_Token_Validation_Expiration**
+
+Esta tarefa implementa a lógica completa de validação de tokens incluindo verificação de expiração e uso único.
+A validação incluirá medidas de segurança para prevenir ataques e uso indevido de tokens.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US02 - Confirmação de E-mail
 - **Número da Tarefa:** 16/95

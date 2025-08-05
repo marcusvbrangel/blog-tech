@@ -1,5 +1,14 @@
 # 18_US03_Descadastro_Criar_UnsubscribeToken_Security.md
 
+### ✅ US03 – Descadastro
+*Como usuário inscrito, quero poder me descadastrar da newsletter através de um link seguro, para parar de receber e-mails.*
+
+## 📋 Descrição da Tarefa
+**Criar UnsubscribeToken Security**
+
+Implementar sistema de tokens seguros para descadastro com TTL de 1 ano e validação robusta contra ataques.
+Integrar tokens únicos nos templates de email para facilitar o processo de unsubscribe dos usuários.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US03 - Descadastro (Unsubscribe)
 - **Número da Tarefa:** 18/95

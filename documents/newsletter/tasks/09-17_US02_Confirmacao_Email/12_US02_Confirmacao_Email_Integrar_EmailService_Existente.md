@@ -1,5 +1,14 @@
 # 12_US02_Confirmacao_Email_Integrar_EmailService_Existente.md
 
+### ✅ US02 – Confirmação de E-mail
+*Como usuário inscrito, quero receber um e-mail de confirmação após me inscrever, para validar minha inscrição na newsletter.*
+
+## 📋 Descrição da Tarefa
+**12_US02_Confirmacao_Email_Integrar_EmailService_Existente**
+
+Esta tarefa integra o EmailService existente com o sistema de newsletter adicionando métodos específicos.
+A integração incluirá envio de emails de confirmação, notificação de novos posts e digest semanal.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US02 - Confirmação de E-mail
 - **Número da Tarefa:** 12/95

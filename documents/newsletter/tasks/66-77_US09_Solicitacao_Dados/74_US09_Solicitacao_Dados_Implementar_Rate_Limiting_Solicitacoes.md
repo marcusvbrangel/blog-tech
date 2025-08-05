@@ -1,5 +1,14 @@
 # 74_US09_Solicitacao_Dados_Implementar_Rate_Limiting_Solicitacoes.md
 
+### ✅ US09 – Solicitação de Dados
+*Como titular de dados, quero solicitar uma cópia de todos os meus dados pessoais, para exercer meu direito à portabilidade conforme LGPD.*
+
+## 📋 Descrição da Tarefa
+**Implementar Rate Limiting Solicitações**
+
+Desenvolver sistema robusto de rate limiting para proteção contra abuso de solicitações de dados pessoais.
+Usar janelas deslizantes, contadores distribuídos no Redis e throttling inteligente com alertas para administradores.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US09 - Solicitação de Dados
 - **Número da Tarefa:** 74/95

@@ -1,5 +1,14 @@
 # 65_US08_Historico_Consentimento_Testes_Consulta_Auditoria.md
 
+### ✅ US08 – Histórico de Consentimento
+*Como titular de dados, quero ter acesso ao histórico completo dos meus consentimentos, para acompanhar como meus dados são utilizados.*
+
+## 📋 Descrição da Tarefa
+**Implementar testes de consulta e geração de relatórios de auditoria**
+
+Desenvolve suite completa de testes para validação de consultas de auditoria e geração de relatórios garantindo precisão dos dados.
+Cobre todos os cenários de uso administrativo com performance adequada, segurança robusta e conformidade com requisitos de compliance.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US08 - Histórico de Consentimento
 - **Número da Tarefa:** 65/95

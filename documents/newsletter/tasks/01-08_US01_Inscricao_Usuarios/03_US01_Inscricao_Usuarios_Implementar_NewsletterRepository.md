@@ -1,5 +1,14 @@
 # 03_US01_Inscricao_Usuarios_Implementar_NewsletterRepository.md
 
+### ✅ US01 – Inscrição de Usuários
+*Como visitante, quero me inscrever na newsletter informando meu e-mail, para receber novos conteúdos.*
+
+## 📋 Descrição da Tarefa
+**Implementar NewsletterRepository**
+
+Implementar o repositório Spring Data JPA para operações de persistência com a entidade NewsletterSubscriber.
+Criar queries customizadas para busca por email, status e operações específicas de administração e compliance LGPD.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US01 - Inscrição de Usuários
 - **Número da Tarefa:** 03/95

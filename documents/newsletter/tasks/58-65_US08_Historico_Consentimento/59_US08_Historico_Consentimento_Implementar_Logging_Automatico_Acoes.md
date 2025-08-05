@@ -1,5 +1,14 @@
 # 59_US08_Historico_Consentimento_Implementar_Logging_Automatico_Acoes.md
 
+### ✅ US08 – Histórico de Consentimento
+*Como titular de dados, quero ter acesso ao histórico completo dos meus consentimentos, para acompanhar como meus dados são utilizados.*
+
+## 📋 Descrição da Tarefa
+**Implementar logging automático de todas as ações de consentimento**
+
+Cria sistema de logging baseado em eventos para capturar automaticamente todas as ações de consentimento sem acoplamento direto.
+Garante rastreabilidade completa através de processamento assíncrono mantendo performance da API principal.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US08 - Histórico de Consentimento
 - **Número da Tarefa:** 59/95

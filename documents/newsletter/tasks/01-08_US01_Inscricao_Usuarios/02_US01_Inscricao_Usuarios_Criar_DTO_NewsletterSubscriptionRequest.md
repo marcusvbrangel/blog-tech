@@ -1,5 +1,14 @@
 # 02_US01_Inscricao_Usuarios_Criar_DTO_NewsletterSubscriptionRequest.md
 
+### ✅ US01 – Inscrição de Usuários
+*Como visitante, quero me inscrever na newsletter informando meu e-mail, para receber novos conteúdos.*
+
+## 📋 Descrição da Tarefa
+**Criar DTO NewsletterSubscriptionRequest**
+
+Criar o Data Transfer Object como Java Record para receber dados da requisição de inscrição na newsletter.
+Implementar validações Bean Validation e campos de compliance LGPD para captura de consentimento e metadados do usuário.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US01 - Inscrição de Usuários
 - **Número da Tarefa:** 02/95

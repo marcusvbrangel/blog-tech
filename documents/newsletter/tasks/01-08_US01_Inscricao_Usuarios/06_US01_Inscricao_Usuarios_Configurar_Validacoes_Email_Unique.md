@@ -1,5 +1,14 @@
 # 06_US01_Inscricao_Usuarios_Configurar_Validacoes_Email_Unique.md
 
+### ✅ US01 – Inscrição de Usuários
+*Como visitante, quero me inscrever na newsletter informando meu e-mail, para receber novos conteúdos.*
+
+## 📋 Descrição da Tarefa
+**Configurar Validações Email Unique**
+
+Configurar e implementar validações completas para o campo email, incluindo formato válido e unicidade no banco de dados.
+Criar mensagens de erro personalizadas e integração com GlobalExceptionHandler para melhor experiência do usuário.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US01 - Inscrição de Usuários
 - **Número da Tarefa:** 06/95

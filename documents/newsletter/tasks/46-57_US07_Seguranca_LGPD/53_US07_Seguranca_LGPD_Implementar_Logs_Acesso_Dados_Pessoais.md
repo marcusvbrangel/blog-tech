@@ -1,5 +1,14 @@
 # 53_US07_Seguranca_LGPD_Implementar_Logs_Acesso_Dados_Pessoais.md
 
+### ✅ US07 – Segurança LGPD
+*Como titular de dados, quero que meus dados pessoais sejam protegidos e gerenciados conforme a LGPD, para garantir minha privacidade e direitos.*
+
+## 📋 Descrição da Tarefa
+**Implementar Logs de Acesso a Dados Pessoais**
+
+Desenvolve sistema de auditoria automática com AOP para rastreamento transparente de acessos a dados sensíveis.
+Inclui detecção de padrões suspeitos, alertas em tempo real e dashboard administrativo para monitoramento de compliance.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US07 - Segurança LGPD
 - **Número da Tarefa:** 53/95

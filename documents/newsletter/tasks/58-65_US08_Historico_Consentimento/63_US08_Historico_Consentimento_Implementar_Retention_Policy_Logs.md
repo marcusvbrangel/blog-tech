@@ -1,5 +1,14 @@
 # 63_US08_Historico_Consentimento_Implementar_Retention_Policy_Logs.md
 
+### ✅ US08 – Histórico de Consentimento
+*Como titular de dados, quero ter acesso ao histórico completo dos meus consentimentos, para acompanhar como meus dados são utilizados.*
+
+## 📋 Descrição da Tarefa
+**Implementar política de retenção específica para logs**
+
+Cria sistema robusto de gestão de retenção de logs conforme LGPD e best practices de compliance com ciclo de vida automatizado.
+Implementa archive para storage de longo prazo e controles de segurança garantindo preservação adequada sem acumular dados desnecessariamente.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US08 - Histórico de Consentimento
 - **Número da Tarefa:** 63/95

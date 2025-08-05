@@ -1,5 +1,14 @@
 # 31_US05_Envio_Automatico_Implementar_NewsletterEventListener.md
 
+### ✅ US05 – Envio Automático
+*Como usuário confirmado, quero receber automaticamente por e-mail quando novos posts forem publicados, para me manter atualizado.*
+
+## 📋 Descrição da Tarefa
+**Implementar NewsletterEventListener**
+
+Esta tarefa implementa o listener assíncrono que escuta eventos PostPublishedEvent e dispara automaticamente o envio de emails de newsletter.
+O componente garante processamento não-bloqueante e tratamento robusto de erros para manter a confiabilidade do sistema.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US05 - Envio Automático
 - **Número da Tarefa:** 31/95

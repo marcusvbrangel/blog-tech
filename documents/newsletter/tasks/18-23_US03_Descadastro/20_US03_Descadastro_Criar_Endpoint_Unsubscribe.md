@@ -1,5 +1,14 @@
 # 20_US03_Descadastro_Criar_Endpoint_Unsubscribe.md
 
+### ✅ US03 – Descadastro
+*Como usuário inscrito, quero poder me descadastrar da newsletter através de um link seguro, para parar de receber e-mails.*
+
+## 📋 Descrição da Tarefa
+**Criar Endpoint Unsubscribe**
+
+Criar endpoint GET /api/newsletter/unsubscribe para processar descadastros via link direto no email.
+Implementar validação de token na URL e página de confirmação para experiência fluida do usuário.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US03 - Descadastro
 - **Número da Tarefa:** 20/95

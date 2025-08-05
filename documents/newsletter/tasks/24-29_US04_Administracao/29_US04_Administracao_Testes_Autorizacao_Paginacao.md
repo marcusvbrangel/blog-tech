@@ -1,5 +1,14 @@
 # 29_US04_Administracao_Testes_Autorizacao_Paginacao.md
 
+### ✅ US04 – Administração
+*Como administrador, quero visualizar e gerenciar todos os inscritos da newsletter, para ter controle administrativo do sistema.*
+
+## 📋 Descrição da Tarefa
+**Testes de Autorização e Paginação**
+
+Implementar suite completa de testes unitários e de integração para validar autorização ROLE_ADMIN e funcionalidades de paginação.
+Incluir testes de segurança com JWT, MockMvc, TestContainers e verificação de performance para garantir robustez do sistema.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US04 - Administração
 - **Número da Tarefa:** 29/95

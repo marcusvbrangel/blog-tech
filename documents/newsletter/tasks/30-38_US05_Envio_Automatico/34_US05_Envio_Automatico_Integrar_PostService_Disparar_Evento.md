@@ -1,5 +1,14 @@
 # 34_US05_Envio_Automatico_Integrar_PostService_Disparar_Evento.md
 
+### ✅ US05 – Envio Automático
+*Como usuário confirmado, quero receber automaticamente por e-mail quando novos posts forem publicados, para me manter atualizado.*
+
+## 📋 Descrição da Tarefa
+**Integrar PostService Disparar Evento**
+
+Esta tarefa integra o ApplicationEventPublisher no PostService para disparar automaticamente PostPublishedEvent quando posts são publicados.
+A integração estabelece a conexão fundamental entre o sistema de posts e o sistema de newsletter, mantendo baixo acoplamento através de eventos.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US05 - Envio Automático
 - **Número da Tarefa:** 34/95

@@ -1,5 +1,14 @@
 # 23_US03_Descadastro_Testes_End_to_End_Fluxo_Completo.md
 
+### ✅ US03 – Descadastro
+*Como usuário inscrito, quero poder me descadastrar da newsletter através de um link seguro, para parar de receber e-mails.*
+
+## 📋 Descrição da Tarefa
+**Testes End to End Fluxo Completo**
+
+Implementar suite completa de testes end-to-end cobrindo todo o fluxo de unsubscribe desde token até status final.
+Validar cenários de sucesso, erro, performance e compliance com cobertura de código ≥ 95%.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US03 - Descadastro
 - **Número da Tarefa:** 23/95

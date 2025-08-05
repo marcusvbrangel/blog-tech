@@ -1,5 +1,14 @@
 # 07_US01_Inscricao_Usuarios_Implementar_Testes_Unitarios_Integracao.md
 
+### ✅ US01 – Inscrição de Usuários
+*Como visitante, quero me inscrever na newsletter informando meu e-mail, para receber novos conteúdos.*
+
+## 📋 Descrição da Tarefa
+**Implementar Testes Unitários e Integração**
+
+Implementar suite completa de testes unitários e de integração para todos os componentes da US01.
+Garantir cobertura ≥ 85% e validação de todos os Acceptance Criteria com testes de performance e exception handling.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US01 - Inscrição de Usuários
 - **Número da Tarefa:** 07/95

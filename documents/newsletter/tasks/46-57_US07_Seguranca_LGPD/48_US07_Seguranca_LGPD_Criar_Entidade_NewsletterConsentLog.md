@@ -1,5 +1,14 @@
 # 48_US07_Seguranca_LGPD_Criar_Entidade_NewsletterConsentLog.md
 
+### ✅ US07 – Segurança LGPD
+*Como titular de dados, quero que meus dados pessoais sejam protegidos e gerenciados conforme a LGPD, para garantir minha privacidade e direitos.*
+
+## 📋 Descrição da Tarefa
+**Criar Entidade NewsletterConsentLog**
+
+Implementa sistema completo de logs de auditoria LGPD com criptografia automática de dados sensíveis.
+Estabelece rastreabilidade total de consentimentos com índices otimizados e retenção configurável para compliance legal.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US07 - Segurança LGPD
 - **Número da Tarefa:** 48/95

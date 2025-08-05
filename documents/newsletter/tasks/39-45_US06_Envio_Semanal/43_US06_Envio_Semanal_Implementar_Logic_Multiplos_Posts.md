@@ -1,5 +1,14 @@
 # 43_US06_Envio_Semanal_Implementar_Logic_Multiplos_Posts.md
 
+### ✅ US06 – Envio Semanal
+*Como usuário confirmado, quero receber um digest semanal com os posts publicados na semana, para acompanhar o conteúdo de forma organizada.*
+
+## 📋 Descrição da Tarefa
+**Implementar Logic Multiplos Posts**
+
+Implementar lógica avançada para processar múltiplos posts no digest com algoritmo de relevância e sumarização.
+Incluir ordenação por score, deduplicação de conteúdo similar e limitação a 10 posts mais relevantes.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US06 - Envio Semanal
 - **Número da Tarefa:** 43/95

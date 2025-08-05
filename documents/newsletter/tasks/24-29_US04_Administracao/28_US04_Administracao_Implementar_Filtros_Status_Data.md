@@ -1,5 +1,14 @@
 # 28_US04_Administracao_Implementar_Filtros_Status_Data.md
 
+### ✅ US04 – Administração
+*Como administrador, quero visualizar e gerenciar todos os inscritos da newsletter, para ter controle administrativo do sistema.*
+
+## 📋 Descrição da Tarefa
+**Implementar Filtros Avançados por Status e Data**
+
+Implementar sistema de filtros avançados com suporte a múltiplos status, ranges de data e padrões de email.
+Otimizar performance com índices de banco, cache Redis e validações robustas para consultas administrativas eficientes.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US04 - Administração
 - **Número da Tarefa:** 28/95

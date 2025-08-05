@@ -1,5 +1,14 @@
 # 30_US05_Envio_Automatico_Criar_PostPublishedEvent.md
 
+### ✅ US05 – Envio Automático
+*Como usuário confirmado, quero receber automaticamente por e-mail quando novos posts forem publicados, para me manter atualizado.*
+
+## 📋 Descrição da Tarefa
+**Criar PostPublishedEvent**
+
+Esta tarefa implementa a criação do evento PostPublishedEvent que será disparado automaticamente quando um post for publicado no sistema.
+O evento servirá como ponte entre o sistema de posts e o sistema de newsletter, permitindo comunicação assíncrona e desacoplada.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US05 - Envio Automático de Novos Conteúdos
 - **Número da Tarefa:** 30/95

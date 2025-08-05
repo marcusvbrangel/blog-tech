@@ -1,5 +1,14 @@
 # 08_US01_Inscricao_Usuarios_Atualizar_Swagger_Documentation.md
 
+### ✅ US01 – Inscrição de Usuários
+*Como visitante, quero me inscrever na newsletter informando meu e-mail, para receber novos conteúdos.*
+
+## 📋 Descrição da Tarefa
+**Atualizar Swagger Documentation**
+
+Atualizar a documentação Swagger/OpenAPI para incluir o novo endpoint de inscrição na newsletter.
+Adicionar schemas detalhados, exemplos práticos e informações de compliance LGPD para facilitar o uso da API.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US01 - Inscrição de Usuários
 - **Número da Tarefa:** 08/95

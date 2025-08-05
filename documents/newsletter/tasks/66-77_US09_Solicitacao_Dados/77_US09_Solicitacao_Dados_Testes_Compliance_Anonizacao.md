@@ -1,5 +1,14 @@
 # 77_US09_Solicitacao_Dados_Testes_Compliance_Anonizacao.md
 
+### ✅ US09 – Solicitação de Dados
+*Como titular de dados, quero solicitar uma cópia de todos os meus dados pessoais, para exercer meu direito à portabilidade conforme LGPD.*
+
+## 📋 Descrição da Tarefa
+**Testes Compliance Anonização**
+
+Desenvolver suíte especializada de testes para validar efetividade, segurança e conformidade da anonimização.
+Verificar irreversibilidade, resistência a ataques e compliance com LGPD Article 12 sobre minimização de dados.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US09 - Solicitação de Dados
 - **Número da Tarefa:** 77/95

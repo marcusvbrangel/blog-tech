@@ -1,5 +1,14 @@
 # 67_US09_Solicitacao_Dados_Implementar_Validacao_Token_Acesso.md
 
+### ✅ US09 – Solicitação de Dados
+*Como titular de dados, quero solicitar uma cópia de todos os meus dados pessoais, para exercer meu direito à portabilidade conforme LGPD.*
+
+## 📋 Descrição da Tarefa
+**Implementar Validação Token Acesso**
+
+Implementar sistema robusto de validação de tokens JWT específicos para solicitação de dados pessoais.
+Incluir criptografia RS256, cache Redis, blacklist automática e resistência a ataques de segurança.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US09 - Solicitação de Dados
 - **Número da Tarefa:** 67/95

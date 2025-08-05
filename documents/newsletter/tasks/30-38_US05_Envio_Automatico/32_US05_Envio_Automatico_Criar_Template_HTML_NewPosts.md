@@ -1,5 +1,14 @@
 # 32_US05_Envio_Automatico_Criar_Template_HTML_NewPosts.md
 
+### ✅ US05 – Envio Automático
+*Como usuário confirmado, quero receber automaticamente por e-mail quando novos posts forem publicados, para me manter atualizado.*
+
+## 📋 Descrição da Tarefa
+**Criar Template HTML NewPosts**
+
+Esta tarefa desenvolve um template HTML responsivo e atrativo usando Thymeleaf para notificar subscribers sobre novos posts publicados.
+O template incluirá preview do conteúdo, design profissional e compatibilidade com diferentes clients de email para maximizar a taxa de entrega.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US05 - Envio Automático
 - **Número da Tarefa:** 32/95

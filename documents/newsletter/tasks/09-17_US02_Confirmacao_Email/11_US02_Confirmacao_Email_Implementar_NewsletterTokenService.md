@@ -1,5 +1,14 @@
 # 11_US02_Confirmacao_Email_Implementar_NewsletterTokenService.md
 
+### ✅ US02 – Confirmação de E-mail
+*Como usuário inscrito, quero receber um e-mail de confirmação após me inscrever, para validar minha inscrição na newsletter.*
+
+## 📋 Descrição da Tarefa
+**11_US02_Confirmacao_Email_Implementar_NewsletterTokenService**
+
+Esta tarefa implementa o serviço para geração, validação e limpeza de tokens de confirmação.
+O serviço gerenciará diferentes tipos de tokens com TTLs específicos e integração com scheduler para limpeza automática.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US02 - Confirmação de E-mail
 - **Número da Tarefa:** 11/95

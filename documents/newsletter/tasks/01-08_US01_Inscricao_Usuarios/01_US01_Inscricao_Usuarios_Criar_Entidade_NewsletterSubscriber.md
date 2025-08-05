@@ -1,5 +1,14 @@
 # 01_US01_Inscricao_Usuarios_Criar_Entidade_NewsletterSubscriber.md
 
+### ✅ US01 – Inscrição de Usuários
+*Como visitante, quero me inscrever na newsletter informando meu e-mail, para receber novos conteúdos.*
+
+## 📋 Descrição da Tarefa
+**Criar Entidade NewsletterSubscriber**
+
+Criar a entidade principal que representará os assinantes da newsletter no banco de dados, incluindo todos os campos necessários para compliance LGPD.
+Implementar a estrutura base com anotações JPA, Builder pattern e campos de auditoria seguindo os padrões arquiteturais do projeto.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US01 - Inscrição de Usuários
 - **Número da Tarefa:** 01/95

@@ -1,5 +1,14 @@
 # 56_US07_Seguranca_LGPD_Implementar_Token_Exclusao_Dados.md
 
+### ✅ US07 – Segurança LGPD
+*Como titular de dados, quero que meus dados pessoais sejam protegidos e gerenciados conforme a LGPD, para garantir minha privacidade e direitos.*
+
+## 📋 Descrição da Tarefa
+**Implementar Token Específico para Exclusão de Dados**
+
+Desenvolve sistema seguro de tokens JWT+HMAC com uso único e expiração de 24 horas para solicitações de exclusão.
+Implementa rate limiting, validação de IP e processo completo de email seguro para garantir autenticidade das solicitações.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US07 - Segurança LGPD
 - **Número da Tarefa:** 56/95

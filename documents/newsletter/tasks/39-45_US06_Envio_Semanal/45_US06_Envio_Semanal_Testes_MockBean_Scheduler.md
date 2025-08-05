@@ -1,5 +1,14 @@
 # 45_US06_Envio_Semanal_Testes_MockBean_Scheduler.md
 
+### ✅ US06 – Envio Semanal
+*Como usuário confirmado, quero receber um digest semanal com os posts publicados na semana, para acompanhar o conteúdo de forma organizada.*
+
+## 📋 Descrição da Tarefa
+**Testes MockBean Scheduler**
+
+Implementar testes unitários abrangentes com @MockBean para validar o comportamento do scheduler sem execução real.
+Incluir testes de configuração, exception handling, distributed locking e validação de cron expressions.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US06 - Envio Semanal
 - **Número da Tarefa:** 45/95

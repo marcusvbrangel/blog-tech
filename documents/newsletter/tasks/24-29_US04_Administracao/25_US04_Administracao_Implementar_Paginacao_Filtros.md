@@ -1,5 +1,14 @@
 # 25_US04_Administracao_Implementar_Paginacao_Filtros.md
 
+### ✅ US04 – Administração
+*Como administrador, quero visualizar e gerenciar todos os inscritos da newsletter, para ter controle administrativo do sistema.*
+
+## 📋 Descrição da Tarefa
+**Implementar Paginação e Filtros**
+
+Estender o endpoint administrativo com recursos de paginação avançada e filtros dinâmicos por status, data e email.
+Implementar JPA Specifications para consultas eficientes com múltiplos critérios de busca combinados.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US04 - Administração
 - **Número da Tarefa:** 25/95

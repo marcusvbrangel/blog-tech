@@ -1,5 +1,14 @@
 # 09_US02_Confirmacao_Email_Criar_Entidade_ConfirmationToken.md
 
+### ✅ US02 – Confirmação de E-mail
+*Como usuário inscrito, quero receber um e-mail de confirmação após me inscrever, para validar minha inscrição na newsletter.*
+
+## 📋 Descrição da Tarefa
+**09_US02_Confirmacao_Email_Criar_Entidade_ConfirmationToken**
+
+Esta tarefa cria a entidade NewsletterToken para gerenciar tokens de confirmação de email, unsubscribe e solicitação de dados.
+A entidade incluirá diferentes tipos de tokens com funcionalidades de expiração e controle de uso único.
+
 ## 📋 Contexto da Tarefa
 - **User Story:** US02 - Confirmação de E-mail
 - **Número da Tarefa:** 09/95
