@@ -3,6 +3,8 @@ package com.blog.api.service;
 import com.blog.api.dto.NewsletterSubscriptionRequest;
 import com.blog.api.dto.NewsletterSubscriptionResponse;
 import com.blog.api.entity.NewsletterSubscriber;
+import com.blog.api.entity.NewsletterToken;
+import com.blog.api.entity.NewsletterTokenType;
 import com.blog.api.entity.SubscriptionStatus;
 import com.blog.api.exception.BadRequestException;
 import com.blog.api.repository.NewsletterSubscriberRepository;
@@ -40,6 +42,9 @@ public class NewsletterService {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private NewsletterTokenService tokenService;
 
     /**
      * Process a newsletter subscription request.
@@ -182,6 +187,40 @@ public class NewsletterService {
     }
 
     /**
+     * Send confirmation email with token generation.
+     * Integrates NewsletterTokenService for token generation and EmailService for sending.
+     * 
+     * @param email the email address
+     * @param ipAddress client IP address (optional)
+     * @param userAgent client user agent (optional)
+     * @return the generated confirmation token
+     * @throws RuntimeException if token generation or email sending fails
+     */
+    @Timed(value = "newsletter.confirmation.time", description = "Time taken to send confirmation email")
+    public NewsletterToken sendConfirmation(String email, String ipAddress, String userAgent) {
+        logger.info("Sending newsletter confirmation for email: {}", email);
+        
+        try {
+            // Generate confirmation token
+            NewsletterToken confirmationToken = tokenService.generateConfirmationToken(email, ipAddress, userAgent);
+            logger.info("Generated confirmation token for email: {} with token: {}", email, confirmationToken.getToken());
+            
+            // Send confirmation email with token
+            emailService.sendNewsletterConfirmation(email, confirmationToken);
+            logger.info("Confirmation email sent successfully to: {}", email);
+            
+            // Log audit event
+            logConfirmationSent(email, confirmationToken.getToken(), ipAddress);
+            
+            return confirmationToken;
+            
+        } catch (Exception e) {
+            logger.error("Failed to send confirmation email to: {} - Error: {}", email, e.getMessage(), e);
+            throw new RuntimeException("Failed to send confirmation email", e);
+        }
+    }
+
+    /**
      * Send confirmation email asynchronously.
      * 
      * @param subscriber the subscriber to send confirmation to
@@ -189,14 +228,25 @@ public class NewsletterService {
     @Async
     public void sendConfirmationEmailAsync(NewsletterSubscriber subscriber) {
         try {
-            logger.info("Sending confirmation email to: {}", subscriber.getEmail());
-            // TODO: Implement email sending logic in US02
-            // emailService.sendNewsletterConfirmation(subscriber);
-            logger.info("Confirmation email queued for: {}", subscriber.getEmail());
+            logger.info("Sending confirmation email async to: {}", subscriber.getEmail());
+            sendConfirmation(subscriber.getEmail(), subscriber.getConsentIpAddress(), subscriber.getConsentUserAgent());
+            logger.info("Confirmation email sent async for: {}", subscriber.getEmail());
         } catch (Exception e) {
-            logger.error("Failed to send confirmation email to: {}", subscriber.getEmail(), e);
+            logger.error("Failed to send confirmation email async to: {}", subscriber.getEmail(), e);
             // Don't throw exception to avoid breaking the subscription flow
         }
+    }
+
+    /**
+     * Log confirmation email sent event for audit purposes.
+     * 
+     * @param email the email address
+     * @param token the confirmation token
+     * @param ipAddress the client IP address
+     */
+    private void logConfirmationSent(String email, String token, String ipAddress) {
+        logger.info("Confirmation email sent - Email: {}, Token: {}, IP: {}, Timestamp: {}", 
+                   email, token, ipAddress, LocalDateTime.now());
     }
 
     /**
@@ -268,6 +318,112 @@ public class NewsletterService {
     @CacheEvict(value = "confirmedSubscribers", allEntries = true)
     public void invalidateConfirmedSubscribersCache() {
         logger.debug("Invalidated confirmed subscribers cache");
+    }
+
+    /**
+     * Confirm newsletter subscription using token.
+     * Validates the confirmation token and updates subscriber status to CONFIRMED.
+     * 
+     * @param tokenValue the confirmation token from email
+     * @param ipAddress client IP address (optional) 
+     * @param userAgent client user agent (optional)
+     * @return NewsletterSubscriptionResponse with confirmation result
+     * @throws BadRequestException if token is invalid, expired, or used
+     */
+    @Timed(value = "newsletter.confirmation.process.time", description = "Time taken to process newsletter confirmation")
+    @Transactional
+    public NewsletterSubscriptionResponse confirmSubscription(String tokenValue, String ipAddress, String userAgent) {
+        logger.info("Processing newsletter confirmation for token: {}", tokenValue);
+        
+        try {
+            // Validate confirmation token
+            NewsletterToken token = tokenService.validateToken(tokenValue, NewsletterTokenType.CONFIRMATION);
+            String email = token.getEmail();
+            
+            logger.info("Valid confirmation token found for email: {}", email);
+            
+            // Find subscriber by email
+            Optional<NewsletterSubscriber> subscriberOpt = subscriberRepository.findByEmail(email);
+            if (subscriberOpt.isEmpty()) {
+                logger.warn("No subscriber found for email: {} with valid token", email);
+                throw new BadRequestException("Subscription not found for this confirmation token");
+            }
+            
+            NewsletterSubscriber subscriber = subscriberOpt.get();
+            
+            // Check if already confirmed
+            if (subscriber.getStatus() == SubscriptionStatus.CONFIRMED) {
+                logger.info("Email {} already confirmed, returning existing subscription", email);
+                return NewsletterSubscriptionResponse.alreadyConfirmed(subscriber);
+            }
+            
+            // Update subscriber status to confirmed
+            subscriber.setStatus(SubscriptionStatus.CONFIRMED);
+            subscriber.setConfirmedAt(LocalDateTime.now());
+            
+            // Save updated subscriber
+            subscriber = subscriberRepository.save(subscriber);
+            
+            // Mark token as used
+            tokenService.markTokenAsUsed(tokenValue, NewsletterTokenType.CONFIRMATION);
+            
+            // Log confirmation event
+            logConfirmationCompleted(email, tokenValue, ipAddress);
+            
+            // Send welcome email asynchronously
+            sendWelcomeEmailAsync(subscriber);
+            
+            // Invalidate confirmed subscribers cache
+            invalidateConfirmedSubscribersCache();
+            
+            logger.info("Newsletter subscription confirmed for email: {}", email);
+            return NewsletterSubscriptionResponse.confirmed(subscriber);
+            
+        } catch (BadRequestException e) {
+            logger.warn("Newsletter confirmation failed for token: {} - {}", tokenValue, e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            logger.error("Unexpected error confirming newsletter subscription for token: {}", tokenValue, e);
+            throw new RuntimeException("Failed to confirm subscription", e);
+        }
+    }
+
+    /**
+     * Send welcome email asynchronously after confirmation.
+     * 
+     * @param subscriber the confirmed subscriber
+     */
+    @Async
+    public void sendWelcomeEmailAsync(NewsletterSubscriber subscriber) {
+        try {
+            logger.info("Sending welcome email to: {}", subscriber.getEmail());
+            
+            // Generate unsubscribe token for welcome email
+            NewsletterToken unsubscribeToken = tokenService.generateUnsubscribeToken(
+                subscriber.getEmail(), 
+                subscriber.getConsentIpAddress(), 
+                subscriber.getConsentUserAgent()
+            );
+            
+            emailService.sendNewsletterWelcome(subscriber.getEmail(), unsubscribeToken);
+            logger.info("Welcome email sent successfully to: {}", subscriber.getEmail());
+            
+        } catch (Exception e) {
+            logger.error("Failed to send welcome email to: {}", subscriber.getEmail(), e);
+            // Don't throw exception to avoid breaking the confirmation flow
+        }
+    }
+
+    /**
+     * Log confirmation completed event for audit purposes.
+     * 
+     * @param email the email address
+     * @param token the confirmation token
+     * @param ipAddress the client IP address
+     */
+    private void logConfirmationCompleted(String email, String token, String ipAddress) {
+        logger.info("Confirmation completed - Email: {}, Token: {}, IP: {}, Timestamp: {}", 
+                   email, token, ipAddress, LocalDateTime.now());
     }
 
     /**

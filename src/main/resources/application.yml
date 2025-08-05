@@ -135,3 +135,18 @@ blog:
       verification: "email/verification"
       password-reset: "email/password-reset"
       welcome: "email/welcome"
+  newsletter:
+    confirmation:
+      token-expiration: 48h
+      max-attempts-per-hour: 3
+    unsubscribe:
+      token-expiration: 365d
+      max-attempts-per-hour: 2
+    data-request:
+      token-expiration: 7d
+      max-attempts-per-day: 1
+    cleanup:
+      enabled: true
+      expired-tokens-cron: "0 0 */6 * * *"  # Every 6 hours
+      used-tokens-cron: "0 0 2 * * *"       # Daily at 2 AM
+      old-tokens-retention-days: 30

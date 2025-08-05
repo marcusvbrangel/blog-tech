@@ -120,27 +120,32 @@ Criar service dedicado para gerenciamento de tokens. Utilizar diferentes TTLs po
 - **Real:** _____ *(a ser preenchido após implementação)*
 
 ## 📝 Notas de Implementação
-*[Este espaço será preenchido durante a implementação com descobertas, decisões técnicas, e observações importantes]*
 
 ### **Decisões Técnicas:**
-- [Decisão 1: justificativa]
-- [Decisão 2: justificativa]
+- **Email-based token management:** Implementado service baseado em email (não FK para User) para newsletter independente
+- **Diferent TTLs por tipo:** Confirmation (48h), Unsubscribe (1 ano), Data Request (7 dias)
+- **Rate limiting específico:** Limites diferentes por tipo de token (3/hora para confirmation, 1/dia para data request)
+- **Caching strategy:** Cache para tokens validados com chave composta (token + tipo)
+- **Cleanup automático:** Jobs scheduled para limpeza de tokens expirados (1h) e usados antigos (diário)
 
 ### **Descobertas:**
-- [Descoberta 1: impacto]
-- [Descoberta 2: impacto]
+- **Pattern consistency:** Seguindo exatamente o padrão do VerificationTokenService existente
+- **Comprehensive validation:** Validação completa de tokens com diferentes tipos de erro
+- **Statistics support:** Implementado sistema de estatísticas para monitoramento
+- **LGPD compliance:** Métodos específicos para deletar todos os tokens de um email
 
 ### **Refactorings Necessários:**
-- [Refactoring 1: razão]
-- [Refactoring 2: razão]
+- **Test infrastructure:** Setup completo de Duration values para testes unitários
+- **Exception handling:** Tratamento gracioso de exceções em jobs de limpeza
+- **Async cleanup:** Limpeza assíncrona de tokens antigos para performance
 
 ## 📊 Status Tracking
 
 ### **Status Atual:**
-- [x] 📋 **Todo** - Não iniciada
+- [ ] 📋 **Todo** - Não iniciada
 - [ ] 🔄 **In Progress** - Em desenvolvimento  
 - [ ] 👀 **Code Review** - Aguardando revisão
-- [ ] ✅ **Done** - Concluída e validada
+- [x] ✅ **Done** - Concluída e validada
 
 ### **Bloqueadores:**
 *[Lista de impedimentos, se houver]*
