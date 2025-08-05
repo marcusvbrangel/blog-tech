@@ -3,6 +3,8 @@ package com.blog.api.service;
 import com.blog.api.dto.NewsletterSubscriptionRequest;
 import com.blog.api.dto.NewsletterSubscriptionResponse;
 import com.blog.api.entity.NewsletterSubscriber;
+import com.blog.api.entity.NewsletterToken;
+import com.blog.api.entity.NewsletterTokenType;
 import com.blog.api.entity.SubscriptionStatus;
 import com.blog.api.exception.BadRequestException;
 import com.blog.api.repository.NewsletterSubscriberRepository;
@@ -40,6 +42,9 @@ class NewsletterServiceTest {
     @Mock
     private EmailService emailService;
 
+    @Mock
+    private NewsletterTokenService tokenService;
+
     @InjectMocks
     private NewsletterService newsletterService;
 
@@ -63,6 +68,17 @@ class NewsletterServiceTest {
         ).build();
         existingSubscriber.setId(1L);
         existingSubscriber.setCreatedAt(LocalDateTime.now());
+
+        // Set up default mock behavior for tokenService to avoid NullPointerException
+        NewsletterToken mockToken = NewsletterToken.forConfirmation("test@example.com").build();
+        lenient().when(tokenService.generateConfirmationToken(anyString(), anyString(), anyString()))
+            .thenReturn(mockToken);
+        lenient().when(tokenService.generateUnsubscribeToken(anyString(), anyString(), anyString()))
+            .thenReturn(NewsletterToken.forUnsubscribe("test@example.com").build());
+        
+        // Set up default mock behavior for emailService  
+        lenient().doNothing().when(emailService).sendNewsletterConfirmation(anyString(), any(NewsletterToken.class));
+        lenient().doNothing().when(emailService).sendNewsletterWelcome(anyString(), any(NewsletterToken.class));
     }
 
     @Test
@@ -309,5 +325,372 @@ class NewsletterServiceTest {
         
         verify(subscriberRepository).findByEmail("test@example.com");
         verify(subscriberRepository).save(any(NewsletterSubscriber.class));
+    }
+
+    // ===== SEND CONFIRMATION TESTS =====
+
+    @Test
+    @DisplayName("Should send confirmation email successfully")
+    void shouldSendConfirmationEmailSuccessfully() {
+        // Given
+        String email = "test@example.com";
+        String ipAddress = "192.168.1.1";
+        String userAgent = "Mozilla/5.0";
+        
+        NewsletterToken mockToken = NewsletterToken.forConfirmation(email).build();
+        when(tokenService.generateConfirmationToken(email, ipAddress, userAgent)).thenReturn(mockToken);
+        doNothing().when(emailService).sendNewsletterConfirmation(email, mockToken);
+
+        // When
+        NewsletterToken result = newsletterService.sendConfirmation(email, ipAddress, userAgent);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getEmail()).isEqualTo(email);
+        
+        verify(tokenService).generateConfirmationToken(email, ipAddress, userAgent);
+        verify(emailService).sendNewsletterConfirmation(email, mockToken);
+    }
+
+    @Test
+    @DisplayName("Should handle token generation failure")
+    void shouldHandleTokenGenerationFailure() {
+        // Given
+        String email = "test@example.com";
+        String ipAddress = "192.168.1.1";
+        String userAgent = "Mozilla/5.0";
+        
+        when(tokenService.generateConfirmationToken(email, ipAddress, userAgent))
+            .thenThrow(new RuntimeException("Token generation failed"));
+
+        // When & Then
+        assertThatThrownBy(() -> newsletterService.sendConfirmation(email, ipAddress, userAgent))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessageContaining("Failed to send confirmation email");
+
+        verify(tokenService).generateConfirmationToken(email, ipAddress, userAgent);
+        verify(emailService, never()).sendNewsletterConfirmation(anyString(), any(NewsletterToken.class));
+    }
+
+    @Test
+    @DisplayName("Should handle email sending failure")
+    void shouldHandleEmailSendingFailure() {
+        // Given
+        String email = "test@example.com";
+        String ipAddress = "192.168.1.1";
+        String userAgent = "Mozilla/5.0";
+        
+        NewsletterToken mockToken = NewsletterToken.forConfirmation(email).build();
+        when(tokenService.generateConfirmationToken(email, ipAddress, userAgent)).thenReturn(mockToken);
+        doThrow(new RuntimeException("Email sending failed"))
+            .when(emailService).sendNewsletterConfirmation(email, mockToken);
+
+        // When & Then
+        assertThatThrownBy(() -> newsletterService.sendConfirmation(email, ipAddress, userAgent))
+            .isInstanceOf(RuntimeException.class)
+            .hasMessageContaining("Failed to send confirmation email");
+
+        verify(tokenService).generateConfirmationToken(email, ipAddress, userAgent);
+        verify(emailService).sendNewsletterConfirmation(email, mockToken);
+    }
+
+    @Test
+    @DisplayName("Should send confirmation with null IP and user agent")
+    void shouldSendConfirmationWithNullIpAndUserAgent() {
+        // Given
+        String email = "test@example.com";
+        
+        NewsletterToken mockToken = NewsletterToken.forConfirmation(email).build();
+        when(tokenService.generateConfirmationToken(email, null, null)).thenReturn(mockToken);
+        doNothing().when(emailService).sendNewsletterConfirmation(email, mockToken);
+
+        // When
+        NewsletterToken result = newsletterService.sendConfirmation(email, null, null);
+
+        // Then
+        assertThat(result).isNotNull();
+        assertThat(result.getEmail()).isEqualTo(email);
+        
+        verify(tokenService).generateConfirmationToken(email, null, null);
+        verify(emailService).sendNewsletterConfirmation(email, mockToken);
+    }
+
+    @Test
+    @DisplayName("Should send confirmation email async successfully")
+    void shouldSendConfirmationEmailAsyncSuccessfully() {
+        // Given
+        NewsletterSubscriber subscriber = NewsletterSubscriber.withConsent(
+            "test@example.com", "192.168.1.1", "Mozilla/5.0", "1.0"
+        ).build();
+        
+        NewsletterToken mockToken = NewsletterToken.forConfirmation(subscriber.getEmail()).build();
+        when(tokenService.generateConfirmationToken(
+            subscriber.getEmail(), 
+            subscriber.getConsentIpAddress(), 
+            subscriber.getConsentUserAgent()
+        )).thenReturn(mockToken);
+        doNothing().when(emailService).sendNewsletterConfirmation(subscriber.getEmail(), mockToken);
+
+        // When
+        newsletterService.sendConfirmationEmailAsync(subscriber);
+
+        // Then
+        verify(tokenService).generateConfirmationToken(
+            subscriber.getEmail(),
+            subscriber.getConsentIpAddress(),
+            subscriber.getConsentUserAgent()
+        );
+        verify(emailService).sendNewsletterConfirmation(subscriber.getEmail(), mockToken);
+    }
+
+    @Test
+    @DisplayName("Should handle async confirmation failure gracefully")
+    void shouldHandleAsyncConfirmationFailureGracefully() {
+        // Given
+        NewsletterSubscriber subscriber = NewsletterSubscriber.withConsent(
+            "test@example.com", "192.168.1.1", "Mozilla/5.0", "1.0"
+        ).build();
+        
+        when(tokenService.generateConfirmationToken(anyString(), anyString(), anyString()))
+            .thenThrow(new RuntimeException("Token generation failed"));
+
+        // When - Should not throw exception for async method
+        newsletterService.sendConfirmationEmailAsync(subscriber);
+
+        // Then
+        verify(tokenService).generateConfirmationToken(
+            subscriber.getEmail(),
+            subscriber.getConsentIpAddress(),
+            subscriber.getConsentUserAgent()
+        );
+        verify(emailService, never()).sendNewsletterConfirmation(anyString(), any(NewsletterToken.class));
+    }
+
+    // ===== CONFIRM SUBSCRIPTION TESTS =====
+
+    @Test
+    @DisplayName("Should confirm subscription successfully")
+    void shouldConfirmSubscriptionSuccessfully() {
+        // Given
+        String tokenValue = "valid-token-123";
+        String ipAddress = "192.168.1.1";
+        String userAgent = "Mozilla/5.0";
+        
+        NewsletterToken validToken = NewsletterToken.forConfirmation("test@example.com").build();
+        existingSubscriber.setStatus(SubscriptionStatus.PENDING);
+        
+        when(tokenService.validateToken(tokenValue, NewsletterTokenType.CONFIRMATION)).thenReturn(validToken);
+        when(subscriberRepository.findByEmail("test@example.com")).thenReturn(Optional.of(existingSubscriber));
+        when(subscriberRepository.save(any(NewsletterSubscriber.class))).thenReturn(existingSubscriber);
+        when(tokenService.markTokenAsUsed(tokenValue, NewsletterTokenType.CONFIRMATION)).thenReturn(validToken);
+
+        // When
+        NewsletterSubscriptionResponse response = newsletterService.confirmSubscription(tokenValue, ipAddress, userAgent);
+
+        // Then
+        assertThat(response).isNotNull();
+        assertThat(response.status()).isEqualTo(SubscriptionStatus.CONFIRMED);
+        assertThat(response.message()).contains("confirmed successfully");
+        
+        verify(tokenService).validateToken(tokenValue, NewsletterTokenType.CONFIRMATION);
+        verify(subscriberRepository).findByEmail("test@example.com");
+        verify(subscriberRepository).save(any(NewsletterSubscriber.class));
+        verify(tokenService).markTokenAsUsed(tokenValue, NewsletterTokenType.CONFIRMATION);
+    }
+
+    @Test
+    @DisplayName("Should handle already confirmed subscription")
+    void shouldHandleAlreadyConfirmedSubscription() {
+        // Given
+        String tokenValue = "valid-token-123";
+        String ipAddress = "192.168.1.1";
+        String userAgent = "Mozilla/5.0";
+        
+        NewsletterToken validToken = NewsletterToken.forConfirmation("test@example.com").build();
+        existingSubscriber.setStatus(SubscriptionStatus.CONFIRMED);
+        existingSubscriber.setConfirmedAt(LocalDateTime.now());
+        
+        when(tokenService.validateToken(tokenValue, NewsletterTokenType.CONFIRMATION)).thenReturn(validToken);
+        when(subscriberRepository.findByEmail("test@example.com")).thenReturn(Optional.of(existingSubscriber));
+
+        // When
+        NewsletterSubscriptionResponse response = newsletterService.confirmSubscription(tokenValue, ipAddress, userAgent);
+
+        // Then
+        assertThat(response).isNotNull();
+        assertThat(response.status()).isEqualTo(SubscriptionStatus.CONFIRMED);
+        assertThat(response.message()).contains("already confirmed");
+        
+        verify(tokenService).validateToken(tokenValue, NewsletterTokenType.CONFIRMATION);
+        verify(subscriberRepository).findByEmail("test@example.com");
+        verify(subscriberRepository, never()).save(any(NewsletterSubscriber.class));
+        verify(tokenService, never()).markTokenAsUsed(anyString(), any(NewsletterTokenType.class));
+    }
+
+    @Test
+    @DisplayName("Should handle invalid token")
+    void shouldHandleInvalidToken() {
+        // Given
+        String tokenValue = "invalid-token-123";
+        String ipAddress = "192.168.1.1";
+        String userAgent = "Mozilla/5.0";
+        
+        when(tokenService.validateToken(tokenValue, NewsletterTokenType.CONFIRMATION))
+            .thenThrow(new BadRequestException("Invalid or expired newsletter token"));
+
+        // When & Then
+        assertThatThrownBy(() -> newsletterService.confirmSubscription(tokenValue, ipAddress, userAgent))
+            .isInstanceOf(BadRequestException.class)
+            .hasMessageContaining("Invalid or expired newsletter token");
+
+        verify(tokenService).validateToken(tokenValue, NewsletterTokenType.CONFIRMATION);
+        verify(subscriberRepository, never()).findByEmail(anyString());
+        verify(subscriberRepository, never()).save(any(NewsletterSubscriber.class));
+    }
+
+    @Test
+    @DisplayName("Should handle subscriber not found")
+    void shouldHandleSubscriberNotFound() {
+        // Given
+        String tokenValue = "valid-token-123";
+        String ipAddress = "192.168.1.1";
+        String userAgent = "Mozilla/5.0";
+        
+        NewsletterToken validToken = NewsletterToken.forConfirmation("test@example.com").build();
+        
+        when(tokenService.validateToken(tokenValue, NewsletterTokenType.CONFIRMATION)).thenReturn(validToken);
+        when(subscriberRepository.findByEmail("test@example.com")).thenReturn(Optional.empty());
+
+        // When & Then
+        assertThatThrownBy(() -> newsletterService.confirmSubscription(tokenValue, ipAddress, userAgent))
+            .isInstanceOf(BadRequestException.class)
+            .hasMessageContaining("Subscription not found for this confirmation token");
+
+        verify(tokenService).validateToken(tokenValue, NewsletterTokenType.CONFIRMATION);
+        verify(subscriberRepository).findByEmail("test@example.com");
+        verify(subscriberRepository, never()).save(any(NewsletterSubscriber.class));
+        verify(tokenService, never()).markTokenAsUsed(anyString(), any(NewsletterTokenType.class));
+    }
+
+    @Test
+    @DisplayName("Should handle expired token")
+    void shouldHandleExpiredToken() {
+        // Given
+        String tokenValue = "expired-token-123";
+        String ipAddress = "192.168.1.1";
+        String userAgent = "Mozilla/5.0";
+        
+        when(tokenService.validateToken(tokenValue, NewsletterTokenType.CONFIRMATION))
+            .thenThrow(new BadRequestException("Newsletter token has expired"));
+
+        // When & Then
+        assertThatThrownBy(() -> newsletterService.confirmSubscription(tokenValue, ipAddress, userAgent))
+            .isInstanceOf(BadRequestException.class)
+            .hasMessageContaining("Newsletter token has expired");
+
+        verify(tokenService).validateToken(tokenValue, NewsletterTokenType.CONFIRMATION);
+        verify(subscriberRepository, never()).findByEmail(anyString());
+        verify(subscriberRepository, never()).save(any(NewsletterSubscriber.class));
+    }
+
+    @Test
+    @DisplayName("Should handle used token")
+    void shouldHandleUsedToken() {
+        // Given
+        String tokenValue = "used-token-123";
+        String ipAddress = "192.168.1.1";
+        String userAgent = "Mozilla/5.0";
+        
+        when(tokenService.validateToken(tokenValue, NewsletterTokenType.CONFIRMATION))
+            .thenThrow(new BadRequestException("Newsletter token has already been used"));
+
+        // When & Then
+        assertThatThrownBy(() -> newsletterService.confirmSubscription(tokenValue, ipAddress, userAgent))
+            .isInstanceOf(BadRequestException.class)
+            .hasMessageContaining("Newsletter token has already been used");
+
+        verify(tokenService).validateToken(tokenValue, NewsletterTokenType.CONFIRMATION);
+        verify(subscriberRepository, never()).findByEmail(anyString());
+        verify(subscriberRepository, never()).save(any(NewsletterSubscriber.class));
+    }
+
+    @Test
+    @DisplayName("Should confirm subscription with null IP and user agent")
+    void shouldConfirmSubscriptionWithNullIpAndUserAgent() {
+        // Given
+        String tokenValue = "valid-token-123";
+        
+        NewsletterToken validToken = NewsletterToken.forConfirmation("test@example.com").build();
+        existingSubscriber.setStatus(SubscriptionStatus.PENDING);
+        
+        when(tokenService.validateToken(tokenValue, NewsletterTokenType.CONFIRMATION)).thenReturn(validToken);
+        when(subscriberRepository.findByEmail("test@example.com")).thenReturn(Optional.of(existingSubscriber));
+        when(subscriberRepository.save(any(NewsletterSubscriber.class))).thenReturn(existingSubscriber);
+        when(tokenService.markTokenAsUsed(tokenValue, NewsletterTokenType.CONFIRMATION)).thenReturn(validToken);
+
+        // When
+        NewsletterSubscriptionResponse response = newsletterService.confirmSubscription(tokenValue, null, null);
+
+        // Then
+        assertThat(response).isNotNull();
+        assertThat(response.status()).isEqualTo(SubscriptionStatus.CONFIRMED);
+        assertThat(response.message()).contains("confirmed successfully");
+        
+        verify(tokenService).validateToken(tokenValue, NewsletterTokenType.CONFIRMATION);
+        verify(subscriberRepository).findByEmail("test@example.com");
+        verify(subscriberRepository).save(any(NewsletterSubscriber.class));
+        verify(tokenService).markTokenAsUsed(tokenValue, NewsletterTokenType.CONFIRMATION);
+    }
+
+    @Test
+    @DisplayName("Should send welcome email async after confirmation")
+    void shouldSendWelcomeEmailAsyncAfterConfirmation() {
+        // Given
+        NewsletterSubscriber confirmedSubscriber = NewsletterSubscriber.withConsent(
+            "welcome@example.com", "192.168.1.1", "Mozilla/5.0", "1.0"
+        ).build();
+        confirmedSubscriber.setStatus(SubscriptionStatus.CONFIRMED);
+        
+        NewsletterToken unsubToken = NewsletterToken.forUnsubscribe("welcome@example.com").build();
+        when(tokenService.generateUnsubscribeToken(
+            confirmedSubscriber.getEmail(),
+            confirmedSubscriber.getConsentIpAddress(),
+            confirmedSubscriber.getConsentUserAgent()
+        )).thenReturn(unsubToken);
+        doNothing().when(emailService).sendNewsletterWelcome("welcome@example.com", unsubToken);
+
+        // When
+        newsletterService.sendWelcomeEmailAsync(confirmedSubscriber);
+
+        // Then
+        verify(tokenService).generateUnsubscribeToken(
+            confirmedSubscriber.getEmail(),
+            confirmedSubscriber.getConsentIpAddress(),
+            confirmedSubscriber.getConsentUserAgent()
+        );
+        verify(emailService).sendNewsletterWelcome("welcome@example.com", unsubToken);
+    }
+
+    @Test
+    @DisplayName("Should handle welcome email failure gracefully")
+    void shouldHandleWelcomeEmailFailureGracefully() {
+        // Given
+        NewsletterSubscriber confirmedSubscriber = NewsletterSubscriber.withConsent(
+            "welcome@example.com", "192.168.1.1", "Mozilla/5.0", "1.0"
+        ).build();
+        
+        when(tokenService.generateUnsubscribeToken(anyString(), anyString(), anyString()))
+            .thenThrow(new RuntimeException("Token generation failed"));
+
+        // When - Should not throw exception for async method
+        newsletterService.sendWelcomeEmailAsync(confirmedSubscriber);
+
+        // Then
+        verify(tokenService).generateUnsubscribeToken(
+            confirmedSubscriber.getEmail(),
+            confirmedSubscriber.getConsentIpAddress(),
+            confirmedSubscriber.getConsentUserAgent()
+        );
+        verify(emailService, never()).sendNewsletterWelcome(anyString(), any(NewsletterToken.class));
     }
 }

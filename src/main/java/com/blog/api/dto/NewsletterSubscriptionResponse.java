@@ -121,6 +121,28 @@ public record NewsletterSubscriptionResponse(
     }
 
     /**
+     * Create a confirmation successful response.
+     * 
+     * @param subscriber the subscriber entity
+     * @return NewsletterSubscriptionResponse with confirmation success message
+     */
+    public static NewsletterSubscriptionResponse confirmed(NewsletterSubscriber subscriber) {
+        return fromEntity(subscriber, 
+            "Email confirmed successfully! Welcome to our newsletter. You'll receive updates about new posts.");
+    }
+
+    /**
+     * Create an already confirmed response.
+     * 
+     * @param subscriber the subscriber entity
+     * @return NewsletterSubscriptionResponse with already confirmed message
+     */
+    public static NewsletterSubscriptionResponse alreadyConfirmed(NewsletterSubscriber subscriber) {
+        return fromEntity(subscriber, 
+            "Your email is already confirmed. You're all set to receive our newsletter updates!");
+    }
+
+    /**
      * Check if the subscription requires email confirmation.
      * 
      * @return true if status is PENDING

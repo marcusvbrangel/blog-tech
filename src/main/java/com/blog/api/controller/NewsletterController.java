@@ -2,6 +2,7 @@ package com.blog.api.controller;
 
 import com.blog.api.dto.NewsletterSubscriptionRequest;
 import com.blog.api.dto.NewsletterSubscriptionResponse;
+import com.blog.api.entity.SubscriptionStatus;
 import com.blog.api.exception.BadRequestException;
 import com.blog.api.service.NewsletterService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -202,6 +203,124 @@ public class NewsletterController {
         logger.debug("Email {} has active subscription: {}", email, hasActiveSubscription);
         
         return ResponseEntity.ok(hasActiveSubscription);
+    }
+
+    /**
+     * Confirm newsletter subscription using token from email.
+     * Validates the confirmation token and updates subscriber status.
+     * 
+     * @param token the confirmation token from email
+     * @param httpRequest the HTTP request for metadata extraction
+     * @return NewsletterSubscriptionResponse with confirmation result
+     */
+    @GetMapping("/confirm")
+    @Operation(
+        summary = "Confirm newsletter subscription",
+        description = "Confirm newsletter subscription using the token received in the confirmation email. " +
+                     "This endpoint validates the token and updates the subscriber status to confirmed."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", 
+            description = "Subscription confirmed successfully",
+            content = @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = NewsletterSubscriptionResponse.class),
+                examples = @ExampleObject(
+                    name = "Confirmation Success",
+                    value = """
+                    {
+                        "id": 1,
+                        "email": "user@example.com",
+                        "status": "CONFIRMED",
+                        "createdAt": "2025-08-05T10:30:00",
+                        "message": "Email confirmed successfully! Welcome to our newsletter. You'll receive updates about new posts."
+                    }
+                    """
+                )
+            )
+        ),
+        @ApiResponse(
+            responseCode = "400", 
+            description = "Invalid, expired, or already used token",
+            content = @Content(
+                mediaType = "application/json",
+                examples = @ExampleObject(
+                    name = "Invalid Token",
+                    value = """
+                    {
+                        "timestamp": "2025-08-05T10:30:00",
+                        "status": 400,
+                        "error": "Bad Request",
+                        "message": "Invalid or expired newsletter token",  
+                        "path": "/api/v1/newsletter/confirm"
+                    }
+                    """
+                )
+            )
+        ),
+        @ApiResponse(
+            responseCode = "409", 
+            description = "Email already confirmed",
+            content = @Content(
+                mediaType = "application/json", 
+                schema = @Schema(implementation = NewsletterSubscriptionResponse.class),
+                examples = @ExampleObject(
+                    name = "Already Confirmed",
+                    value = """
+                    {
+                        "id": 1,
+                        "email": "user@example.com",
+                        "status": "CONFIRMED",
+                        "createdAt": "2025-08-01T10:30:00",
+                        "message": "Your email is already confirmed. You're all set to receive our newsletter updates!"
+                    }
+                    """
+                )
+            )
+        )
+    })
+    public ResponseEntity<NewsletterSubscriptionResponse> confirmSubscription(
+            @Parameter(
+                description = "Confirmation token received in email",
+                required = true,
+                example = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+            )
+            @RequestParam String token,
+            HttpServletRequest httpRequest) {
+
+        logger.info("Newsletter confirmation request received for token: {}", token);
+
+        if (token == null || token.trim().isEmpty()) {
+            throw new BadRequestException("Confirmation token is required");
+        }
+
+        try {
+            // Capture client metadata for audit
+            String clientIp = extractClientIpAddress(httpRequest);
+            String userAgent = extractUserAgent(httpRequest);
+
+            // Process confirmation
+            NewsletterSubscriptionResponse response = newsletterService.confirmSubscription(
+                token.trim(), clientIp, userAgent);
+
+            // Determine appropriate HTTP status based on response
+            HttpStatus status = response.status() == SubscriptionStatus.CONFIRMED && 
+                               response.message().contains("already confirmed") ? 
+                               HttpStatus.CONFLICT : HttpStatus.OK;
+
+            logger.info("Newsletter confirmation processed for token: {} with status: {}", 
+                       token, response.status());
+
+            return ResponseEntity.status(status).body(response);
+
+        } catch (BadRequestException e) {
+            logger.warn("Newsletter confirmation rejected for token: {} - {}", token, e.getMessage());
+            throw e; // Let GlobalExceptionHandler handle it
+        } catch (Exception e) {
+            logger.error("Unexpected error processing newsletter confirmation for token: {}", token, e);
+            throw new RuntimeException("Failed to process confirmation", e);
+        }
     }
 
     /**
