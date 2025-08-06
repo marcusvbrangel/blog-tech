@@ -53,6 +53,9 @@ class AuthServiceEmailVerificationTest {
     @Mock
     private VerificationTokenService verificationTokenService;
 
+    @Mock
+    private AuditLogService auditLogService;
+
     @InjectMocks
     private AuthService authService;
 

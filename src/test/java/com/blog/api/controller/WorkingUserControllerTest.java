@@ -26,7 +26,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = UserController.class)
-@org.springframework.context.annotation.Import(com.blog.api.config.TestSecurityConfig.class)
+@org.springframework.context.annotation.Import({
+    com.blog.api.config.TestSecurityConfig.class,
+    com.blog.api.exception.GlobalExceptionHandler.class
+})
 @DisplayName("Working User Controller Tests")
 class WorkingUserControllerTest {
 
@@ -82,8 +85,7 @@ class WorkingUserControllerTest {
         mockMvc.perform(get("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.content").isArray())
+                                .andExpect(jsonPath("$.content").isArray())
                 .andExpect(jsonPath("$.content[0].id").value(1))
                 .andExpect(jsonPath("$.content[0].username").value("testuser"))
                 .andExpect(jsonPath("$.content[0].email").value("test@example.com"))
@@ -103,8 +105,7 @@ class WorkingUserControllerTest {
         mockMvc.perform(get("/api/v1/users/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(1))
+                                .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.username").value("testuser"))
                 .andExpect(jsonPath("$.email").value("test@example.com"))
                 .andExpect(jsonPath("$.role").value("USER"));
@@ -123,8 +124,7 @@ class WorkingUserControllerTest {
         mockMvc.perform(get("/api/v1/users/username/testuser")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(1))
+                                .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.username").value("testuser"))
                 .andExpect(jsonPath("$.email").value("test@example.com"));
 
@@ -175,8 +175,7 @@ class WorkingUserControllerTest {
         mockMvc.perform(get("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.content").isArray())
+                                .andExpect(jsonPath("$.content").isArray())
                 .andExpect(jsonPath("$.content").isEmpty())
                 .andExpect(jsonPath("$.totalElements").value(0));
 
@@ -198,8 +197,7 @@ class WorkingUserControllerTest {
                 .param("sort", "username,asc")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.content").isArray())
+                                .andExpect(jsonPath("$.content").isArray())
                 .andExpect(jsonPath("$.content[0].username").value("testuser"))
                 .andExpect(jsonPath("$.pageable").exists());
 

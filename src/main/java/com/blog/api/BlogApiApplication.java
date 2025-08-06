@@ -10,6 +10,15 @@ public class BlogApiApplication {
     }
 }
 
+/*
+Update Todos
+  ⎿  ☐ Execute tests to analyze failures in detail
+     ☐ Analyze test failure patterns and root causes
+     ☐ Create plan to fix test failures
+     ☐ Fix failing tests systematically
+     ☐ Verify all tests pass after fixes
+*/
+
 // test@example.com
 // password123
 
