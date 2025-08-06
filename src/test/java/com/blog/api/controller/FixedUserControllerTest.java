@@ -24,11 +24,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = UserController.class, 
-    excludeAutoConfiguration = {
-        org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
-        org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration.class
-    })
+@WebMvcTest(controllers = UserController.class)
+@org.springframework.context.annotation.Import(com.blog.api.config.TestSecurityConfig.class)
 @DisplayName("Testes corrigidos do controlador de usuários")
 class FixedUserControllerTest {
 
@@ -71,7 +68,7 @@ class FixedUserControllerTest {
     @DisplayName("Deve retornar página de usuários quando usuário admin solicitar todos os usuários")
     void getAllUsers_ShouldReturnPageOfUsers() throws Exception {
         // Arrange
-        Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO));
+        Page<UserDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleUserDTO)));
         when(userService.getAllUsers(any())).thenReturn(page);
 
         // Act & Assert - Only validate what we can control
@@ -150,7 +147,7 @@ class FixedUserControllerTest {
     @DisplayName("Deve retornar página vazia quando não houver usuários")
     void getAllUsers_ShouldReturnEmptyPage_WhenNoUsers() throws Exception {
         // Arrange
-        Page<UserDTO> emptyPage = new PageImpl<>(Arrays.asList());
+        Page<UserDTO> emptyPage = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList()));
         when(userService.getAllUsers(any())).thenReturn(emptyPage);
 
         // Act & Assert
@@ -166,7 +163,7 @@ class FixedUserControllerTest {
     @DisplayName("Deve lidar com paginação quando solicitar todos os usuários")
     void getAllUsers_ShouldHandlePagination() throws Exception {
         // Arrange
-        Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO));
+        Page<UserDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleUserDTO)));
         when(userService.getAllUsers(any())).thenReturn(page);
 
         // Act & Assert

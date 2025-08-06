@@ -25,19 +25,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = UserController.class, 
-    excludeFilters = {
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
-            classes = {
-                com.blog.api.config.JwtAuthenticationFilter.class,
-                com.blog.api.config.TermsComplianceFilter.class,
-                com.blog.api.config.SecurityConfig.class
-            })
-    },
-    excludeAutoConfiguration = {
-        org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
-        org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration.class
-    })
+@WebMvcTest(controllers = UserController.class)
+@org.springframework.context.annotation.Import(com.blog.api.config.TestSecurityConfig.class)
 @DisplayName("Testes de integração simples corrigidos do controlador de usuários")
 class FixedSimpleIntegrationUserControllerTest {
 
@@ -70,7 +59,7 @@ class FixedSimpleIntegrationUserControllerTest {
     void getAllUsers_ShouldReturnPageOfUsers() throws Exception {
         // Arrange - Create a simpler Page implementation
         Pageable pageable = PageRequest.of(0, 10);
-        List<UserDTO> content = Arrays.asList(sampleUserDTO);
+        List<UserDTO> content = new java.util.ArrayList<>(Arrays.asList(sampleUserDTO));
         Page<UserDTO> page = new PageImpl<>(content, pageable, 1);
         
         when(userService.getAllUsers(any(Pageable.class))).thenReturn(page);
@@ -144,7 +133,7 @@ class FixedSimpleIntegrationUserControllerTest {
     void getAllUsers_ShouldReturnEmptyPage_WhenNoUsers() throws Exception {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
-        Page<UserDTO> emptyPage = new PageImpl<>(Arrays.asList(), pageable, 0);
+        Page<UserDTO> emptyPage = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList()), pageable, 0);
         when(userService.getAllUsers(any(Pageable.class))).thenReturn(emptyPage);
 
         // Act & Assert

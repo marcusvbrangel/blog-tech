@@ -30,19 +30,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = PostController.class, 
-    excludeFilters = {
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
-            classes = {
-                com.blog.api.config.JwtAuthenticationFilter.class,
-                com.blog.api.config.TermsComplianceFilter.class,
-                com.blog.api.config.SecurityConfig.class
-            })
-    },
-    excludeAutoConfiguration = {
-        org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
-        org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration.class
-    })
+@WebMvcTest(controllers = PostController.class)
+@org.springframework.context.annotation.Import(com.blog.api.config.TestSecurityConfig.class)
 @DisplayName("Testes de integração funcionais do controlador de posts")
 class WorkingPostControllerIntegrationTest {
 
@@ -85,7 +74,7 @@ class WorkingPostControllerIntegrationTest {
     void getAllPosts_ShouldReturnPageOfPosts() throws Exception {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
-        List<PostDTO> content = Arrays.asList(samplePostDTO);
+        List<PostDTO> content = new java.util.ArrayList<>(Arrays.asList(samplePostDTO));
         Page<PostDTO> page = new PageImpl<>(content, pageable, 1);
         
         when(postService.getAllPublishedPosts(any(Pageable.class))).thenReturn(page);
@@ -175,7 +164,7 @@ class WorkingPostControllerIntegrationTest {
     void searchPosts_ShouldReturnPageOfPosts() throws Exception {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
-        List<PostDTO> content = Arrays.asList(samplePostDTO);
+        List<PostDTO> content = new java.util.ArrayList<>(Arrays.asList(samplePostDTO));
         Page<PostDTO> page = new PageImpl<>(content, pageable, 1);
         
         when(postService.searchPosts(eq("test"), any(Pageable.class))).thenReturn(page);
@@ -197,7 +186,7 @@ class WorkingPostControllerIntegrationTest {
     void getPostsByCategory_ShouldReturnPageOfPosts() throws Exception {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
-        List<PostDTO> content = Arrays.asList(samplePostDTO);
+        List<PostDTO> content = new java.util.ArrayList<>(Arrays.asList(samplePostDTO));
         Page<PostDTO> page = new PageImpl<>(content, pageable, 1);
         
         when(postService.getPostsByCategory(eq(1L), any(Pageable.class))).thenReturn(page);
@@ -218,7 +207,7 @@ class WorkingPostControllerIntegrationTest {
     void getPostsByUser_ShouldReturnPageOfPosts() throws Exception {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
-        List<PostDTO> content = Arrays.asList(samplePostDTO);
+        List<PostDTO> content = new java.util.ArrayList<>(Arrays.asList(samplePostDTO));
         Page<PostDTO> page = new PageImpl<>(content, pageable, 1);
         
         when(postService.getPostsByUser(eq(1L), any(Pageable.class))).thenReturn(page);

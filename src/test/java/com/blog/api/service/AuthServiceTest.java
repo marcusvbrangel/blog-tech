@@ -153,7 +153,6 @@ class AuthServiceTest {
         refreshToken.setToken("refresh-token-123");
         
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
-        when(userRepository.findByEmail("testuser")).thenReturn(Optional.empty());
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
         when(userDetailsService.loadUserByUsername("testuser")).thenReturn(userDetails);
         when(jwtUtil.generateToken(userDetails)).thenReturn("jwt-token");
@@ -193,19 +192,10 @@ class AuthServiceTest {
     @Test
     @DisplayName("Deve validar política de senha durante registro")
     void register_ShouldValidatePasswordPolicy() {
-        // Arrange
-        CreateUserDTO weakPasswordDTO = new CreateUserDTO("testuser", "test@example.com", "weak", User.Role.USER);
-        when(userRepository.existsByUsername("testuser")).thenReturn(false);
-        when(userRepository.existsByEmail("test@example.com")).thenReturn(false);
-
-        // Act & Assert
-        assertThatThrownBy(() -> authService.register(weakPasswordDTO))
-                .isInstanceOf(BadRequestException.class)
+        // Act & Assert - A validação acontece no DTO, não no service
+        assertThatThrownBy(() -> new CreateUserDTO("testuser", "test@example.com", "weak", User.Role.USER))
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Password policy violation");
-
-        verify(userRepository).existsByUsername("testuser");
-        verify(userRepository).existsByEmail("test@example.com");
-        verify(userRepository, never()).save(any());
     }
 
     @Test
@@ -213,7 +203,6 @@ class AuthServiceTest {
     void login_ShouldIncrementFailedAttempts_WhenAuthenticationFails() {
         // Arrange
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
-        when(userRepository.findByEmail("testuser")).thenReturn(Optional.empty());
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenThrow(new RuntimeException("Authentication failed"));
         when(userRepository.save(any(User.class))).thenReturn(testUser);
@@ -239,7 +228,6 @@ class AuthServiceTest {
         lockedUser.setId(1L);
         
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(lockedUser));
-        when(userRepository.findByEmail("testuser")).thenReturn(Optional.empty());
 
         // Act & Assert
         assertThatThrownBy(() -> authService.login(loginRequest, null, null, null))
@@ -262,7 +250,6 @@ class AuthServiceTest {
         userWithFailedAttempts.setId(1L);
 
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(userWithFailedAttempts));
-        when(userRepository.findByEmail("testuser")).thenReturn(Optional.empty());
         when(userRepository.save(any(User.class))).thenReturn(testUser);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
         when(userDetailsService.loadUserByUsername("testuser")).thenReturn(userDetails);
@@ -284,7 +271,6 @@ class AuthServiceTest {
     void login_ShouldLogAuditEvents_DuringAuthentication() {
         // Arrange
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
-        when(userRepository.findByEmail("testuser")).thenReturn(Optional.empty());
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(null);
         when(userDetailsService.loadUserByUsername("testuser")).thenReturn(userDetails);
         when(jwtUtil.generateToken(userDetails)).thenReturn("jwt-token");

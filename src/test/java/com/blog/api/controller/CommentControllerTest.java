@@ -29,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CommentController.class)
+@org.springframework.context.annotation.Import(com.blog.api.config.TestSecurityConfig.class)
 @DisplayName("Comment Controller Tests")
 class CommentControllerTest {
 
@@ -62,7 +63,7 @@ class CommentControllerTest {
                 "testuser",
                 1L,
                 null,
-                Arrays.asList()
+                new java.util.ArrayList<>(Arrays.asList())
         );
 
         createCommentDTO = new CommentDTO(
@@ -80,7 +81,7 @@ class CommentControllerTest {
     @DisplayName("Deve retornar página de comentários por post")
     void getCommentsByPost_ShouldReturnPageOfComments() throws Exception {
         // Arrange
-        Page<CommentDTO> page = new PageImpl<>(Arrays.asList(sampleCommentDTO));
+        Page<CommentDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleCommentDTO)));
         when(commentService.getCommentsByPost(eq(1L), any())).thenReturn(page);
 
         // Act & Assert
@@ -100,7 +101,7 @@ class CommentControllerTest {
     @DisplayName("Deve lidar com paginação corretamente")
     void getCommentsByPost_ShouldHandlePagination() throws Exception {
         // Arrange
-        Page<CommentDTO> page = new PageImpl<>(Arrays.asList(sampleCommentDTO));
+        Page<CommentDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleCommentDTO)));
         when(commentService.getCommentsByPost(eq(1L), any())).thenReturn(page);
 
         // Act & Assert
@@ -120,7 +121,7 @@ class CommentControllerTest {
     @DisplayName("Deve retornar lista simples de comentários por post")
     void getCommentsByPostSimple_ShouldReturnListOfComments() throws Exception {
         // Arrange
-        List<CommentDTO> comments = Arrays.asList(sampleCommentDTO);
+        List<CommentDTO> comments = new java.util.ArrayList<>(Arrays.asList(sampleCommentDTO));
         when(commentService.getCommentsByPostSimple(1L)).thenReturn(comments);
 
         // Act & Assert
@@ -239,7 +240,7 @@ class CommentControllerTest {
     void updateComment_ShouldUpdateAndReturnComment() throws Exception {
         // Arrange
         CommentDTO updatedComment = new CommentDTO(1L, "Updated comment content", LocalDateTime.now(), 
-                "testuser", 1L, null, Arrays.asList());
+                "testuser", 1L, null, new java.util.ArrayList<>(Arrays.asList()));
         when(commentService.updateComment(eq(1L), any(CommentDTO.class), eq("testuser"))).thenReturn(updatedComment);
 
         // Act & Assert
@@ -354,7 +355,7 @@ class CommentControllerTest {
     @DisplayName("Deve retornar página vazia quando não há comentários")
     void getCommentsByPost_ShouldReturnEmptyPage_WhenNoComments() throws Exception {
         // Arrange
-        Page<CommentDTO> emptyPage = new PageImpl<>(Arrays.asList());
+        Page<CommentDTO> emptyPage = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList()));
         when(commentService.getCommentsByPost(eq(1L), any())).thenReturn(emptyPage);
 
         // Act & Assert
@@ -372,7 +373,7 @@ class CommentControllerTest {
     @DisplayName("Deve retornar lista vazia quando não há comentários simples")
     void getCommentsByPostSimple_ShouldReturnEmptyList_WhenNoComments() throws Exception {
         // Arrange
-        when(commentService.getCommentsByPostSimple(1L)).thenReturn(Arrays.asList());
+        when(commentService.getCommentsByPostSimple(1L)).thenReturn(new java.util.ArrayList<>(Arrays.asList()));
 
         // Act & Assert
         mockMvc.perform(get("/api/v1/comments/post/1/simple")
@@ -391,7 +392,7 @@ class CommentControllerTest {
         // Arrange
         CommentDTO replyComment = new CommentDTO(null, "This is a reply", null, null, 1L, 1L, null);
         CommentDTO createdReply = new CommentDTO(2L, "This is a reply", LocalDateTime.now(), 
-                "testuser", 1L, 1L, Arrays.asList());
+                "testuser", 1L, 1L, new java.util.ArrayList<>(Arrays.asList()));
         when(commentService.createComment(any(CommentDTO.class), eq("testuser"))).thenReturn(createdReply);
 
         // Act & Assert

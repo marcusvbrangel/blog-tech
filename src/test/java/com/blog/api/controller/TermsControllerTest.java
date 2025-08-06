@@ -37,9 +37,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = TermsController.class, 
-    excludeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, 
-        classes = {JwtAuthenticationFilter.class, TermsComplianceFilter.class}))
+@WebMvcTest(controllers = TermsController.class)
+@org.springframework.context.annotation.Import(com.blog.api.config.TestSecurityConfig.class)
 @DisplayName("Terms Controller Tests")
 class TermsControllerTest {
 
@@ -187,7 +186,7 @@ class TermsControllerTest {
     @DisplayName("Deve retornar histórico de termos do usuário quando autenticado")
     void getUserTermsHistory_ShouldReturnHistory_WhenAuthenticated() throws Exception {
         // Given
-        List<TermsAcceptance> history = Arrays.asList(sampleAcceptance);
+        List<TermsAcceptance> history = new java.util.ArrayList<>(Arrays.asList(sampleAcceptance));
         when(userService.getUserByUsername("testuser")).thenReturn(sampleUserDTO);
         when(termsService.getUserTermsHistory(1L)).thenReturn(history);
 
@@ -240,7 +239,7 @@ class TermsControllerTest {
                 .build();
         testUser.setId(2L);
         
-        Page<User> usersPage = new PageImpl<>(Arrays.asList(testUser));
+        Page<User> usersPage = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(testUser)));
         when(termsService.getUsersWithoutLatestTerms(any())).thenReturn(usersPage);
 
         // When & Then

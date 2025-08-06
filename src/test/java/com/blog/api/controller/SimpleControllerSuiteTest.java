@@ -16,6 +16,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.time.LocalDateTime;
@@ -96,7 +98,7 @@ class SimpleControllerSuiteTest {
                 "testuser",
                 1L,
                 null,
-                Arrays.asList()
+                new java.util.ArrayList<>(Arrays.asList())
         );
 
         sampleCategoryDTO = new CategoryDTO(1L, "Technology", "Tech posts", 5);
@@ -111,7 +113,7 @@ class SimpleControllerSuiteTest {
     @DisplayName("Deve retornar página de usuários quando controlador de usuários solicitar todos os usuários")
     void userController_getAllUsers_ShouldReturnPageOfUsers() {
         // Arrange
-        Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO));
+        Page<UserDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleUserDTO)));
         when(userService.getAllUsers(any())).thenReturn(page);
 
         // Act
@@ -180,7 +182,7 @@ class SimpleControllerSuiteTest {
     @DisplayName("Deve retornar página de comentários quando controlador de comentários buscar por post")
     void commentController_getCommentsByPost_ShouldReturnPageOfComments() {
         // Arrange
-        Page<CommentDTO> page = new PageImpl<>(Arrays.asList(sampleCommentDTO));
+        Page<CommentDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleCommentDTO)));
         when(commentService.getCommentsByPost(eq(1L), any())).thenReturn(page);
 
         // Act
@@ -199,7 +201,7 @@ class SimpleControllerSuiteTest {
     @DisplayName("Deve retornar lista de comentários quando controlador de comentários buscar por post simples")
     void commentController_getCommentsByPostSimple_ShouldReturnListOfComments() {
         // Arrange
-        List<CommentDTO> comments = Arrays.asList(sampleCommentDTO);
+        List<CommentDTO> comments = new java.util.ArrayList<>(Arrays.asList(sampleCommentDTO));
         when(commentService.getCommentsByPostSimple(1L)).thenReturn(comments);
 
         // Act
@@ -236,10 +238,13 @@ class SimpleControllerSuiteTest {
     void commentController_createComment_ShouldReturnCreatedComment() {
         // Arrange
         when(authentication.getName()).thenReturn("testuser");
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
         when(commentService.createComment(any(CommentDTO.class), eq("testuser"))).thenReturn(sampleCommentDTO);
 
         // Act
-        ResponseEntity<CommentDTO> response = commentController.createComment(sampleCommentDTO, authentication);
+        ResponseEntity<CommentDTO> response = commentController.createComment(sampleCommentDTO);
 
         // Assert
         assertThat(response.getStatusCodeValue()).isEqualTo(201);
@@ -254,10 +259,13 @@ class SimpleControllerSuiteTest {
     void commentController_deleteComment_ShouldReturnNoContent() {
         // Arrange
         when(authentication.getName()).thenReturn("testuser");
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
         doNothing().when(commentService).deleteComment(1L, "testuser");
 
         // Act
-        ResponseEntity<Void> response = commentController.deleteComment(1L, authentication);
+        ResponseEntity<Void> response = commentController.deleteComment(1L);
 
         // Assert
         assertThat(response.getStatusCodeValue()).isEqualTo(204);
@@ -270,7 +278,7 @@ class SimpleControllerSuiteTest {
     @DisplayName("Deve retornar página de categorias quando controlador de categorias solicitar todas as categorias")
     void categoryController_getAllCategories_ShouldReturnPageOfCategories() {
         // Arrange
-        Page<CategoryDTO> page = new PageImpl<>(Arrays.asList(sampleCategoryDTO));
+        Page<CategoryDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleCategoryDTO)));
         when(categoryService.getAllCategories(any())).thenReturn(page);
 
         // Act

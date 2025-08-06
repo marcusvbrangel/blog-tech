@@ -9,13 +9,17 @@ import com.blog.api.service.CustomUserDetailsService;
 import com.blog.api.service.TermsService;
 import com.blog.api.service.UserService;
 import com.blog.api.service.EmailService;
+import com.blog.api.service.AuditLogService;
 import com.blog.api.util.JwtUtil;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 import java.time.LocalDateTime;
 
@@ -70,7 +74,7 @@ public class TestSecurityConfig {
         // Create a default UserDetails for tests
         UserDetails mockUserDetails = org.springframework.security.core.userdetails.User.builder()
                 .username("testuser")
-                .password("TestPass123!")
+                .password("ValidTest123!")
                 .authorities("ROLE_USER")
                 .build();
         
@@ -116,5 +120,73 @@ public class TestSecurityConfig {
         when(mockService.getUserById(any(Long.class))).thenReturn(mockUser);
         
         return mockService;
+    }
+    
+    @Bean
+    @Primary
+    public AuditLogService auditLogService() {
+        return Mockito.mock(AuditLogService.class);
+    }
+    
+    @Bean
+    @Primary
+    public com.blog.api.service.JwtBlacklistService jwtBlacklistService() {
+        return Mockito.mock(com.blog.api.service.JwtBlacklistService.class);
+    }
+    
+    @Bean
+    @Primary
+    public com.blog.api.repository.RevokedTokenRepository revokedTokenRepository() {
+        return Mockito.mock(com.blog.api.repository.RevokedTokenRepository.class);
+    }
+    
+    @Bean 
+    @Primary
+    public com.blog.api.service.VerificationTokenService verificationTokenService() {
+        return Mockito.mock(com.blog.api.service.VerificationTokenService.class);
+    }
+    
+    @Bean
+    @Primary  
+    public com.blog.api.service.RefreshTokenService refreshTokenService() {
+        return Mockito.mock(com.blog.api.service.RefreshTokenService.class);
+    }
+    
+    @Bean
+    @Primary
+    public org.springframework.mail.javamail.JavaMailSender javaMailSender() {
+        return Mockito.mock(org.springframework.mail.javamail.JavaMailSender.class);
+    }
+    
+    @Bean
+    @Primary
+    public com.blog.api.service.NewsletterService newsletterService() {
+        return Mockito.mock(com.blog.api.service.NewsletterService.class);
+    }
+    
+    @Bean
+    @Primary
+    public com.blog.api.service.PostService postService() {
+        return Mockito.mock(com.blog.api.service.PostService.class);
+    }
+    
+    @Bean
+    @Primary
+    public com.blog.api.service.CommentService commentService() {
+        return Mockito.mock(com.blog.api.service.CommentService.class);
+    }
+    
+    @Bean
+    @Primary
+    public com.blog.api.service.CategoryService categoryService() {
+        return Mockito.mock(com.blog.api.service.CategoryService.class);
+    }
+    
+    @Bean
+    @Primary
+    public SecurityFilterChain testSecurityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(authz -> authz.anyRequest().permitAll());
+        return http.build();
     }
 }

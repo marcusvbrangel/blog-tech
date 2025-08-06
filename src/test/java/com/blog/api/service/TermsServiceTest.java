@@ -154,8 +154,8 @@ class TermsServiceTest {
         when(termsAcceptanceRepository.existsByUserAndTermsVersion(testUser, "v1.0")).thenReturn(false);
         when(termsAcceptanceRepository.save(any(TermsAcceptance.class))).thenReturn(testAcceptance);
         when(userRepository.save(any(User.class))).thenReturn(testUser);
-        when(httpServletRequest.getRemoteAddr()).thenReturn("192.168.1.1");
         when(httpServletRequest.getHeader("User-Agent")).thenReturn("Mozilla/5.0");
+        when(httpServletRequest.getHeader("X-Forwarded-For")).thenReturn("192.168.1.1");
 
         // When
         TermsAcceptance result = termsService.acceptTerms(1L, httpServletRequest);
@@ -173,8 +173,8 @@ class TermsServiceTest {
         when(termsAcceptanceRepository.existsByUserAndTermsVersion(testUser, "v1.0")).thenReturn(false);
         when(termsAcceptanceRepository.save(any(TermsAcceptance.class))).thenReturn(testAcceptance);
         when(userRepository.save(any(User.class))).thenReturn(testUser);
-        when(httpServletRequest.getRemoteAddr()).thenReturn("192.168.1.1");
         when(httpServletRequest.getHeader("User-Agent")).thenReturn("Mozilla/5.0");
+        when(httpServletRequest.getHeader("X-Forwarded-For")).thenReturn("192.168.1.1");
 
         // When
         TermsAcceptance result = termsService.acceptTerms(testUser, httpServletRequest);

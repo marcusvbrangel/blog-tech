@@ -13,10 +13,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import com.blog.api.config.TestSecurityConfig;
 
 import java.time.LocalDateTime;
 
@@ -28,19 +31,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = {AuthController.class, com.blog.api.exception.GlobalExceptionHandler.class}, excludeAutoConfiguration = {
-    org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
-    org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration.class,
-    org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration.class
-}, excludeFilters = @org.springframework.context.annotation.ComponentScan.Filter(
-    type = org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE,
-    classes = {
-        com.blog.api.config.JwtAuthenticationFilter.class,
-        com.blog.api.config.SecurityConfig.class,
-        com.blog.api.util.JwtUtil.class,
-        com.blog.api.service.CustomUserDetailsService.class
-    }
-))
+@WebMvcTest(controllers = {AuthController.class, com.blog.api.exception.GlobalExceptionHandler.class})
+@Import(TestSecurityConfig.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DisplayName("Auth Controller Email Verification Tests")
 class AuthControllerEmailVerificationTest {
 
