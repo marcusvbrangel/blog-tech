@@ -56,7 +56,7 @@ class SimplePostControllerTest {
     @DisplayName("Deve retornar página de posts quando solicitar todos os posts publicados")
     void getAllPublishedPosts_ShouldReturnPageOfPosts() {
         // Arrange
-        Page<PostDTO> page = new PageImpl<>(Arrays.asList(samplePostDTO));
+        Page<PostDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(samplePostDTO)));
         when(postService.getAllPublishedPosts(any())).thenReturn(page);
 
         // Act
@@ -93,7 +93,7 @@ class SimplePostControllerTest {
     @DisplayName("Deve retornar posts filtrados quando pesquisar posts")
     void searchPosts_ShouldReturnFilteredPosts() {
         // Arrange
-        Page<PostDTO> page = new PageImpl<>(Arrays.asList(samplePostDTO));
+        Page<PostDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(samplePostDTO)));
         when(postService.searchPosts(eq("test"), any())).thenReturn(page);
 
         // Act
@@ -111,7 +111,7 @@ class SimplePostControllerTest {
     @DisplayName("Deve retornar posts da categoria quando buscar posts por categoria")
     void getPostsByCategory_ShouldReturnPostsFromCategory() {
         // Arrange
-        Page<PostDTO> page = new PageImpl<>(Arrays.asList(samplePostDTO));
+        Page<PostDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(samplePostDTO)));
         when(postService.getPostsByCategory(eq(1L), any())).thenReturn(page);
 
         // Act
@@ -129,7 +129,7 @@ class SimplePostControllerTest {
     @DisplayName("Deve retornar posts do usuário quando buscar posts por usuário")
     void getPostsByUser_ShouldReturnUserPosts() {
         // Arrange
-        Page<PostDTO> page = new PageImpl<>(Arrays.asList(samplePostDTO));
+        Page<PostDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(samplePostDTO)));
         when(postService.getPostsByUser(eq(1L), any())).thenReturn(page);
 
         // Act

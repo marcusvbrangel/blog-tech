@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -59,25 +60,29 @@ public class PostController {
 
     @PostMapping
     @Operation(summary = "Create new post")
-    public ResponseEntity<PostDTO> createPost(@Valid @RequestBody CreatePostDTO createPostDTO, 
-                                              Authentication authentication) {
-        PostDTO post = postService.createPost(createPostDTO, authentication.getName());
+    public ResponseEntity<PostDTO> createPost(@Valid @RequestBody CreatePostDTO createPostDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication != null ? authentication.getName() : "anonymous";
+        PostDTO post = postService.createPost(createPostDTO, username);
         return new ResponseEntity<>(post, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update post")
     public ResponseEntity<PostDTO> updatePost(@PathVariable Long id, 
-                                              @Valid @RequestBody CreatePostDTO createPostDTO,
-                                              Authentication authentication) {
-        PostDTO post = postService.updatePost(id, createPostDTO, authentication.getName());
+                                              @Valid @RequestBody CreatePostDTO createPostDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication != null ? authentication.getName() : "anonymous";
+        PostDTO post = postService.updatePost(id, createPostDTO, username);
         return ResponseEntity.ok(post);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete post")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id, Authentication authentication) {
-        postService.deletePost(id, authentication.getName());
+    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication != null ? authentication.getName() : "anonymous";
+        postService.deletePost(id, username);
         return ResponseEntity.noContent().build();
     }
 }

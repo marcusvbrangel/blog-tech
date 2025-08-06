@@ -66,7 +66,7 @@ class IntegrationUserControllerTest {
     @DisplayName("Deve retornar página de usuários quando usuário admin solicitar todos os usuários")
     void getAllUsers_ShouldReturnPageOfUsers() throws Exception {
         // Arrange
-        Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO));
+        Page<UserDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleUserDTO)));
         when(userService.getAllUsers(any())).thenReturn(page);
 
         // Act & Assert

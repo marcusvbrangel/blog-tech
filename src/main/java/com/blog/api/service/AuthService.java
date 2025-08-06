@@ -247,7 +247,7 @@ public class AuthService {
         
         // Update password using builder pattern
         User updatedUser = User.from(user)
-                .password(passwordEncoder.encode(newPassword)) // Use password for encrypted password
+                .rawPassword(passwordEncoder.encode(newPassword)) // Use rawPassword for encrypted password
                 .passwordChangedAt(LocalDateTime.now())
                 .failedLoginAttempts(0)
                 .accountLocked(false)

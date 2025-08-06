@@ -23,7 +23,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(AuthController.class)
+@WebMvcTest(controllers = AuthController.class, 
+    excludeFilters = {
+        @org.springframework.context.annotation.ComponentScan.Filter(
+            type = org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE, 
+            classes = {
+                com.blog.api.config.JwtAuthenticationFilter.class,
+                com.blog.api.config.TermsComplianceFilter.class,
+                com.blog.api.config.SecurityConfig.class
+            })
+    },
+    excludeAutoConfiguration = {
+        org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
+        org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration.class
+    })
 @DisplayName("Auth Controller Tests")
 class AuthControllerTest {
 

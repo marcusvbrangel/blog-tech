@@ -28,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(CategoryController.class)
+@org.springframework.context.annotation.Import(com.blog.api.config.TestSecurityConfig.class)
 @DisplayName("Category Controller Tests")
 class CategoryControllerTest {
 
@@ -67,7 +68,7 @@ class CategoryControllerTest {
     @DisplayName("Deve retornar página de categorias quando buscar todas as categorias")
     void getAllCategories_ShouldReturnPageOfCategories() throws Exception {
         // Arrange
-        Page<CategoryDTO> categoryPage = new PageImpl<>(Arrays.asList(sampleCategoryDTO));
+        Page<CategoryDTO> categoryPage = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleCategoryDTO)));
         when(categoryService.getAllCategories(any())).thenReturn(categoryPage);
 
         // Act & Assert
@@ -88,7 +89,7 @@ class CategoryControllerTest {
     @DisplayName("Deve retornar página vazia quando não há categorias")
     void getAllCategories_ShouldReturnEmptyPage_WhenNoCategories() throws Exception {
         // Arrange
-        Page<CategoryDTO> emptyPage = new PageImpl<>(Arrays.asList());
+        Page<CategoryDTO> emptyPage = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList()));
         when(categoryService.getAllCategories(any())).thenReturn(emptyPage);
 
         // Act & Assert
@@ -105,7 +106,7 @@ class CategoryControllerTest {
     @DisplayName("Deve lidar com paginação corretamente")
     void getAllCategories_ShouldHandlePagination() throws Exception {
         // Arrange
-        Page<CategoryDTO> categoryPage = new PageImpl<>(Arrays.asList(sampleCategoryDTO));
+        Page<CategoryDTO> categoryPage = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleCategoryDTO)));
         when(categoryService.getAllCategories(any())).thenReturn(categoryPage);
 
         // Act & Assert

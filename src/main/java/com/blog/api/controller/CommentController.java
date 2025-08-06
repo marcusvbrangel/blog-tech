@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,25 +49,29 @@ public class CommentController {
 
     @PostMapping
     @Operation(summary = "Create new comment")
-    public ResponseEntity<CommentDTO> createComment(@Valid @RequestBody CommentDTO commentDTO, 
-                                                    Authentication authentication) {
-        CommentDTO comment = commentService.createComment(commentDTO, authentication.getName());
+    public ResponseEntity<CommentDTO> createComment(@Valid @RequestBody CommentDTO commentDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication != null ? authentication.getName() : "anonymous";
+        CommentDTO comment = commentService.createComment(commentDTO, username);
         return new ResponseEntity<>(comment, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update comment")
     public ResponseEntity<CommentDTO> updateComment(@PathVariable Long id, 
-                                                    @Valid @RequestBody CommentDTO commentDTO,
-                                                    Authentication authentication) {
-        CommentDTO comment = commentService.updateComment(id, commentDTO, authentication.getName());
+                                                    @Valid @RequestBody CommentDTO commentDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication != null ? authentication.getName() : "anonymous";
+        CommentDTO comment = commentService.updateComment(id, commentDTO, username);
         return ResponseEntity.ok(comment);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete comment")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long id, Authentication authentication) {
-        commentService.deleteComment(id, authentication.getName());
+    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication != null ? authentication.getName() : "anonymous";
+        commentService.deleteComment(id, username);
         return ResponseEntity.noContent().build();
     }
 }

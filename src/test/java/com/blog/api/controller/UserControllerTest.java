@@ -27,7 +27,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(UserController.class)
+@WebMvcTest(controllers = UserController.class, 
+    excludeFilters = {
+        @org.springframework.context.annotation.ComponentScan.Filter(
+            type = org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE, 
+            classes = {
+                com.blog.api.config.JwtAuthenticationFilter.class,
+                com.blog.api.config.TermsComplianceFilter.class,
+                com.blog.api.config.SecurityConfig.class
+            })
+    },
+    excludeAutoConfiguration = {
+        org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
+        org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration.class
+    })
 @DisplayName("User Controller Tests")
 class UserControllerTest {
 
@@ -69,7 +82,7 @@ class UserControllerTest {
     @DisplayName("Deve retornar página de usuários quando buscar todos os usuários")
     void getAllUsers_ShouldReturnPageOfUsers() throws Exception {
         // Arrange
-        Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO));
+        Page<UserDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleUserDTO)));
         when(userService.getAllUsers(any())).thenReturn(page);
 
         // Act & Assert
@@ -232,7 +245,7 @@ class UserControllerTest {
     @DisplayName("Deve retornar página vazia quando não há usuários")
     void getAllUsers_ShouldReturnEmptyPage_WhenNoUsers() throws Exception {
         // Arrange
-        Page<UserDTO> emptyPage = new PageImpl<>(Arrays.asList());
+        Page<UserDTO> emptyPage = new PageImpl<>(new java.util.ArrayList<>());
         when(userService.getAllUsers(any())).thenReturn(emptyPage);
 
         // Act & Assert
@@ -251,7 +264,7 @@ class UserControllerTest {
     @DisplayName("Deve lidar com paginação corretamente")
     void getAllUsers_ShouldHandlePagination() throws Exception {
         // Arrange
-        Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO));
+        Page<UserDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleUserDTO)));
         when(userService.getAllUsers(any())).thenReturn(page);
 
         // Act & Assert

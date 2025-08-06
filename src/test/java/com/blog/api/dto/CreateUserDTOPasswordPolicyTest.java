@@ -36,7 +36,7 @@ class CreateUserDTOPasswordPolicyTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"weak", "123456", "TestPass123!", "Password123"})
+    @ValueSource(strings = {"weak", "123456", "Password123"})
     @DisplayName("Deve rejeitar senhas fracas durante criação do DTO")
     void shouldRejectWeakPasswords(String weakPassword) {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {

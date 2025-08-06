@@ -33,7 +33,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @since 2025-08-05
  */
 @WebMvcTest(controllers = NewsletterController.class, 
-           excludeAutoConfiguration = {SecurityAutoConfiguration.class})
+    excludeFilters = {
+        @org.springframework.context.annotation.ComponentScan.Filter(
+            type = org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE, 
+            classes = {
+                com.blog.api.config.JwtAuthenticationFilter.class,
+                com.blog.api.config.TermsComplianceFilter.class,
+                com.blog.api.config.SecurityConfig.class
+            })
+    },
+    excludeAutoConfiguration = {
+        org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
+        org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration.class
+    })
 @DisplayName("NewsletterController Tests")
 class NewsletterControllerTest {
 

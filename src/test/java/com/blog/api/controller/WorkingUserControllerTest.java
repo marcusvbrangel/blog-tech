@@ -26,10 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = UserController.class)
-@TestPropertySource(properties = {
-    "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration",
-    "spring.main.allow-bean-definition-overriding=true"
-})
+@org.springframework.context.annotation.Import(com.blog.api.config.TestSecurityConfig.class)
 @DisplayName("Working User Controller Tests")
 class WorkingUserControllerTest {
 
@@ -78,7 +75,7 @@ class WorkingUserControllerTest {
     @DisplayName("Deve retornar página de usuários quando buscar todos os usuários")
     void getAllUsers_ShouldReturnPageOfUsers() throws Exception {
         // Arrange
-        Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO));
+        Page<UserDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleUserDTO)));
         when(userService.getAllUsers(any())).thenReturn(page);
 
         // Act & Assert
@@ -171,7 +168,7 @@ class WorkingUserControllerTest {
     @DisplayName("Deve retornar página vazia quando não há usuários")
     void getAllUsers_ShouldReturnEmptyPage_WhenNoUsers() throws Exception {
         // Arrange
-        Page<UserDTO> emptyPage = new PageImpl<>(Arrays.asList());
+        Page<UserDTO> emptyPage = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList()));
         when(userService.getAllUsers(any())).thenReturn(emptyPage);
 
         // Act & Assert
@@ -191,7 +188,7 @@ class WorkingUserControllerTest {
     @DisplayName("Deve lidar com paginação corretamente")
     void getAllUsers_ShouldHandlePagination() throws Exception {
         // Arrange
-        Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO));
+        Page<UserDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleUserDTO)));
         when(userService.getAllUsers(any())).thenReturn(page);
 
         // Act & Assert
