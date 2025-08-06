@@ -185,7 +185,7 @@ class TermsAcceptanceRepositoryTest {
     void findByAcceptedAtBetween_ShouldReturnAcceptancesInDateRange() {
         // Given
         LocalDateTime start = LocalDateTime.now().minusDays(2);
-        LocalDateTime end = LocalDateTime.now().minusHours(1);
+        LocalDateTime end = LocalDateTime.now().plusHours(1);
 
         // When
         List<TermsAcceptance> result = termsAcceptanceRepository.findByAcceptedAtBetween(start, end);
