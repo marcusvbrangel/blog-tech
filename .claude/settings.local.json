@@ -53,7 +53,13 @@
       "Bash(/home/base/Documentos/desenvolvimento/claude-estudo/first-project/create_last_tasks.sh:*)",
       "Bash(/home/base/Documentos/desenvolvimento/claude-estudo/first-project/create_infra_tasks.sh:*)",
       "Bash(./create_remaining_tasks.sh:*)",
-      "Bash(bash:*)"
+      "Bash(bash:*)",
+      "Bash(timeout 300 mvn test)",
+      "Bash(for file in \"src/test/java/com/blog/api/controller/FixedUserControllerTest.java\" \"src/test/java/com/blog/api/controller/FinalUserControllerTest.java\" \"src/test/java/com/blog/api/service/UserServiceTest.java\")",
+      "Bash(do if ! grep -q \"import.*PageRequest\" \"$file\")",
+      "Bash(then sed -i '/import.*PageImpl/a import org.springframework.data.domain.PageRequest;' \"$file\")",
+      "Bash(fi)",
+      "Bash(sed:*)"
     ],
     "deny": []
   }

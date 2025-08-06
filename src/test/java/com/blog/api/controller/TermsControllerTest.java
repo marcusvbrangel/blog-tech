@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
@@ -239,7 +240,7 @@ class TermsControllerTest {
                 .build();
         testUser.setId(2L);
         
-        Page<User> usersPage = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(testUser)));
+        Page<User> usersPage = new PageImpl<>(Arrays.asList(testUser), PageRequest.of(0, 10), 1);
         when(termsService.getUsersWithoutLatestTerms(any())).thenReturn(usersPage);
 
         // When & Then

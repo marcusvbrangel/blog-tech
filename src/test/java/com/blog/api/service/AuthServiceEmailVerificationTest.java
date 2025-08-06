@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -55,6 +56,9 @@ class AuthServiceEmailVerificationTest {
 
     @Mock
     private AuditLogService auditLogService;
+
+    @Mock
+    private com.blog.api.service.RefreshTokenService refreshTokenService;
 
     @InjectMocks
     private AuthService authService;
@@ -185,10 +189,14 @@ class AuthServiceEmailVerificationTest {
         when(userDetailsService.loadUserByUsername("testuser")).thenReturn(mockUserDetails);
         when(jwtUtil.generateToken(any())).thenReturn("jwt-token");
         
+        com.blog.api.entity.RefreshToken mockRefreshToken = new com.blog.api.entity.RefreshToken();
+        mockRefreshToken.setToken("refresh-token");
+        when(refreshTokenService.createRefreshToken(any(Long.class), any(), any())).thenReturn(mockRefreshToken);
+        
         org.springframework.security.authentication.UsernamePasswordAuthenticationToken mockAuth =
             new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
                 mockUserDetails, null, mockUserDetails.getAuthorities());
-        when(authenticationManager.authenticate(any())).thenReturn(mockAuth);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(mockAuth);
 
         // When
         assertDoesNotThrow(() -> authService.login(loginRequest));

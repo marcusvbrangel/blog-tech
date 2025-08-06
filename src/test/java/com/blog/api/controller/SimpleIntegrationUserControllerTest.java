@@ -14,6 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -62,7 +63,7 @@ class SimpleIntegrationUserControllerTest {
     @DisplayName("Deve retornar página de usuários quando solicitar todos os usuários")
     void getAllUsers_ShouldReturnPageOfUsers() throws Exception {
         // Arrange
-        Page<UserDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleUserDTO)));
+        Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO), PageRequest.of(0, 10), 1);
         when(userService.getAllUsers(any())).thenReturn(page);
 
         // Act & Assert
@@ -133,7 +134,7 @@ class SimpleIntegrationUserControllerTest {
     @DisplayName("Deve retornar página vazia quando não houver usuários")
     void getAllUsers_ShouldReturnEmptyPage_WhenNoUsers() throws Exception {
         // Arrange
-        Page<UserDTO> emptyPage = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList()));
+        Page<UserDTO> emptyPage = new PageImpl<>(Arrays.asList(), PageRequest.of(0, 10), 1);
         when(userService.getAllUsers(any())).thenReturn(emptyPage);
 
         // Act & Assert
@@ -151,7 +152,7 @@ class SimpleIntegrationUserControllerTest {
     @DisplayName("Deve lidar com paginação quando solicitar todos os usuários")
     void getAllUsers_ShouldHandlePagination() throws Exception {
         // Arrange
-        Page<UserDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleUserDTO)));
+        Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO), PageRequest.of(0, 10), 1);
         when(userService.getAllUsers(any())).thenReturn(page);
 
         // Act & Assert

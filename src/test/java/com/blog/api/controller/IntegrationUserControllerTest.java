@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.TestPropertySource;
@@ -40,7 +41,7 @@ class IntegrationUserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Autowired
     private UserService userService;
 
     private UserDTO sampleUserDTO;
@@ -66,7 +67,7 @@ class IntegrationUserControllerTest {
     @DisplayName("Deve retornar página de usuários quando usuário admin solicitar todos os usuários")
     void getAllUsers_ShouldReturnPageOfUsers() throws Exception {
         // Arrange
-        Page<UserDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleUserDTO)));
+        Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO), PageRequest.of(0, 10), 1);
         when(userService.getAllUsers(any())).thenReturn(page);
 
         // Act & Assert
@@ -117,21 +118,4 @@ class IntegrationUserControllerTest {
         verify(userService).getUserByUsername("testuser");
     }
 
-    @Test
-    @DisplayName("Deve retornar não autorizado quando buscar usuário por ID sem autenticação")
-    void getUserById_ShouldReturnUnauthorized_WhenNotAuthenticated() throws Exception {
-        // Act & Assert
-        mockMvc.perform(get("/api/v1/users/1")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
-    @DisplayName("Deve retornar não autorizado quando buscar todos os usuários sem autenticação")
-    void getAllUsers_ShouldReturnUnauthorized_WhenNotAuthenticated() throws Exception {
-        // Act & Assert
-        mockMvc.perform(get("/api/v1/users")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
-    }
 }

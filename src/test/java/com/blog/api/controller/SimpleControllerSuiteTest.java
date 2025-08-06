@@ -113,7 +113,7 @@ class SimpleControllerSuiteTest {
     @DisplayName("Deve retornar página de usuários quando controlador de usuários solicitar todos os usuários")
     void userController_getAllUsers_ShouldReturnPageOfUsers() {
         // Arrange
-        Page<UserDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleUserDTO)));
+        Page<UserDTO> page = new PageImpl<>(Arrays.asList(sampleUserDTO), PageRequest.of(0, 10), 1);
         when(userService.getAllUsers(any())).thenReturn(page);
 
         // Act
@@ -182,7 +182,7 @@ class SimpleControllerSuiteTest {
     @DisplayName("Deve retornar página de comentários quando controlador de comentários buscar por post")
     void commentController_getCommentsByPost_ShouldReturnPageOfComments() {
         // Arrange
-        Page<CommentDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleCommentDTO)));
+        Page<CommentDTO> page = new PageImpl<>(Arrays.asList(sampleCommentDTO), PageRequest.of(0, 10), 1);
         when(commentService.getCommentsByPost(eq(1L), any())).thenReturn(page);
 
         // Act
@@ -278,7 +278,7 @@ class SimpleControllerSuiteTest {
     @DisplayName("Deve retornar página de categorias quando controlador de categorias solicitar todas as categorias")
     void categoryController_getAllCategories_ShouldReturnPageOfCategories() {
         // Arrange
-        Page<CategoryDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleCategoryDTO)));
+        Page<CategoryDTO> page = new PageImpl<>(Arrays.asList(sampleCategoryDTO), PageRequest.of(0, 10), 1);
         when(categoryService.getAllCategories(any())).thenReturn(page);
 
         // Act
