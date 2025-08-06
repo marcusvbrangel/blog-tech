@@ -182,6 +182,88 @@ public class TestSecurityConfig {
         return Mockito.mock(com.blog.api.service.CategoryService.class);
     }
     
+    // ===== MISSING REPOSITORIES IDENTIFIED BY AGENT =====
+    
+    @Bean
+    @Primary
+    public com.blog.api.repository.RefreshTokenRepository refreshTokenRepository() {
+        return Mockito.mock(com.blog.api.repository.RefreshTokenRepository.class);
+    }
+    
+    @Bean
+    @Primary
+    public com.blog.api.repository.NewsletterSubscriberRepository newsletterSubscriberRepository() {
+        return Mockito.mock(com.blog.api.repository.NewsletterSubscriberRepository.class);
+    }
+    
+    @Bean
+    @Primary
+    public com.blog.api.repository.NewsletterTokenRepository newsletterTokenRepository() {
+        return Mockito.mock(com.blog.api.repository.NewsletterTokenRepository.class);
+    }
+    
+    @Bean
+    @Primary
+    public com.blog.api.service.NewsletterTokenService newsletterTokenService() {
+        return Mockito.mock(com.blog.api.service.NewsletterTokenService.class);
+    }
+    
+    @Bean
+    @Primary
+    public com.blog.api.repository.TwoFactorAuthRepository twoFactorAuthRepository() {
+        return Mockito.mock(com.blog.api.repository.TwoFactorAuthRepository.class);
+    }
+    
+    @Bean
+    @Primary
+    public com.blog.api.service.TwoFactorAuthService twoFactorAuthService() {
+        return Mockito.mock(com.blog.api.service.TwoFactorAuthService.class);
+    }
+    
+    @Bean
+    @Primary
+    public com.blog.api.repository.AuditLogRepository auditLogRepository() {
+        return Mockito.mock(com.blog.api.repository.AuditLogRepository.class);
+    }
+    
+    @Bean
+    @Primary
+    public com.blog.api.repository.PostRepository postRepository() {
+        return Mockito.mock(com.blog.api.repository.PostRepository.class);
+    }
+    
+    @Bean
+    @Primary
+    public com.blog.api.repository.CommentRepository commentRepository() {
+        return Mockito.mock(com.blog.api.repository.CommentRepository.class);
+    }
+    
+    @Bean
+    @Primary
+    public com.blog.api.repository.CategoryRepository categoryRepository() {
+        return Mockito.mock(com.blog.api.repository.CategoryRepository.class);
+    }
+    
+    // ===== MICROMETER MOCKS =====
+    
+    @Bean
+    @Primary
+    public io.micrometer.core.instrument.Counter postCreationCounter() {
+        return Mockito.mock(io.micrometer.core.instrument.Counter.class);
+    }
+    
+    @Bean
+    @Primary
+    public io.micrometer.core.instrument.MeterRegistry meterRegistry() {
+        return Mockito.mock(io.micrometer.core.instrument.MeterRegistry.class);
+    }
+    
+    @Bean
+    @Primary
+    public io.micrometer.core.instrument.Timer databaseQueryTimer() {
+        return Mockito.mock(io.micrometer.core.instrument.Timer.class);
+    }
+    
     @Bean
     @Primary
     public SecurityFilterChain testSecurityFilterChain(HttpSecurity http) throws Exception {
