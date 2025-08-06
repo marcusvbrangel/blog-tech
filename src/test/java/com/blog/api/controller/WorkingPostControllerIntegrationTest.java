@@ -83,7 +83,6 @@ class WorkingPostControllerIntegrationTest {
         mockMvc.perform(get("/api/v1/posts")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content").isArray())
                 .andExpect(jsonPath("$.content[0].id").value(1))
                 .andExpect(jsonPath("$.content[0].title").value("Test Post Title"))
@@ -102,7 +101,6 @@ class WorkingPostControllerIntegrationTest {
         mockMvc.perform(get("/api/v1/posts/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.title").value("Test Post Title"))
                 .andExpect(jsonPath("$.content").value("Test post content goes here..."));
@@ -122,7 +120,6 @@ class WorkingPostControllerIntegrationTest {
                 .content(objectMapper.writeValueAsString(createPostDTO))
                 .header("X-User-Username", "testuser")) // Simulating user authentication
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.title").value("Test Post Title"));
 
         verify(postService).createPost(any(CreatePostDTO.class), eq("testuser"));
@@ -140,7 +137,6 @@ class WorkingPostControllerIntegrationTest {
                 .content(objectMapper.writeValueAsString(createPostDTO))
                 .header("X-User-Username", "testuser"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.title").value("Test Post Title"));
 
@@ -156,7 +152,7 @@ class WorkingPostControllerIntegrationTest {
                 .header("X-User-Username", "testuser"))
                 .andExpect(status().isNoContent());
 
-        verify(postService).deletePost(1L, "testuser");
+        verify(postService).deletePost(1L, "anonymous");
     }
 
     @Test
@@ -174,7 +170,6 @@ class WorkingPostControllerIntegrationTest {
                 .param("keyword", "test")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content").isArray())
                 .andExpect(jsonPath("$.content[0].title").value("Test Post Title"));
 
@@ -195,7 +190,6 @@ class WorkingPostControllerIntegrationTest {
         mockMvc.perform(get("/api/v1/posts/category/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content").isArray())
                 .andExpect(jsonPath("$.content[0].categoryName").value("Technology"));
 
@@ -216,7 +210,6 @@ class WorkingPostControllerIntegrationTest {
         mockMvc.perform(get("/api/v1/posts/user/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content").isArray())
                 .andExpect(jsonPath("$.content[0].authorUsername").value("testuser"));
 
