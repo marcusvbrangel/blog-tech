@@ -54,6 +54,15 @@ class AuthControllerTest {
     
     @MockBean
     private com.blog.api.service.TermsService termsService;
+    
+    @MockBean
+    private com.blog.api.service.JwtBlacklistService jwtBlacklistService;
+    
+    @MockBean
+    private com.blog.api.service.AuditLogService auditLogService;
+    
+    @MockBean
+    private com.blog.api.service.RefreshTokenService refreshTokenService;
 
     @Autowired
     private ObjectMapper objectMapper;

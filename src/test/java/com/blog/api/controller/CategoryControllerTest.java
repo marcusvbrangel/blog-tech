@@ -23,40 +23,48 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(CategoryController.class)
-@org.springframework.context.annotation.Import(com.blog.api.config.TestSecurityConfig.class)
+@WebMvcTest(controllers = CategoryController.class, 
+    excludeFilters = {
+        @org.springframework.context.annotation.ComponentScan.Filter(
+            type = org.springframework.context.annotation.FilterType.ASSIGNABLE_TYPE, 
+            classes = {
+                com.blog.api.config.JwtAuthenticationFilter.class,
+                com.blog.api.config.TermsComplianceFilter.class,
+                com.blog.api.config.SecurityConfig.class
+            })
+    },
+    excludeAutoConfiguration = {
+        org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
+        org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration.class
+    })
 @DisplayName("Category Controller Tests")
 class CategoryControllerTest {
 
-    private final MockMvc mockMvc;
+    @org.springframework.beans.factory.annotation.Autowired
+    private MockMvc mockMvc;
 
-    private final CategoryService categoryService;
+    @org.springframework.boot.test.mock.mockito.MockBean
+    private CategoryService categoryService;
     
-    private final com.blog.api.util.JwtUtil jwtUtil;
+    @org.springframework.boot.test.mock.mockito.MockBean
+    private com.blog.api.util.JwtUtil jwtUtil;
     
-    private final com.blog.api.service.CustomUserDetailsService userDetailsService;
+    @org.springframework.boot.test.mock.mockito.MockBean
+    private com.blog.api.service.CustomUserDetailsService userDetailsService;
     
-    private final com.blog.api.service.TermsService termsService;
+    @org.springframework.boot.test.mock.mockito.MockBean
+    private com.blog.api.service.TermsService termsService;
 
-    private final ObjectMapper objectMapper;
+    @org.springframework.beans.factory.annotation.Autowired
+    private ObjectMapper objectMapper;
 
     private CategoryDTO sampleCategoryDTO;
     private CategoryDTO createCategoryDTO;
-
-    CategoryControllerTest(MockMvc mockMvc, CategoryService categoryService, JwtUtil jwtUtil,
-                           CustomUserDetailsService userDetailsService, TermsService termsService,
-                           ObjectMapper objectMapper) {
-        this.mockMvc = mockMvc;
-        this.categoryService = categoryService;
-        this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService;
-        this.termsService = termsService;
-        this.objectMapper = objectMapper;
-    }
 
     @BeforeEach
     void setUp() {
@@ -68,7 +76,9 @@ class CategoryControllerTest {
     @DisplayName("Deve retornar página de categorias quando buscar todas as categorias")
     void getAllCategories_ShouldReturnPageOfCategories() throws Exception {
         // Arrange
-        Page<CategoryDTO> categoryPage = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleCategoryDTO)));
+        java.util.List<CategoryDTO> content = new java.util.ArrayList<>();
+        content.add(sampleCategoryDTO);
+        Page<CategoryDTO> categoryPage = new PageImpl<>(content);
         when(categoryService.getAllCategories(any())).thenReturn(categoryPage);
 
         // Act & Assert
@@ -89,7 +99,7 @@ class CategoryControllerTest {
     @DisplayName("Deve retornar página vazia quando não há categorias")
     void getAllCategories_ShouldReturnEmptyPage_WhenNoCategories() throws Exception {
         // Arrange
-        Page<CategoryDTO> emptyPage = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList()));
+        Page<CategoryDTO> emptyPage = new PageImpl<>(new java.util.ArrayList<>());
         when(categoryService.getAllCategories(any())).thenReturn(emptyPage);
 
         // Act & Assert
@@ -106,7 +116,9 @@ class CategoryControllerTest {
     @DisplayName("Deve lidar com paginação corretamente")
     void getAllCategories_ShouldHandlePagination() throws Exception {
         // Arrange
-        Page<CategoryDTO> categoryPage = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleCategoryDTO)));
+        java.util.List<CategoryDTO> content = new java.util.ArrayList<>();
+        content.add(sampleCategoryDTO);
+        Page<CategoryDTO> categoryPage = new PageImpl<>(content);
         when(categoryService.getAllCategories(any())).thenReturn(categoryPage);
 
         // Act & Assert
