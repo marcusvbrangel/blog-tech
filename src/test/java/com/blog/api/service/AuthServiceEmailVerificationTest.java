@@ -53,6 +53,9 @@ class AuthServiceEmailVerificationTest {
     @Mock
     private VerificationTokenService verificationTokenService;
 
+    @Mock
+    private AuditLogService auditLogService;
+
     @InjectMocks
     private AuthService authService;
 
@@ -175,9 +178,17 @@ class AuthServiceEmailVerificationTest {
         
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
         when(userRepository.save(any(User.class))).thenReturn(testUser);
-        when(authenticationManager.authenticate(any())).thenReturn(null);
-        when(userDetailsService.loadUserByUsername("testuser")).thenReturn(null);
+        
+        org.springframework.security.core.userdetails.User mockUserDetails = 
+            new org.springframework.security.core.userdetails.User("testuser", "hashedpassword", 
+                java.util.Collections.emptyList());
+        when(userDetailsService.loadUserByUsername("testuser")).thenReturn(mockUserDetails);
         when(jwtUtil.generateToken(any())).thenReturn("jwt-token");
+        
+        org.springframework.security.authentication.UsernamePasswordAuthenticationToken mockAuth =
+            new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+                mockUserDetails, null, mockUserDetails.getAuthorities());
+        when(authenticationManager.authenticate(any())).thenReturn(mockAuth);
 
         // When
         assertDoesNotThrow(() -> authService.login(loginRequest));
@@ -188,6 +199,7 @@ class AuthServiceEmailVerificationTest {
             user.getLockedUntil() == null && 
             user.getFailedLoginAttempts() == 0));
         verify(authenticationManager).authenticate(any());
+        verify(userDetailsService).loadUserByUsername("testuser");
     }
 
     @Test
@@ -229,19 +241,14 @@ class AuthServiceEmailVerificationTest {
     void verifyEmail_ShouldThrowBadRequestException_WhenTokenIsExpired() {
         // Given
         String token = "expired-token";
-        testUser.setEmailVerified(false);
-        testUser.setEmailVerifiedAt(null);
+        when(verificationTokenService.verifyEmailToken(token))
+                .thenThrow(new BadRequestException("Token has expired"));
 
-        when(verificationTokenService.verifyEmailToken(token)).thenReturn(testUser);
-        when(userRepository.save(any(User.class))).thenReturn(testUser);
-
-        // When
-        UserDTO result = authService.verifyEmail(token);
-
-        // Then
-        assertNotNull(result);
-        assertTrue(result.emailVerified());
-        assertNotNull(result.emailVerifiedAt());
+        // When & Then
+        BadRequestException exception = assertThrows(BadRequestException.class, 
+            () -> authService.verifyEmail(token));
+        
+        assertEquals("Token has expired", exception.getMessage());
         verify(verificationTokenService).verifyEmailToken(token);
     }
 

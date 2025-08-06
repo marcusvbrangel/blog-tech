@@ -12,6 +12,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -83,7 +85,10 @@ class UserControllerTest {
     @DisplayName("Deve retornar página de usuários quando buscar todos os usuários")
     void getAllUsers_ShouldReturnPageOfUsers() throws Exception {
         // Arrange
-        Page<UserDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleUserDTO)));
+        java.util.List<UserDTO> userList = new java.util.ArrayList<>();
+        userList.add(sampleUserDTO);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<UserDTO> page = new PageImpl<>(userList, pageable, userList.size());
         when(userService.getAllUsers(any())).thenReturn(page);
 
         // Act & Assert
@@ -103,7 +108,9 @@ class UserControllerTest {
     @DisplayName("Deve retornar lista quando solicitada")
     void getAllUsers_ShouldReturnList_WhenRequested() throws Exception {
         // Arrange
-        when(userService.getAllUsers(any())).thenReturn(new PageImpl<>(new ArrayList<>()));
+        java.util.List<UserDTO> emptyList = new ArrayList<>();
+        Pageable pageable = PageRequest.of(0, 10);
+        when(userService.getAllUsers(any())).thenReturn(new PageImpl<>(emptyList, pageable, 0));
         
         // Act & Assert
         mockMvc.perform(get("/api/v1/users")
@@ -245,7 +252,9 @@ class UserControllerTest {
     @DisplayName("Deve retornar página vazia quando não há usuários")
     void getAllUsers_ShouldReturnEmptyPage_WhenNoUsers() throws Exception {
         // Arrange
-        Page<UserDTO> emptyPage = new PageImpl<>(new java.util.ArrayList<>());
+        java.util.List<UserDTO> emptyList = new java.util.ArrayList<>();
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<UserDTO> emptyPage = new PageImpl<>(emptyList, pageable, 0);
         when(userService.getAllUsers(any())).thenReturn(emptyPage);
 
         // Act & Assert
@@ -264,7 +273,10 @@ class UserControllerTest {
     @DisplayName("Deve lidar com paginação corretamente")
     void getAllUsers_ShouldHandlePagination() throws Exception {
         // Arrange
-        Page<UserDTO> page = new PageImpl<>(new java.util.ArrayList<>(Arrays.asList(sampleUserDTO)));
+        java.util.List<UserDTO> userList = new java.util.ArrayList<>();
+        userList.add(sampleUserDTO);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<UserDTO> page = new PageImpl<>(userList, pageable, userList.size());
         when(userService.getAllUsers(any())).thenReturn(page);
 
         // Act & Assert

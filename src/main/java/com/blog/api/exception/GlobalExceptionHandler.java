@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -60,6 +61,19 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
             HttpStatus.BAD_REQUEST.value(),
             "Required request parameter '" + ex.getParameterName() + "' is missing",
+            LocalDateTime.now()
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatch(
+            MethodArgumentTypeMismatchException ex) {
+        String message = String.format("Invalid value '%s' for parameter '%s'. Expected type: %s", 
+            ex.getValue(), ex.getName(), ex.getRequiredType().getSimpleName());
+        ErrorResponse error = new ErrorResponse(
+            HttpStatus.BAD_REQUEST.value(),
+            message,
             LocalDateTime.now()
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);

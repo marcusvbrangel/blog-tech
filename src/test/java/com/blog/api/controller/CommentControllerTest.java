@@ -12,6 +12,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -96,7 +98,8 @@ class CommentControllerTest {
         // Arrange
         List<CommentDTO> content = new java.util.ArrayList<>();
         content.add(sampleCommentDTO);
-        Page<CommentDTO> page = new PageImpl<>(content);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<CommentDTO> page = new PageImpl<>(content, pageable, content.size());
         when(commentService.getCommentsByPost(eq(1L), any())).thenReturn(page);
 
         // Act & Assert
@@ -118,7 +121,8 @@ class CommentControllerTest {
         // Arrange
         List<CommentDTO> content = new java.util.ArrayList<>();
         content.add(sampleCommentDTO);
-        Page<CommentDTO> page = new PageImpl<>(content);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<CommentDTO> page = new PageImpl<>(content, pageable, content.size());
         when(commentService.getCommentsByPost(eq(1L), any())).thenReturn(page);
 
         // Act & Assert
@@ -380,7 +384,9 @@ class CommentControllerTest {
     @DisplayName("Deve retornar página vazia quando não há comentários")
     void getCommentsByPost_ShouldReturnEmptyPage_WhenNoComments() throws Exception {
         // Arrange
-        Page<CommentDTO> emptyPage = new PageImpl<>(new java.util.ArrayList<>());
+        java.util.List<CommentDTO> emptyList = new java.util.ArrayList<>();
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<CommentDTO> emptyPage = new PageImpl<>(emptyList, pageable, 0);
         when(commentService.getCommentsByPost(eq(1L), any())).thenReturn(emptyPage);
 
         // Act & Assert
